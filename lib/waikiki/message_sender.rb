@@ -1,0 +1,70 @@
+module Waikiki
+  class MessageSender
+
+    class << self
+
+      def my_logger
+        @@my_logger ||= ::Logger.new("#{Rails.root}/log/#{Rails.env}_message_sender.log")
+      end
+
+      def header
+        headers = {}
+        headers.merge!(Waikiki::HTTPHeaders::JSON)
+        headers
+      end
+
+      def body(user, msg_body)
+        {
+          recipient: {
+            id: user.sender_id
+          },
+          message: msg_body
+        }.to_json
+      end
+
+      def send(user, msg_body)
+        unless Rails.env.test?
+          res = Waikiki::HttpPersistent.post("#{APP_CONFIG[:graph_api_url]}/me/messages?access_token=#{APP_CONFIG[:page_access_token]}", body(user, msg_body), header)
+          if res.status == 200
+            my_logger.info "sent message to user with sender id: #{user.sender_id}"
+          else
+            my_logger.error "send message failed with response: #{res.body}"
+          end
+        else
+          puts "sent message to user with sender id: #{user.sender_id}"
+        end
+      end
+
+      def send_text_message(user, text)
+        send(user, {text: text})
+      end
+
+      def send_button_message(user, text, buttons)
+        send(user,
+             attachment: {
+               type: 'template',
+               payload: {
+                 template_type: 'button',
+                 text: text,
+                 buttons: buttons
+               }
+             }
+        )
+      end
+
+      def send_generic_message(user, elements)
+        send(user,
+             attachment: {
+               type: 'template',
+               payload: {
+                 template_type: 'generic',
+                 elements: elements
+               }
+             }
+        )
+      end
+
+    end
+
+  end
+end

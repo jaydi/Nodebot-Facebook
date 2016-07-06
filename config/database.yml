@@ -1,0 +1,30 @@
+default: &default
+  adapter: mysql2
+  encoding: utf8mb4
+  reconnect: true
+  pool: 32
+
+test:
+  adapter: sqlite3
+  database: db/test.sqlite3
+
+local:
+  <<: *default
+  username: waikiki
+  password: dhkdlzlzlfh!!
+  host: 52.78.1.14
+  database: waikiki_development
+
+development:
+  <<: *default
+  username: waikiki
+  password: dhkdlzlzlfh!!
+  host: 52.78.1.14
+  database: waikiki_development
+
+production:
+  <<: *default
+  username: waikiki
+  password: dhkdlzlzlfh!!
+  host: 52.78.1.14
+  database: waikiki_production

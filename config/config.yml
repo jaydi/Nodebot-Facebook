@@ -1,0 +1,16 @@
+defaults: &defaults
+  page_id: 982472715207823
+  page_access_token: EAAY1a1Sv97EBAFe7AZBRhfZBc2amJTs6uBd6YPnwoMeqInKTfBfJlZCFE9i8jexUZCNXNc4HGJmldvf0KLt4mZBwgZCssT2ZArQvGC41Q2eJ1H8oOH3Ov3KJiJhDZBMt93LhpoLhY76lRaeo4RY5cUcgRZBN7o7fViQ0G6BBw5io9XQZDZD
+  graph_api_url: https://graph.facebook.com/v2.6
+
+test:
+  <<: *defaults
+
+local:
+  <<: *defaults
+
+development:
+  <<: *defaults
+
+production:
+  <<: *defaults
