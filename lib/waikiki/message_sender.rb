@@ -39,6 +39,10 @@ module Waikiki
         send(user, {text: text})
       end
 
+      def send_quick_reply_message(user, text, quick_replies)
+        send(user, {text: text, quick_replies: quick_replies})
+      end
+
       def send_button_message(user, text, buttons)
         send(user,
              attachment: {

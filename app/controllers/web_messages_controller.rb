@@ -32,13 +32,37 @@ class WebMessagesController < ApplicationController
       entry['messaging'].each do |messaging|
         if messaging['message']
           msg = WebMessage.new({
-                                 message_type: WebMessage.message_types[:message],
+                                 message_type: WebMessage.message_types[:text],
                                  message_id: messaging['message']['mid'],
                                  sender_id: messaging['sender']['id'],
                                  sequence: messaging['message']['seq'],
                                  text: messaging['message']['text'],
                                  sent_timestamp: messaging['timestamp']
                                })
+          if messaging['message']['quick_reply']
+            msg.message_type = WebMessage.message_types[:quick_reply]
+            msg.payload = messaging['message']['quick_reply']['payload']
+          elsif messaging['message']['attachments']
+            messaging['message']['attachments'].each do |att|
+              case att['type']
+                when 'image'
+                  msg.message_type = WebMessage.message_types[:image]
+                  # TODO
+                when 'audio'
+                  msg.message_type = WebMessage.message_types[:audio]
+                  # TODO
+                when 'video'
+                  msg.message_type = WebMessage.message_types[:video]
+                  # TODO
+                when 'file'
+                  msg.message_type = WebMessage.message_types[:file]
+                  # TODO
+                when 'location'
+                  msg.message_type = WebMessage.message_types[:location]
+                  # TODO
+              end
+            end
+          end
         elsif messaging['postback']
           msg = WebMessage.new({
                                  message_type: WebMessage.message_types[:postback],

@@ -3,7 +3,6 @@ APP_CONFIG = config_hash.symbolize_keys
 
 require 'waikiki/http_persistent'
 require 'waikiki/message_sender'
-require 'waikiki/models'
 
 # Active Job
 Rails.application.configure do
