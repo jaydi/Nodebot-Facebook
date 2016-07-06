@@ -17,4 +17,5 @@
 /tmp
 
 # Ignore IntelliJ config files
+Nodebot.iml
 /.idea/*
