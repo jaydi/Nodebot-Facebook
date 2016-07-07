@@ -47,19 +47,19 @@ class WebMessagesController < ApplicationController
               case att['type']
                 when 'image'
                   msg.message_type = WebMessage.message_types[:image]
-                  # TODO
+                  msg.payload_url = att['payload']['url']
                 when 'audio'
                   msg.message_type = WebMessage.message_types[:audio]
-                  # TODO
+                  msg.payload_url = att['payload']['url']
                 when 'video'
                   msg.message_type = WebMessage.message_types[:video]
-                  # TODO
+                  msg.payload_url = att['payload']['url']
                 when 'file'
                   msg.message_type = WebMessage.message_types[:file]
-                  # TODO
+                  msg.payload_url = att['payload']['url']
                 when 'location'
                   msg.message_type = WebMessage.message_types[:location]
-                  # TODO
+                  msg.payload = "#{att['payload']['coordinates.lat']},#{att['payload']['coordinates.long']}"
               end
             end
           end

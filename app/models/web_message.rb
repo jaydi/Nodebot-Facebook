@@ -27,6 +27,8 @@ class WebMessage < ActiveRecord::Base
           when 'A'
             # TODO
         end
+      when self.class.message_types[:image]
+        # TODO
       when self.class.message_types[:postback]
         case payload
           when 'A'
