@@ -28,7 +28,7 @@ class WebMessage < ActiveRecord::Base
             # TODO
         end
       when self.class.message_types[:image]
-        # TODO
+        echo_image(user)
       when self.class.message_types[:postback]
         case payload
           when 'A'
@@ -60,6 +60,11 @@ class WebMessage < ActiveRecord::Base
 
   def echo(user)
     Waikiki::MessageSender.send_text_message(user, text)
+  end
+
+  def echo_image(user)
+    attachment = Attachment.new({type: 'image', payload: {url: payload_url}})
+    Waikiki::MessageSender.send_attachment(user, attachment)
   end
 
 end
