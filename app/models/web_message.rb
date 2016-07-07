@@ -39,9 +39,11 @@ class WebMessage < ActiveRecord::Base
   def current_user
     current_user = User.find_by_sender_id(sender_id)
     if current_user.blank?
-      # res = Waikiki::HttpPersistent.get("#{APP_CONFIG[:graph_api_url]}/#{sender_id}?fields=first_name,last_name,profile_pic,locale,timezone,gender&access_token=#{APP_CONFIG[:page_access_url]}")
-      # json_res = JSON.parse(res.body)
-      current_user = User.create({sender_id: sender_id})
+      # res = Waikiki::HttpPersistent.get("#{APP_CONFIG[:graph_api_url]}/#{sender_id}?fields=first_name,last_name,profile_pic,locale,timezone,gender&access_token=#{APP_CONFIG[:page_access_token]}")
+      res = Waikiki::HttpPersistent.get("#{APP_CONFIG[:graph_api_url]}/#{sender_id}?fields=first_name,last_name&access_token=#{APP_CONFIG[:page_access_token]}")
+      res_hash = JSON.parse(res.body)
+      name = res_hash['last_name'] + res_hash['first_name']
+      current_user = User.create({sender_id: sender_id, name: name})
     end
     current_user
   end

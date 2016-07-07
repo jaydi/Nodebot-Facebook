@@ -11,10 +11,27 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160706080127) do
+ActiveRecord::Schema.define(version: 20160707090431) do
+
+  create_table "celebs", force: :cascade do |t|
+    t.string   "sender_id",  limit: 255, null: false
+    t.string   "email",      limit: 255, null: false
+    t.string   "password",   limit: 255, null: false
+    t.string   "name",       limit: 255, null: false
+    t.string   "image_url",  limit: 255, null: false
+    t.integer  "status",     limit: 4,   null: false
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  add_index "celebs", ["email"], name: "index_celebs_on_email", length: {"email"=>191}, using: :btree
+  add_index "celebs", ["name"], name: "index_celebs_on_name", length: {"name"=>191}, using: :btree
+  add_index "celebs", ["sender_id"], name: "index_celebs_on_sender_id", length: {"sender_id"=>191}, using: :btree
+  add_index "celebs", ["status"], name: "index_celebs_on_status", using: :btree
 
   create_table "users", force: :cascade do |t|
     t.string   "sender_id",  limit: 255, null: false
+    t.string   "name",       limit: 255, null: false
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
   end
