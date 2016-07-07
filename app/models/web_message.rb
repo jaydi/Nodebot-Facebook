@@ -8,20 +8,15 @@ class WebMessage < ActiveRecord::Base
     video: 14,
     file: 15,
     location: 16,
-    postback: 20
+    postback: 20,
+    optin: 30
   }
-
-  STARTERS = ['?', 'hi', 'hey', 'yo', 'hello', 'sup', 'knock knock']
 
   def process_message
     user = current_user
     case message_type
       when self.class.message_types[:text]
-        if STARTERS.include? text.downcase
-          help_message(user)
-        else
-          echo(user)
-        end
+        echo(user)
       when self.class.message_types[:quick_reply]
         case payload
           when 'A'
@@ -33,9 +28,9 @@ class WebMessage < ActiveRecord::Base
         case payload
           when 'A'
             # TODO
-          when 'B'
-            # TODO
         end
+      when self.class.message_types[:optin]
+        echo_optin(user)
     end
   end
 
@@ -63,8 +58,12 @@ class WebMessage < ActiveRecord::Base
   end
 
   def echo_image(user)
-    attachment = Attachment.new({type: 'image', payload: {url: payload_url}})
-    Waikiki::MessageSender.send_attachment(user, attachment)
+    attachment = Attachment.new({type: 'image', payload: {url: payload}})
+    Waikiki::MessageSender.send_attachment_message(user, attachment)
+  end
+
+  def echo_optin(user)
+    Waikiki::MessageSender.send_text_message(user, payload)
   end
 
 end

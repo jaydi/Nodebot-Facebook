@@ -7,7 +7,6 @@ class CreateWebMessages < ActiveRecord::Migration
       t.integer :sequence
       t.text :text
       t.string :payload
-      t.string :payload_url
       t.integer :sent_timestamp, limit: 8, null: false
 
       t.timestamps null: false

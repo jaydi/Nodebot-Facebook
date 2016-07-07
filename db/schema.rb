@@ -28,7 +28,6 @@ ActiveRecord::Schema.define(version: 20160706080127) do
     t.integer  "sequence",       limit: 4
     t.text     "text",           limit: 65535
     t.string   "payload",        limit: 255
-    t.string   "payload_url",    limit: 255
     t.integer  "sent_timestamp", limit: 8,     null: false
     t.datetime "created_at",                   null: false
     t.datetime "updated_at",                   null: false

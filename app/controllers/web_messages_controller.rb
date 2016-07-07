@@ -47,16 +47,16 @@ class WebMessagesController < ApplicationController
               case att['type']
                 when 'image'
                   msg.message_type = WebMessage.message_types[:image]
-                  msg.payload_url = att['payload']['url']
+                  msg.payload = att['payload']['url']
                 when 'audio'
                   msg.message_type = WebMessage.message_types[:audio]
-                  msg.payload_url = att['payload']['url']
+                  msg.payload = att['payload']['url']
                 when 'video'
                   msg.message_type = WebMessage.message_types[:video]
-                  msg.payload_url = att['payload']['url']
+                  msg.payload = att['payload']['url']
                 when 'file'
                   msg.message_type = WebMessage.message_types[:file]
-                  msg.payload_url = att['payload']['url']
+                  msg.payload = att['payload']['url']
                 when 'location'
                   msg.message_type = WebMessage.message_types[:location]
                   msg.payload = "#{att['payload']['coordinates.lat']},#{att['payload']['coordinates.long']}"
@@ -71,7 +71,12 @@ class WebMessagesController < ApplicationController
                                  sent_timestamp: messaging['timestamp']
                                })
         elsif messaging['optin']
-          # TODO
+          msg = WebMessage.new({
+                                 message_type: WebMessage.message_types[:optin],
+                                 sender_id: messaging['sender']['id'],
+                                 payload: messaging['optin']['ref'],
+                                 sent_timestamp: messaging['timestamp']
+                               })
         elsif messaging['delivery']
           # TODO
         elsif messaging['read']
