@@ -12,10 +12,12 @@ class User < ActiveRecord::Base
     reply_initiated: 21,
     messaging: 30,
     replying: 31,
-    message_completed: 40,
-    reply_completed: 41,
-    payment_initiated: 50,
-    payment_completed: 60
+    message_confirm: 40,
+    reply_confirm: 41,
+    message_completed: 50,
+    reply_completed: 51,
+    payment_initiated: 60,
+    payment_completed: 70
   }
 
   aasm column: :status, enum: true do
@@ -24,6 +26,8 @@ class User < ActiveRecord::Base
     state :reply_initiated, after_enter: [:state_enter_action, :state_enter_guide]
     state :messaging, after_enter: [:state_enter_action, :state_enter_guide]
     state :replying, after_enter: [:state_enter_action, :state_enter_guide]
+    state :message_confirm, after_enter: [:state_enter_action, :state_enter_guide]
+    state :reply_confirm, after_enter: [:state_enter_action, :state_enter_guide]
     state :message_completed, after_enter: [:state_enter_action, :state_enter_guide]
     state :reply_completed, after_enter: [:state_enter_action, :state_enter_guide, :end_conversation, :save]
     state :payment_initiated, after_enter: [:state_enter_action, :state_enter_guide]
@@ -45,12 +49,20 @@ class User < ActiveRecord::Base
       transitions from: :reply_initiated, to: :replying
     end
 
+    event :confirm_message do
+      transitions from: :messaging, to: :message_confirm
+    end
+
+    event :confirm_reply do
+      transitions from: :replying, to: :reply_confirm
+    end
+
     event :complete_message do
-      transitions from: :messaging, to: :message_completed
+      transitions from: :message_confirm, to: :message_completed
     end
 
     event :complete_reply do
-      transitions from: :replying, to: :reply_completed
+      transitions from: :reply_confirm, to: :reply_completed
     end
 
     event :initiate_payment do
@@ -89,6 +101,10 @@ class User < ActiveRecord::Base
         start_messaging!
       when :STRT_RPL
         start_replying!
+      when :CONF_MSG
+        confirm_message!
+      when :CONF_RPL
+        confirm_reply!
       when :CMPT_MSG
         complete_message!
       when :CMPT_RPL
@@ -112,6 +128,8 @@ class User < ActiveRecord::Base
       when :reply_initiated
       when :messaging
       when :replying
+      when :message_confirm
+      when :reply_confirm
       when :message_completed
         current_message.complete!
       when :reply_completed
@@ -150,6 +168,18 @@ class User < ActiveRecord::Base
       when :replying
         Waikiki::MessageSender.send_text_message(self, "input video")
 
+      when :message_confirm
+        quick_reply_cmpt_msg = QuickReply.new({title: 'Confirm', payload: 'CMPT_MSG'})
+        quick_reply_end_conv = QuickReply.new({title: 'Cancel', payload: 'END_CONV'})
+        quick_replies = [quick_reply_cmpt_msg, quick_reply_end_conv]
+        Waikiki::MessageSender.send_quick_reply_message(self, "confirm your message\n\n#{current_message.text}", quick_replies)
+
+      when :reply_confirm
+        quick_reply_cmpt_rpl = QuickReply.new({title: 'Confirm', payload: 'CMPT_RPL'})
+        quick_reply_end_conv = QuickReply.new({title: 'Cancel', payload: 'END_CONV'})
+        quick_replies = [quick_reply_cmpt_rpl, quick_reply_end_conv]
+        Waikiki::MessageSender.send_quick_reply_message(self, "confirm your video", quick_replies)
+
       when :message_completed
         quick_reply_init_pay = QuickReply.new({title: 'Ok', payload: 'INIT_PAY'})
         quick_reply_end_conv = QuickReply.new({title: 'No', payload: 'END_CONV'})
@@ -174,7 +204,7 @@ class User < ActiveRecord::Base
     case target_type
       when :CLB
         self.celeb = Celeb.find(target_id)
-        self.save!
+        save!
         Waikiki::MessageSender.send_text_message(self, "welcome celeb!")
 
       when :MSG
@@ -205,7 +235,7 @@ class User < ActiveRecord::Base
       msg = current_message
       msg.text = text
       msg.save!
-      command(:CMPT_MSG)
+      command(:CONF_MSG)
     end
   end
 
@@ -214,7 +244,7 @@ class User < ActiveRecord::Base
       msg = current_message
       msg.video_url = video_url
       msg.save!
-      command(:CMPT_RPL)
+      command(:CONF_RPL)
     end
   end
 
