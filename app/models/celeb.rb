@@ -1,6 +1,8 @@
 class Celeb < ActiveRecord::Base
   include AASM
 
+  has_one :user
+
   enum status: {
     pending: 10,
     active: 20,

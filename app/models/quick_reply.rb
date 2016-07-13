@@ -3,7 +3,7 @@ class QuickReply
   attr_accessor :title
   attr_accessor :payload
 
-  def initialize(content_type: nil, title: nil, payload: nil)
+  def initialize(content_type: 'text', title: nil, payload: nil)
     @content_type = content_type
     @title = title
     @payload = payload

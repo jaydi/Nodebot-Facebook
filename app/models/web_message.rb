@@ -15,22 +15,18 @@ class WebMessage < ActiveRecord::Base
   def process_message
     user = current_user
     case message_type
-      when self.class.message_types[:text]
-        echo(user)
-      when self.class.message_types[:quick_reply]
-        case payload
-          when 'A'
-            # TODO
-        end
-      when self.class.message_types[:image]
-        echo_image(user)
-      when self.class.message_types[:postback]
-        case payload
-          when 'A'
-            # TODO
-        end
       when self.class.message_types[:optin]
-        echo_optin(user)
+        target_type = payload.split('_')[0].to_sym
+        target_id = payload.split('_')[1]
+        user.optin(target_type, target_id)
+      when self.class.message_types[:quick_reply]
+        user.command(payload.to_sym)
+      when self.class.message_types[:postback]
+        user.command(payload.to_sym)
+      when self.class.message_types[:text]
+        user.text_message(text)
+      when self.class.message_types[:video]
+        user.video_message(payload)
     end
   end
 
@@ -39,33 +35,12 @@ class WebMessage < ActiveRecord::Base
   def current_user
     current_user = User.find_by_sender_id(sender_id)
     if current_user.blank?
-      # res = Waikiki::HttpPersistent.get("#{APP_CONFIG[:graph_api_url]}/#{sender_id}?fields=first_name,last_name,profile_pic,locale,timezone,gender&access_token=#{APP_CONFIG[:page_access_token]}")
       res = Waikiki::HttpPersistent.get("#{APP_CONFIG[:graph_api_url]}/#{sender_id}?fields=first_name,last_name&access_token=#{APP_CONFIG[:page_access_token]}")
       res_hash = JSON.parse(res.body)
       name = res_hash['last_name'] + res_hash['first_name']
       current_user = User.create({sender_id: sender_id, name: name})
     end
     current_user
-  end
-
-  def help_message(user)
-    quick_reply_yes = QuickReply.new({content_type: 'text', title: 'Yes', payload: 'YES'})
-    quick_reply_no = QuickReply.new({content_type: 'text', title: 'No', payload: 'NO'})
-    quick_replies = [quick_reply_yes, quick_reply_no]
-    Waikiki::MessageSender.send_quick_reply_message(user, "Hello World!", quick_replies)
-  end
-
-  def echo(user)
-    Waikiki::MessageSender.send_text_message(user, text)
-  end
-
-  def echo_image(user)
-    attachment = Attachment.new({type: 'image', payload: {url: payload}})
-    Waikiki::MessageSender.send_attachment_message(user, attachment)
-  end
-
-  def echo_optin(user)
-    Waikiki::MessageSender.send_text_message(user, payload)
   end
 
 end

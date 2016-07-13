@@ -5,6 +5,12 @@ Rails.application.routes.draw do
   get 'webhook' => 'web_messages#verify_webhook'
   post 'webhook' => 'web_messages#webhook'
 
+  resources :payments, only: [:show] do
+    member do
+      post 'callback'
+    end
+  end
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
