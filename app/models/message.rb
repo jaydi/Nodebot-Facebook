@@ -2,7 +2,7 @@ class Message < ActiveRecord::Base
   include AASM
 
   has_one :payment
-  has_one :reply, class_name: 'Message', foreign_key: :initial_message_id
+  has_one :replying_message, class_name: 'Message', foreign_key: :initial_message_id
 
   belongs_to :sender, class_name: 'User', foreign_key: :sending_user_id
   belongs_to :receiver, class_name: 'User', foreign_key: :receiving_user_id
@@ -13,20 +13,20 @@ class Message < ActiveRecord::Base
     initiated: 10,
     completed: 20,
     delivered: 30,
-    read: 40,
-    replied: 50,
-    wasted: 60,
-    canceled: 70
+    replied: 40,
+    wasted: 50,
+    canceled: 60,
+    retreated: 70
   }
 
   aasm column: :status, enum: true do
     state :initiated, initial: true
     state :completed
-    state :delivered
-    state :read
+    state :delivered, after_enter: [:mark_reply]
     state :replied
     state :wasted
     state :canceled
+    state :withdrawn
 
     event :complete do
       transitions from: :initiated, to: :completed
@@ -36,20 +36,25 @@ class Message < ActiveRecord::Base
       transitions from: :completed, to: :delivered
     end
 
-    event :read do
-      transitions from: :delivered, to: :read
-    end
-
     event :reply do
-      transitions from: :read, to: :replied
+      transitions from: :delivered, to: :replied
     end
 
     event :waste do
-      transitions from: [:delivered, :read], to: :wasted
+      transitions from: :delivered, to: :wasted
     end
 
     event :cancel do
-      transitions from: [:initiated, :completed, :delivered], to: :canceled
+      transitions from: [:initiated, :completed], to: :canceled
+    end
+
+    event :withdraw do
+      transitions from: :delivered, to: :withdrawn
     end
   end
+
+  def mark_reply
+    initial_message.andand.reply!
+  end
+
 end

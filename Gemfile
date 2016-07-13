@@ -36,6 +36,8 @@ gem 'puma'
 gem 'httpclient'
 # For state machine
 gem 'aasm'
+# AndAnd
+gem 'andand'
 
 # Use Unicorn as the app server
 # gem 'unicorn'
