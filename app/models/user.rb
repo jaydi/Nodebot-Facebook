@@ -1,9 +1,6 @@
 class User < ActiveRecord::Base
   include AASM
 
-  has_many :sent_messages, class_name: 'Message', foreign_key: :sending_user_id
-  has_many :received_messages, class_name: 'Message', foreign_key: :receiving_user_id
-
   belongs_to :celeb
 
   enum status: {
@@ -83,12 +80,7 @@ class User < ActiveRecord::Base
   end
 
   def current_message
-    @msg ||= Message.where(sending_user_id: id).last
-    if @msg.initiated? or @msg.completed?
-      @msg
-    else
-      nil
-    end
+    Message.on_progress(id).last
   end
 
   def command(com)
@@ -219,12 +211,14 @@ class User < ActiveRecord::Base
       when :RPL
         if waiting?
           original_msg = Message.find(target_id)
-          Message.create({
-                           initial_message_id: original_msg.id,
-                           sending_user_id: id,
-                           receiving_user_id: original_msg.sending_user_id
-                         })
-          command(:INIT_RPL)
+          if original_msg.delivered?
+            Message.create({
+                             initial_message_id: original_msg.id,
+                             sending_user_id: id,
+                             receiving_user_id: original_msg.sending_user_id
+                           })
+            command(:INIT_RPL)
+          end
         end
 
     end

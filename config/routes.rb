@@ -5,6 +5,10 @@ Rails.application.routes.draw do
   get 'webhook' => 'web_messages#verify_webhook'
   post 'webhook' => 'web_messages#webhook'
 
+  resources :celebs, only: [:show, :new, :create, :edit, :update, :destroy]
+
+  resources :messages, only: [:index, :show]
+
   resources :payments, only: [:show] do
     member do
       post 'callback'
