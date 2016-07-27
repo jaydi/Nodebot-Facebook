@@ -5,7 +5,15 @@ Rails.application.routes.draw do
   get 'webhook' => 'web_messages#verify_webhook'
   post 'webhook' => 'web_messages#webhook'
 
-  resources :celebs, only: [:show, :new, :create, :edit, :update, :destroy]
+  resources :user_sessions, only: [:new, :create]
+  get 'user_session/destroy' => 'user_sessions#destroy'
+
+  resources :celebs, only: [:show, :new, :create]
+  get 'celeb/edit' => 'celebs#edit'
+  put 'celebs' => 'celebs#update'
+  patch 'celebs' => 'celebs#update'
+  get 'celeb/pair' => 'celebs#pair'
+  delete 'celeb' => 'celebs#destroy'
 
   resources :messages, only: [:index, :show]
 

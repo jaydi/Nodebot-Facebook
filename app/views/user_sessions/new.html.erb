@@ -1,4 +1,4 @@
-<%= form_tag celebs_path, method: :post, id: :new_celeb_form do %>
+<%= form_tag user_sessions_path, method: :post, id: :new_user_session_form do %>
 
     <div>
       <%= label_tag :email %>
@@ -13,3 +13,7 @@
     <%= submit_tag '확인' %>
 
 <% end %>
+
+<div>
+  <a href="/celebs/new">SIGNUP</a>
+</div>

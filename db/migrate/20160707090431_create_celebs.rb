@@ -3,9 +3,9 @@ class CreateCelebs < ActiveRecord::Migration
     create_table :celebs do |t|
       t.string :email, index: true, null: false
       t.string :password, null: false
-      t.string :name, index: true, null: false
-      t.string :profile_pic, null: false
-      t.integer :price, null: false
+      t.string :name, index: true
+      t.string :profile_pic
+      t.integer :price, null: false, default: 100000
       t.integer :status, index: true, null: false
       t.timestamps null: false
     end

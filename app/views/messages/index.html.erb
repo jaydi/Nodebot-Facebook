@@ -1,5 +1,19 @@
-<% @messages.each do |m| %>
-    <div><%= m.sender.name %></div>
-    <div><%= m.text %></div>
-    <br/>
+<script>
+  function showMessage(id) {
+    window.location.href = "/messages/" + id;
+  };
+</script>
+
+<% if @celeb.pending? %>
+    <div>
+      Wait for administrator to activate you.
+    </div>
+<% else %>
+    <% @messages.each do |m| %>
+        <div onclick="showMessage(<%= m.id %>)">
+          <div><%= m.sender.name %></div>
+          <div><%= m.text %></div>
+        </div>
+        <br/>
+    <% end %>
 <% end %>

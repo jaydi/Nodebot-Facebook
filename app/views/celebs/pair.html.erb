@@ -20,14 +20,14 @@
 </script>
 
 <div>
-  <image src="<%= @model.profile_pic %>"/>
+  <image src="<%= @celeb.profile_pic %>"/>
 </div>
 <div>
-  <%= @model.name %>
+  <%= @celeb.name %>
 </div>
 <div class="fb-send-to-messenger"
      messenger_app_id="1747584958855089"
      page_id="982472715207823"
-     data-ref="MSG_<%= @model.user.id %>"
+     data-ref="CLB_<%= @celeb.id %>"
      color="blue"
      size="standard" />

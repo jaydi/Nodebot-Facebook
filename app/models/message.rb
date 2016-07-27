@@ -28,6 +28,14 @@ class Message < ActiveRecord::Base
     where(receiving_user_id: user_id).where.not(initial_message_id: nil)
   }
 
+  scope :delivered, -> {
+    where(status: statuses[:delivered])
+  }
+
+  scope :replied, -> {
+    where(status: statuses[:replied])
+  }
+
   enum status: {
     initiated: 10,
     completed: 20,
@@ -41,7 +49,7 @@ class Message < ActiveRecord::Base
   aasm column: :status, enum: true do
     state :initiated, initial: true
     state :completed
-    state :delivered, after_enter: [:mark_reply]
+    state :delivered, after_enter: [:send_if_reply]
     state :replied
     state :wasted
     state :canceled
@@ -72,8 +80,18 @@ class Message < ActiveRecord::Base
     end
   end
 
-  def mark_reply
-    initial_message.andand.reply!
+  def reply?
+    !initial_message.blank?
   end
+
+  def send_if_reply
+    if reply?
+      initial_message.reply!
+      Waikiki::MessageSender.send_text_message(receiver, "Reply arrived from #{sender.celeb.name}")
+      # TODO send video
+    end
+  end
+
+
 
 end

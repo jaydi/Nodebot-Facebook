@@ -1,1 +1,10 @@
-<div>Pay <%= @payment.pay_amount %></div>
+<div id="payment-test">Pay <%= @payment.pay_amount %></div>
+
+<script>
+  $("#payment-test").click(function() {
+    $.post("<%= @payment.id %>/callback", function(data) {
+      console.log(data);
+      alert("payment success");
+    });
+  });
+</script>
