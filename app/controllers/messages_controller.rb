@@ -1,7 +1,7 @@
 class MessagesController < ApplicationController
 
   def index
-    @messages = Message.initials_received_by(@celeb.user.id).delivered
+    @messages = Message.received_by(@celeb.user.id).delivered.initials
   end
 
   def show

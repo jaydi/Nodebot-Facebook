@@ -1,4 +1,9 @@
 class Message < ActiveRecord::Base
+
+  def my_logger
+    @@my_logger ||= ::Logger.new("#{Rails.root}/log/#{Rails.env}_#{self.class.name.underscore}.log")
+  end
+
   include AASM
 
   has_one :payment
@@ -8,24 +13,24 @@ class Message < ActiveRecord::Base
   belongs_to :receiver, class_name: 'User', foreign_key: :receiving_user_id
   belongs_to :initial_message, class_name: 'Message', foreign_key: :initial_message_id
 
+  scope :initials, -> {
+    where(initial_message_id: nil)
+  }
+
+  scope :replies, -> {
+    where.not(initial_message_id: nil)
+  }
+
+  scope :sent_by, ->(user_id) {
+    where(sending_user_id: user_id)
+  }
+
+  scope :received_by, ->(user_id) {
+    where(receiving_user_id: user_id)
+  }
+
   scope :on_progress, ->(user_id) {
     where(sending_user_id: user_id).where(status: [statuses[:initiated], statuses[:completed]])
-  }
-
-  scope :initials_sent_by, ->(user_id) {
-    where(sending_user_id: user_id).where(initial_message_id: nil)
-  }
-
-  scope :initials_received_by, ->(user_id) {
-    where(receiving_user_id: user_id).where(initial_message_id: nil)
-  }
-
-  scope :replies_sent_by, ->(user_id) {
-    where(sending_user_id: user_id).where.not(initial_message_id: nil)
-  }
-
-  scope :replies_received_by, ->(user_id) {
-    where(receiving_user_id: user_id).where.not(initial_message_id: nil)
   }
 
   scope :delivered, -> {
@@ -34,6 +39,10 @@ class Message < ActiveRecord::Base
 
   scope :replied, -> {
     where(status: statuses[:replied])
+  }
+
+  scope :timed_outs, -> {
+    where(status: statuses[:delivered]).where(initial_message_id: nil).where('updated_at < ?', 1.day.ago.beginning_of_day)
   }
 
   enum status: {
@@ -51,7 +60,7 @@ class Message < ActiveRecord::Base
     state :completed
     state :delivered, after_enter: [:send_if_reply]
     state :replied
-    state :wasted
+    state :wasted, after_enter: [:refund]
     state :canceled
     state :withdrawn
 
@@ -80,18 +89,26 @@ class Message < ActiveRecord::Base
     end
   end
 
-  def reply?
+  def is_reply?
     !initial_message.blank?
   end
 
   def send_if_reply
-    if reply?
+    if is_reply?
       initial_message.reply!
       Waikiki::MessageSender.send_text_message(receiver, "Reply arrived from #{sender.celeb.name}")
-      Waikiki::MessageSender.send_attachment_message(receiver, Attachment.new({type: 'video', payload: video_url}))
+      begin
+        Waikiki::MessageSender.send_attachment_message(receiver, Attachment.new({type: 'video', payload: video_url}))
+      rescue HTTPClient::TimeoutError
+        my_logger.error "Message with message id #{self.id} raised an error with http-timeout. However proceeded anyway."
+      end
     end
   end
 
-
+  def refund
+    unless payment.blank?
+      payment.request_refund!
+    end
+  end
 
 end

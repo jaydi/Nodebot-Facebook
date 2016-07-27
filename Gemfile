@@ -38,6 +38,8 @@ gem 'httpclient'
 gem 'aasm'
 # AndAnd
 gem 'andand'
+# For scheduled jobs
+gem 'whenever'
 
 # Use Unicorn as the app server
 # gem 'unicorn'

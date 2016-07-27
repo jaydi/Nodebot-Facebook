@@ -1,5 +1,5 @@
 class UserSessionsController < ApplicationController
-  layout 'application_signin'
+  layout 'application_blank'
   skip_before_action :current_celeb, except: [:destroy]
 
   def new

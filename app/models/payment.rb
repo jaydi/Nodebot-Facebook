@@ -20,9 +20,9 @@ class Payment < ActiveRecord::Base
     state :pay_cancel
     state :pay_fail
     state :pay_success, after_enter: :notify_pay_success
-    state :refund_request
+    state :refund_request, after_enter: :send_refund_request
     state :refund_fail
-    state :refund_success
+    state :refund_success, after_enter: :notify_refund_success
 
     event :cancel_pay do
       transitions from: :pay_request, to: :pay_cancel
@@ -51,6 +51,14 @@ class Payment < ActiveRecord::Base
 
   def notify_pay_success
     self.sender.command(:CMPT_PAY)
+  end
+
+  def notify_refund_success
+    Waikiki::MessageSender.send_text_message(self.sender, "#{message.text}\n\n above message wasted, payment refunded")
+  end
+
+  def send_refund_request
+    # TODO
   end
 
 end

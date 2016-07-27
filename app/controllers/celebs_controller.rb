@@ -1,4 +1,5 @@
 class CelebsController < ApplicationController
+  layout 'application_blank', only: [:show]
   skip_before_action :current_celeb, only: [:show, :new, :create]
 
   def show
