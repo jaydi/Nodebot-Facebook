@@ -88,7 +88,7 @@ class Message < ActiveRecord::Base
     if reply?
       initial_message.reply!
       Waikiki::MessageSender.send_text_message(receiver, "Reply arrived from #{sender.celeb.name}")
-      # TODO send video
+      Waikiki::MessageSender.send_attachment_message(receiver, Attachment.new({type: 'video', payload: video_url}))
     end
   end
 

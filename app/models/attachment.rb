@@ -4,6 +4,6 @@ class Attachment
 
   def initialize(type: nil, payload: nil)
     @type = type
-    @payload = payload
+    @payload = {url: payload}
   end
 end
