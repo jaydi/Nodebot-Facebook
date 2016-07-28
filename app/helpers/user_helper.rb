@@ -79,12 +79,12 @@ module UserHelper
   end
 
   def notify_reply(reply_msg)
-    Waikiki::MessageSender.send_text_message(self, "Reply arrived from #{reply_msg.sender.celeb.name}")
     begin
       Waikiki::MessageSender.send_attachment_message(self, Attachment.new({type: 'video', payload: reply_msg.video_url}))
     rescue HTTPClient::TimeoutError
       my_logger.error "reply message #{reply_msg.id} raised an error with http-timeout"
     end
+    Waikiki::MessageSender.send_text_message(self, "Reply arrived from #{reply_msg.sender.celeb.name}")
   end
 
   def notify_refund(refund_payment)
