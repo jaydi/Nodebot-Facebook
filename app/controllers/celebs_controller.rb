@@ -12,6 +12,9 @@ class CelebsController < ApplicationController
   def create
     celeb = Celeb.new(celeb_params)
     if celeb.save!
+      # TODO session and cookie
+      session[:celeb_id] = celeb.id
+      
       redirect_to celeb_edit_path
     else
       redirect_to new_celeb_path
