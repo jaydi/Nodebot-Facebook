@@ -24,7 +24,7 @@ class User < ActiveRecord::Base
   }
 
   aasm column: :status, enum: true do
-    state :waiting, initial: true
+    state :waiting, initial: true, after_enter: [:state_enter_action]
     state :message_initiated, after_enter: [:state_enter_action, :state_enter_guide]
     state :reply_initiated, after_enter: [:state_enter_action, :state_enter_guide]
     state :messaging, after_enter: [:state_enter_action, :state_enter_guide]
