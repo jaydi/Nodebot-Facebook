@@ -86,7 +86,15 @@ class User < ActiveRecord::Base
   end
 
   def current_message
-    @message ||= Message.on_progress(id).last
+    unless @message.blank?
+      if @message.initiated? or @message.completed?
+        @message
+      else
+        @message = nil
+      end
+    else
+      @message = Message.on_progress(id).last
+    end
   end
 
   def optin(target_type, target_id)
