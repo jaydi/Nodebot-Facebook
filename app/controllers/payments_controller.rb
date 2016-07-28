@@ -14,13 +14,6 @@ class PaymentsController < ApplicationController
     elsif payment.refund_request?
       payment.succeed_refund!
     end
-
-    # case params[:result].to_sym
-    #   when :pay_fail
-    #   when :pay_success
-    #     payment.succeed_pay!
-    # end
-
     render :nothing => true, :status => 200
   end
 

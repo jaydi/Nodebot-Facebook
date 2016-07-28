@@ -20,7 +20,7 @@ class Payment < ActiveRecord::Base
     state :pay_cancel
     state :pay_fail
     state :pay_success, after_enter: :notify_pay_success
-    state :refund_request, after_enter: :send_refund_request
+    state :refund_request, after_enter: :send_request
     state :refund_fail
     state :refund_success, after_enter: :notify_refund_success
 
@@ -49,8 +49,8 @@ class Payment < ActiveRecord::Base
     end
   end
 
-  def send_refund_request
-    Waikiki::HttpPersistent.get("http://ibiza-sandbox.s2.krane.9rum.cc/web_messages/test?payment_id=#{id}", nil)
+  def send_request
+    PayRequestJob.perform_later(id)
   end
 
   def notify_pay_success
