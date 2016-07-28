@@ -1,13 +1,8 @@
 class Message < ActiveRecord::Base
-
-  def my_logger
-    @@my_logger ||= ::Logger.new("#{Rails.root}/log/#{Rails.env}_#{self.class.name.underscore}.log")
-  end
-
   include AASM
 
   has_one :payment
-  has_one :replying_message, class_name: 'Message', foreign_key: :initial_message_id
+  has_one :reply_message, class_name: 'Message', foreign_key: :initial_message_id
 
   belongs_to :sender, class_name: 'User', foreign_key: :sending_user_id
   belongs_to :receiver, class_name: 'User', foreign_key: :receiving_user_id
@@ -58,8 +53,8 @@ class Message < ActiveRecord::Base
   aasm column: :status, enum: true do
     state :initiated, initial: true
     state :completed
-    state :delivered, after_enter: [:send_if_reply]
-    state :replied
+    state :delivered, after_enter: [:mark_if_reply]
+    state :replied, after_enter: [:notify_reply]
     state :wasted, after_enter: [:refund]
     state :canceled
     state :withdrawn
@@ -89,26 +84,20 @@ class Message < ActiveRecord::Base
     end
   end
 
-  def is_reply?
+  def reply?
     !initial_message.blank?
   end
 
-  def send_if_reply
-    if is_reply?
-      initial_message.reply!
-      Waikiki::MessageSender.send_text_message(receiver, "Reply arrived from #{sender.celeb.name}")
-      begin
-        Waikiki::MessageSender.send_attachment_message(receiver, Attachment.new({type: 'video', payload: video_url}))
-      rescue HTTPClient::TimeoutError
-        my_logger.error "Message with message id #{self.id} raised an error with http-timeout. However proceeded anyway."
-      end
-    end
+  def mark_if_reply
+    initial_message.reply! if reply?
+  end
+
+  def notify_reply
+    sender.notify_reply(reply_message)
   end
 
   def refund
-    unless payment.blank?
-      payment.request_refund!
-    end
+    payment.request_refund! unless payment.blank?
   end
 
 end

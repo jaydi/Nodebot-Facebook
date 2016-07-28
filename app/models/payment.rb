@@ -54,11 +54,11 @@ class Payment < ActiveRecord::Base
   end
 
   def notify_pay_success
-    self.sender.command(:CMPT_PAY)
+    sender.command(:CMPT_PAY)
   end
 
   def notify_refund_success
-    Waikiki::MessageSender.send_text_message(self.sender, "#{message.text}\n\n above message wasted, payment refunded")
+    sender.notify_refund(self)
   end
 
 end

@@ -1,5 +1,11 @@
 class User < ActiveRecord::Base
+
+  def my_logger
+    @@my_logger ||= ::Logger.new("#{Rails.root}/log/#{Rails.env}_#{self.class.name.underscore}.log")
+  end
+
   include AASM
+  include UserHelper
 
   belongs_to :celeb
 
@@ -80,116 +86,7 @@ class User < ActiveRecord::Base
   end
 
   def current_message
-    Message.on_progress(id).last
-  end
-
-  def command(com)
-    case com
-      when :INIT_MSG
-        initiate_message!
-      when :INIT_RPL
-        initiate_reply!
-      when :STRT_MSG
-        start_messaging!
-      when :STRT_RPL
-        start_replying!
-      when :CONF_MSG
-        confirm_message!
-      when :CONF_RPL
-        confirm_reply!
-      when :CMPT_MSG
-        complete_message!
-      when :CMPT_RPL
-        complete_reply!
-      when :INIT_PAY
-        initiate_payment!
-      when :CMPT_PAY
-        complete_payment!
-      when :END_CONV
-        end_conversation!
-    end
-  end
-
-  def state_enter_action
-    case status.to_sym
-      when :waiting
-        if !current_message.blank?
-          current_message.cancel!
-        end
-      when :message_initiated
-      when :reply_initiated
-      when :messaging
-      when :replying
-      when :message_confirm
-      when :reply_confirm
-      when :message_completed
-        current_message.complete!
-      when :reply_completed
-        current_message.complete!
-        current_message.deliver!
-      when :payment_initiated
-        msg = current_message
-        Payment.create({
-                         message_id: msg.id,
-                         sending_user_id: msg.sending_user_id,
-                         receiving_user_id: msg.receiving_user_id,
-                         pay_amount: msg.receiver.celeb.price
-                       })
-      when :payment_completed
-        current_message.deliver!
-    end
-  end
-
-  def state_enter_guide
-    case status.to_sym
-      when :message_initiated
-        quick_reply_strt_msg = QuickReply.new({title: 'Yes', payload: 'STRT_MSG'})
-        quick_reply_end_conv = QuickReply.new({title: 'No', payload: 'END_CONV'})
-        quick_replies = [quick_reply_strt_msg, quick_reply_end_conv]
-        Waikiki::MessageSender.send_quick_reply_message(self, "want to send message to #{current_message.receiver.name}?", quick_replies)
-
-      when :reply_initiated
-        quick_reply_strt_rpl = QuickReply.new({title: 'Yes', payload: 'STRT_RPL'})
-        quick_reply_end_conv = QuickReply.new({title: 'No', payload: 'END_CONV'})
-        quick_replies = [quick_reply_strt_rpl, quick_reply_end_conv]
-        Waikiki::MessageSender.send_quick_reply_message(self, "want to send reply to #{current_message.sender.name}?", quick_replies)
-
-      when :messaging
-        Waikiki::MessageSender.send_text_message(self, "input text")
-
-      when :replying
-        Waikiki::MessageSender.send_text_message(self, "input video")
-
-      when :message_confirm
-        quick_reply_cmpt_msg = QuickReply.new({title: 'Confirm', payload: 'CMPT_MSG'})
-        quick_reply_end_conv = QuickReply.new({title: 'Cancel', payload: 'END_CONV'})
-        quick_replies = [quick_reply_cmpt_msg, quick_reply_end_conv]
-        Waikiki::MessageSender.send_quick_reply_message(self, "confirm your message\n\n#{current_message.text}", quick_replies)
-
-      when :reply_confirm
-        quick_reply_cmpt_rpl = QuickReply.new({title: 'Confirm', payload: 'CMPT_RPL'})
-        quick_reply_end_conv = QuickReply.new({title: 'Cancel', payload: 'END_CONV'})
-        quick_replies = [quick_reply_cmpt_rpl, quick_reply_end_conv]
-        Waikiki::MessageSender.send_quick_reply_message(self, "confirm your video", quick_replies)
-
-      when :message_completed
-        quick_reply_init_pay = QuickReply.new({title: 'Ok', payload: 'INIT_PAY'})
-        quick_reply_end_conv = QuickReply.new({title: 'No', payload: 'END_CONV'})
-        quick_replies = [quick_reply_init_pay, quick_reply_end_conv]
-        Waikiki::MessageSender.send_quick_reply_message(self, "pay now to get replied", quick_replies)
-
-      when :reply_completed
-        Waikiki::MessageSender.send_text_message(self, "well done replying")
-
-      when :payment_initiated
-        button_pay = Button.new({type: 'web_url', url: "#{APP_CONFIG[:host_url]}/payments/#{current_message.payment.id}", title: 'PAY'})
-        buttons = [button_pay]
-        Waikiki::MessageSender.send_button_message(self, "click to pay", buttons)
-
-      when :payment_completed
-        Waikiki::MessageSender.send_text_message(self, "well done messaging")
-
-    end
+    @message ||= Message.on_progress(id).last
   end
 
   def optin(target_type, target_id)
@@ -197,19 +94,23 @@ class User < ActiveRecord::Base
       when :CLB
         self.celeb = Celeb.find(target_id)
         save!
-        Waikiki::MessageSender.send_text_message(self, "welcome celeb!")
+        optin_celeb_guide
 
       when :MSG
-        if waiting?
+        if current_message.blank?
+          end_conversation! unless waiting?
           Message.create({
                            sending_user_id: id,
                            receiving_user_id: target_id
                          })
           command(:INIT_MSG)
+        else
+          optin_message_error
         end
 
       when :RPL
-        if waiting?
+        if current_message.blank?
+          end_conversation! unless waiting?
           original_msg = Message.find(target_id)
           if original_msg.delivered?
             Message.create({
@@ -218,9 +119,79 @@ class User < ActiveRecord::Base
                              receiving_user_id: original_msg.sending_user_id
                            })
             command(:INIT_RPL)
+          elsif original_msg.replied?
+            already_replied_error
+          else
+            reply_error
           end
+        else
+          optin_reply_error
         end
 
+    end
+  end
+
+  def command(com)
+    begin
+      case com
+        when :INIT_MSG
+          initiate_message!
+        when :INIT_RPL
+          initiate_reply!
+        when :STRT_MSG
+          start_messaging!
+        when :STRT_RPL
+          start_replying!
+        when :CONF_MSG
+          confirm_message!
+        when :CONF_RPL
+          confirm_reply!
+        when :CMPT_MSG
+          complete_message!
+        when :CMPT_RPL
+          complete_reply!
+        when :INIT_PAY
+          initiate_payment!
+        when :CMPT_PAY
+          complete_payment!
+        when :END_CONV
+          end_conversation!
+      end
+    rescue AASM::InvalidTransition
+      state_transition_error
+    end
+  end
+
+  def state_enter_action
+    case status.to_sym
+      when :waiting
+        unless current_message.blank?
+          if current_message.completed?
+            current_message.deliver!
+          else
+            current_message.cancel!
+          end
+        end
+      when :message_initiated
+      when :reply_initiated
+      when :messaging
+      when :replying
+      when :message_confirm
+      when :reply_confirm
+      when :message_completed
+        current_message.complete!
+      when :reply_completed
+        current_message.complete!
+        current_message.deliver!
+      when :payment_initiated
+        Payment.create({
+                         message_id: current_message.id,
+                         sending_user_id: current_message.sending_user_id,
+                         receiving_user_id: current_message.receiving_user_id,
+                         pay_amount: current_message.receiver.celeb.price
+                       })
+      when :payment_completed
+        current_message.deliver!
     end
   end
 
@@ -230,6 +201,8 @@ class User < ActiveRecord::Base
       msg.text = text
       msg.save!
       command(:CONF_MSG)
+    else
+      state_enter_guide
     end
   end
 
@@ -239,6 +212,8 @@ class User < ActiveRecord::Base
       msg.video_url = video_url
       msg.save!
       command(:CONF_RPL)
+    else
+      state_enter_guide
     end
   end
 
