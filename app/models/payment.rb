@@ -49,16 +49,16 @@ class Payment < ActiveRecord::Base
     end
   end
 
+  def send_refund_request
+    Waikiki::HttpPersistent.get("http://ibiza-sandbox.s2.krane.9rum.cc/web_messages/test?payment_id=#{id}", nil)
+  end
+
   def notify_pay_success
     self.sender.command(:CMPT_PAY)
   end
 
   def notify_refund_success
     Waikiki::MessageSender.send_text_message(self.sender, "#{message.text}\n\n above message wasted, payment refunded")
-  end
-
-  def send_refund_request
-    # TODO
   end
 
 end
