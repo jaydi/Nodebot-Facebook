@@ -1,5 +1,5 @@
 class UserSessionsController < ApplicationController
-  layout 'application_blank'
+  layout 'application'
   skip_before_action :current_celeb, except: [:destroy]
 
   def new
@@ -8,14 +8,16 @@ class UserSessionsController < ApplicationController
   def create
     celeb = Celeb.where(email: params[:email]).first
 
-    unless celeb
+    if celeb.blank?
       # TODO ERROR
       redirect_to new_user_session_path
+      return
     end
 
     unless celeb.password == params[:password]
       # TODO ERROR
       redirect_to new_user_session_path
+      return
     end
 
     session[:celeb_id] = celeb.id
