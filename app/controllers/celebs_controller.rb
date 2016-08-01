@@ -1,20 +1,19 @@
 class CelebsController < ApplicationController
   layout 'application_blank', only: [:show]
-  skip_before_action :current_celeb, only: [:show, :new, :create]
+  before_action :check_celeb, except: [:show, :new, :create]
 
   def show
     @model = Celeb.find(params[:id])
   end
 
   def new
+    redirect_to messages_path unless @celeb.blank?
   end
 
   def create
     celeb = Celeb.new(celeb_params)
     if celeb.save!
-      # TODO session and cookie
-      session[:celeb_id] = celeb.id
-
+      create_session(celeb)
       redirect_to celeb_edit_path
     else
       redirect_to new_celeb_path

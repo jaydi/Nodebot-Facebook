@@ -1,6 +1,6 @@
 class UserSessionsController < ApplicationController
   layout 'application'
-  skip_before_action :current_celeb, except: [:destroy]
+  before_action :check_celeb, only: [:destroy]
 
   def new
   end
@@ -20,17 +20,13 @@ class UserSessionsController < ApplicationController
       return
     end
 
-    session[:celeb_id] = celeb.id
-
-    if celeb.user.blank?
-      redirect_to celeb_pair_path
-    else
-      redirect_to messages_path
-    end
+    create_session(celeb)
+    redirect_to messages_path
   end
 
   def destroy
     destroy_session
+    redirect_to root_path
   end
 
 end

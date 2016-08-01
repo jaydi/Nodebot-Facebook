@@ -14,5 +14,5 @@
 //= require jquery_ujs
 //= require turbolinks
 //= require bootstrap.min
-//= require freelancer.min
+//= require freelancer
 //= require_tree .

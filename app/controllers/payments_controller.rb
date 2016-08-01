@@ -1,6 +1,5 @@
 class PaymentsController < ApplicationController
   layout 'application_blank'
-  skip_before_action :current_celeb
 
   def show
     @payment = Payment.find(params[:id])

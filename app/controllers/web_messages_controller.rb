@@ -1,5 +1,4 @@
 class WebMessagesController < ApplicationController
-  skip_before_action :current_celeb
 
   def my_logger
     @@my_logger ||= ::Logger.new("#{Rails.root}/log/#{Rails.env}_#{self.class.name.underscore}.log")
