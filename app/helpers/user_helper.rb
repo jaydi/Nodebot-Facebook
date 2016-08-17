@@ -1,81 +1,77 @@
 module UserHelper
 
   def optin_celeb_guide
-    Waikiki::MessageSender.send_text_message(self, "welcome celeb!")
+    Waikiki::MessageSender.send_text_message(self, "메신저와 연결되었습니다.")
   end
 
   def optin_message_error
-    Waikiki::MessageSender.send_text_message(self, "message on process")
+    Waikiki::MessageSender.send_text_message(self, "작성중인 메시지가 있습니다.")
     state_enter_guide
   end
 
   def optin_reply_error
-    Waikiki::MessageSender.send_text_message(self, "reply on process")
+    Waikiki::MessageSender.send_text_message(self, "작성중인 답장이 있습니다.")
     state_enter_guide
   end
 
   def already_replied_error
-    Waikiki::MessageSender.send_text_message(self, "already replied")
+    Waikiki::MessageSender.send_text_message(self, "이미 답장한 메시지입니다.")
   end
 
   def reply_error
-    Waikiki::MessageSender.send_text_message(self, "reply error")
+    Waikiki::MessageSender.send_text_message(self, "답장 전달에 실패했습니다.")
   end
 
   def state_enter_guide
     case status.to_sym
       when :message_initiated
-        quick_reply_strt_msg = QuickReply.new({title: 'Yes', payload: 'STRT_MSG'})
-        quick_reply_end_conv = QuickReply.new({title: 'No', payload: 'END_CONV'})
+        quick_reply_strt_msg = QuickReply.new({title: '네', payload: 'STRT_MSG'})
+        quick_reply_end_conv = QuickReply.new({title: '아니오', payload: 'END_CONV'})
         quick_replies = [quick_reply_strt_msg, quick_reply_end_conv]
-        Waikiki::MessageSender.send_quick_reply_message(self, "want to send message to #{current_message.receiver.name}?", quick_replies)
+        Waikiki::MessageSender.send_quick_reply_message(self, "#{current_message.receiver.celeb.name}님에게 메시지를 보내시겠어요?", quick_replies)
 
       when :reply_initiated
-        quick_reply_strt_rpl = QuickReply.new({title: 'Yes', payload: 'STRT_RPL'})
-        quick_reply_end_conv = QuickReply.new({title: 'No', payload: 'END_CONV'})
+        quick_reply_strt_rpl = QuickReply.new({title: '네', payload: 'STRT_RPL'})
+        quick_reply_end_conv = QuickReply.new({title: '아니오', payload: 'END_CONV'})
         quick_replies = [quick_reply_strt_rpl, quick_reply_end_conv]
-        Waikiki::MessageSender.send_quick_reply_message(self, "want to send reply to #{current_message.sender.name}?", quick_replies)
+        Waikiki::MessageSender.send_quick_reply_message(self, "#{current_message.sender.name}에게 답장하시겠어요?", quick_replies)
 
       when :messaging
-        Waikiki::MessageSender.send_text_message(self, "input text")
+        Waikiki::MessageSender.send_text_message(self, "하고싶은 말을 입력해주세요.")
 
       when :replying
-        Waikiki::MessageSender.send_text_message(self, "input video")
+        Waikiki::MessageSender.send_text_message(self, "15초 이내의 동영상으로 답장해주세요.")
 
       when :message_confirm
-        quick_reply_cmpt_msg = QuickReply.new({title: 'Confirm', payload: 'CMPT_MSG'})
-        quick_reply_end_conv = QuickReply.new({title: 'Cancel', payload: 'END_CONV'})
+        quick_reply_cmpt_msg = QuickReply.new({title: '확인', payload: 'CMPT_MSG'})
+        quick_reply_end_conv = QuickReply.new({title: '취소', payload: 'END_CONV'})
         quick_replies = [quick_reply_cmpt_msg, quick_reply_end_conv]
-        Waikiki::MessageSender.send_quick_reply_message(self, "confirm your message\n\n#{current_message.text}", quick_replies)
+        Waikiki::MessageSender.send_quick_reply_message(self, "입력한 메시지를 확인해주세요\n\n#{current_message.text}", quick_replies)
 
       when :reply_confirm
-        quick_reply_cmpt_rpl = QuickReply.new({title: 'Confirm', payload: 'CMPT_RPL'})
-        quick_reply_end_conv = QuickReply.new({title: 'Cancel', payload: 'END_CONV'})
+        quick_reply_cmpt_rpl = QuickReply.new({title: '확인', payload: 'CMPT_RPL'})
+        quick_reply_end_conv = QuickReply.new({title: '취소', payload: 'END_CONV'})
         quick_replies = [quick_reply_cmpt_rpl, quick_reply_end_conv]
-        Waikiki::MessageSender.send_quick_reply_message(self, "confirm your video", quick_replies)
+        Waikiki::MessageSender.send_quick_reply_message(self, "답장 동영상을 전달합니다.", quick_replies)
 
       when :message_completed
-        quick_reply_init_pay = QuickReply.new({title: 'Ok', payload: 'INIT_PAY'})
-        quick_reply_end_conv = QuickReply.new({title: 'No', payload: 'END_CONV'})
+        quick_reply_init_pay = QuickReply.new({title: '그래요', payload: 'INIT_PAY'})
+        quick_reply_end_conv = QuickReply.new({title: '됐어요', payload: 'END_CONV'})
         quick_replies = [quick_reply_init_pay, quick_reply_end_conv]
-        Waikiki::MessageSender.send_quick_reply_message(self, "pay now to get replied", quick_replies)
+        Waikiki::MessageSender.send_quick_reply_message(self, "지금 결제하면 답장을 받을 수 있어요! 만약 내일 자정까지 답장이 없으면, 결제한 금액은 전액 환불됩니다. 결제하고 답장을 받아보시겠어요?", quick_replies)
 
       when :reply_completed
-        Waikiki::MessageSender.send_text_message(self, "well done replying")
+        Waikiki::MessageSender.send_text_message(self, "답장을 전달했습니다. :)")
 
       when :payment_initiated
         button_pay = Button.new({type: 'web_url', url: "#{APP_CONFIG[:host_url]}/payments/#{current_message.payment.id}", title: 'PAY'})
         buttons = [button_pay]
-        Waikiki::MessageSender.send_button_message(self, "click to pay", buttons)
+        Waikiki::MessageSender.send_button_message(self, "아래 링크에서 결제를 진행해주세요.", buttons)
 
       when :payment_completed
-        Waikiki::MessageSender.send_text_message(self, "well done messaging")
+        Waikiki::MessageSender.send_text_message(self, "메시지를 전달했습니다. :)")
 
     end
-  end
-
-  def state_transition_error
-    Waikiki::MessageSender.send_text_message(self, "invalid transition")
   end
 
   def notify_reply(reply_msg)
@@ -84,11 +80,15 @@ module UserHelper
     rescue HTTPClient::TimeoutError
       my_logger.error "reply message #{reply_msg.id} raised an error with http-timeout"
     end
-    Waikiki::MessageSender.send_text_message(self, "Reply arrived from #{reply_msg.sender.celeb.name}")
+    Waikiki::MessageSender.send_text_message(self, "#{reply_msg.sender.celeb.name}에게서 답장을 받았습니다!")
   end
 
   def notify_refund(refund_payment)
-    Waikiki::MessageSender.send_text_message(self, "#{refund_payment.message.text}\n\n above message wasted, #{refund_payment.pay_amount} refunded")
+    Waikiki::MessageSender.send_text_message(self, "#{refund_payment.message.text}\n\n#{refund_payment.message.receiver.celeb.name}에게 보낸 위 메시지에 대해 답장을 받지 못했습니다.. #{refund_payment.pay_amount}원 환불완료.")
+  end
+
+  def state_transition_error
+    Waikiki::MessageSender.send_text_message(self, "수행할 수 없는 명령입니다.")
   end
 
 end

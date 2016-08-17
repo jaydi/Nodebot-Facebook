@@ -18,6 +18,7 @@ gem 'coffee-rails', '~> 4.1.0'
 
 # For console
 gem 'pry'
+gem 'pry-nav'
 gem 'pry-rails'
 
 # Use jquery as the JavaScript library
