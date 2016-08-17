@@ -2,7 +2,7 @@ class CreateCelebs < ActiveRecord::Migration
   def change
     create_table :celebs do |t|
       t.string :email, index: true, null: false
-      t.string :password, null: false
+      t.string :encrypted_password, null: false
       t.string :name, index: true
       t.string :profile_pic
       t.integer :price, null: false, default: 100000

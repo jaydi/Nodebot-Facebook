@@ -45,6 +45,8 @@ gem 'aasm'
 gem 'andand'
 # For scheduled jobs
 gem 'whenever'
+# For encryption
+gem 'attr_encrypted'
 
 # Use Unicorn as the app server
 # gem 'unicorn'

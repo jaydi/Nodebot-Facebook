@@ -3,8 +3,8 @@
   <div class="container">
 
     <div class="row">
-      <div class="col-lg-12 text-center">
-        <image src="<%= @model.profile_pic %>"/>
+      <div class="col-lg-12">
+        <img class="img-responsive img-centered img-circle img-profile" src="<%= @model.profile_pic %>" alt="">
       </div>
     </div>
 
@@ -15,8 +15,9 @@
     </div>
 
     <div class="row">
-      <div class="col-lg-12 text-center">
-        <div style="padding-left: 133.61px;">
+      <div class="col-lg-12">
+        <div class="fb-messenger-button">
+
           <script>
             window.fbAsyncInit = function () {
               FB.init({
@@ -37,12 +38,13 @@
               fjs.parentNode.insertBefore(js, fjs);
             }(document, 'script', 'facebook-jssdk'));
           </script>
-          <div class="fb-send-to-messenger text-center"
+          <div class="fb-send-to-messenger"
                messenger_app_id="1747584958855089"
                page_id="982472715207823"
                data-ref="MSG_<%= @model.user.id %>"
                color="blue"
-               size="standard" />
+               size="standard"/>
+
         </div>
       </div>
     </div>

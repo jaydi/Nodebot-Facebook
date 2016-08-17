@@ -1,10 +1,21 @@
-<div id="payment-test">Pay <%= @payment.pay_amount %></div>
+<section id="sign-up" class="first">
 
-<script>
-  $("#payment-test").click(function() {
-    $.post("<%= @payment.id %>/callback", function(data) {
-      console.log(data);
-      alert("payment success");
-    });
-  });
-</script>
+  <div class="container">
+
+    <div class="row">
+      <div id="payment-test" class="col-lg-12 text-center">
+        Pay <%= @payment.pay_amount %>
+      </div>
+      <script>
+        $("#payment-test").click(function() {
+          $.post("<%= @payment.id %>/callback", function(data) {
+            console.log(data);
+            alert("payment success");
+          });
+        });
+      </script>
+    </div>
+
+  </div>
+
+</section>

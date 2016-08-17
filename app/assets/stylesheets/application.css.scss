@@ -1,3 +1,21 @@
 @import "bootstrap.min";
 @import "font-awesome.min";
 @import "freelancer";
+
+.fb-messenger-button {
+  padding-left: 508.805px;
+}
+@media (max-width: 767px) {
+  .fb-messenger-button {
+    padding-left: 123.805px;
+  }
+}
+
+.img-profile {
+  width: 128px;
+  height: 128px;
+}
+
+.img-input {
+  cursor: pointer;
+}

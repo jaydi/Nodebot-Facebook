@@ -8,12 +8,17 @@ class ApplicationController < ActionController::Base
       # TODO celeb = Celeb.find_by_token(cookies[:celeb_token])
       # TODO session[:celeb_id] = celeb.id
       # TODO celeb
+    else
+      raise ActiveRecord::RecordNotFound
     end
   end
 
   def check_celeb
-    @celeb ||= current_celeb
-    redirect_to new_user_session_path if @celeb.blank?
+    begin
+      @celeb ||= current_celeb
+    rescue ActiveRecord::RecordNotFound
+      redirect_to new_user_session_path if @celeb.blank?
+    end
   end
 
   def check_celeb_status

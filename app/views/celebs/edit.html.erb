@@ -14,18 +14,19 @@
 
         <%= form_tag '/celebs', method: :put, id: :edit_celeb_form, multipart: true do %>
 
+            <input type="file" style="margin-left: 3000px;" name="profile" required data-validation-required-message="Please enter your profile.">
+
             <div class="row control-group">
-              <div class="form-group col-xs-12 floating-label-form-group controls">
-                <img class="img-responsive" src="images/profile.png" alt="">
-                <input type="file" class="form-control" name="profile" required data-validation-required-message="Please enter your profile.">
+              <div class="form-group col-xs-6 col-xs-offset-3 floating-label-form-group controls">
+                <img class="img-responsive img-centered img-circle img-profile img-input" src="/images/profile.png" alt="">
                 <p class="help-block text-danger"></p>
               </div>
             </div>
 
             <div class="row control-group">
-              <div class="form-group col-xs-12 floating-label-form-group controls">
-                <label>이름</label>
-                <input type="text" class="form-control" placeholder="Name" name="name" required data-validation-required-message="Please enter your name.">
+              <div class="form-group col-xs-6 col-xs-offset-3 floating-label-form-group controls">
+                <label>닉네임</label>
+                <input type="text" class="form-control" placeholder="Nickname" name="name" required data-validation-required-message="Please enter your nickname.">
                 <p class="help-block text-danger"></p>
               </div>
             </div>
@@ -34,7 +35,7 @@
 
             <div id="success"></div>
             <div class="row">
-              <div class="form-group col-xs-12">
+              <div class="form-group col-xs-6 col-xs-offset-3">
                 <button type="submit" class="btn btn-success btn-lg">확인</button>
               </div>
             </div>

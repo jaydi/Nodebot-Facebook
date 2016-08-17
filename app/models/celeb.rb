@@ -3,6 +3,8 @@ class Celeb < ActiveRecord::Base
 
   has_one :user
 
+  attr_encrypted :password, :key => APP_CONFIG[:secret_key], :algorithm => 'aes-256-cbc'
+
   enum status: {
     pending: 10,
     active: 20,
