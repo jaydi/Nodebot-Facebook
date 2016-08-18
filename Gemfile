@@ -46,7 +46,9 @@ gem 'andand'
 # For scheduled jobs
 gem 'whenever'
 # For encryption
-gem 'attr_encrypted', '~> 1.3.3'
+gem 'attr_encrypted'
+# For image storage
+gem 'cloudinary'
 
 # Use Unicorn as the app server
 # gem 'unicorn'

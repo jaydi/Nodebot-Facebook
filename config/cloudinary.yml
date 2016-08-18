@@ -1,0 +1,18 @@
+defaults: &defaults
+  cloud_name: ddi2eoisw
+  api_key: '165654973923385'
+  api_secret: 7OpV38YYGmHLje87zxJU25iOy6g
+  enhance_image_tag: true
+  static_image_support: false
+
+test:
+  <<: *defaults
+
+local:
+  <<: *defaults
+
+development:
+  <<: *defaults
+
+production:
+  <<: *defaults

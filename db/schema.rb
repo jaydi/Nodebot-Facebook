@@ -14,14 +14,15 @@
 ActiveRecord::Schema.define(version: 20160712052752) do
 
   create_table "celebs", force: :cascade do |t|
-    t.string   "email",              limit: 255,                  null: false
-    t.string   "encrypted_password", limit: 255,                  null: false
-    t.string   "name",               limit: 255
-    t.string   "profile_pic",        limit: 255
-    t.integer  "price",              limit: 4,   default: 100000, null: false
-    t.integer  "status",             limit: 4,                    null: false
-    t.datetime "created_at",                                      null: false
-    t.datetime "updated_at",                                      null: false
+    t.string   "email",                 limit: 255,                  null: false
+    t.string   "encrypted_password",    limit: 255,                  null: false
+    t.string   "encrypted_password_iv", limit: 255,                  null: false
+    t.string   "name",                  limit: 255
+    t.string   "profile_pic",           limit: 255
+    t.integer  "price",                 limit: 4,   default: 100000, null: false
+    t.integer  "status",                limit: 4,                    null: false
+    t.datetime "created_at",                                         null: false
+    t.datetime "updated_at",                                         null: false
   end
 
   add_index "celebs", ["email"], name: "index_celebs_on_email", length: {"email"=>191}, using: :btree

@@ -49,8 +49,8 @@ class CelebsController < ApplicationController
   end
 
   def upload_profile(profile_dispatch)
-    # TODO
-    'profile_pic_url'
+    res = Cloudinary::Uploader.upload(profile_dispatch.tempfile.path, crop: :fill, width: 256, height: 256)
+    res['secure_url']
   end
 
 end
