@@ -3,24 +3,21 @@
 @import "freelancer";
 
 .fb-messenger-button {
-  padding-left: 508.805px;
-}
-@media (max-width: 767px) {
-  .fb-messenger-button {
-    padding-left: 123.805px;
-  }
+  width: 389.61px;
+  padding-left: 133.61px;
+  margin: 20px auto;
 }
 
-.img-profile {
-  width: 128px;
-  height: 128px;
+input#input-profile {
+  position: absolute;
+  margin-top: -1000px;
 }
 
 .clickable {
   cursor: pointer;
 }
 
-input[type=file] {
-  position: absolute;
-  margin-top: -1000px;
+.img-profile {
+  width: 200px;
+  height: 200px;
 }
