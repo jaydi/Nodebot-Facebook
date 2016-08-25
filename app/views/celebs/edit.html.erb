@@ -32,7 +32,7 @@
 
             <div class="row control-group">
               <div class="form-group col-xs-6 col-xs-offset-3 floating-label-form-group controls input-image">
-                <img id="img-profile" class="img-responsive img-centered img-circle img-profile clickable" onclick="inputProfile()" src="/images/profile.png"/>
+                <img id="img-profile" class="img-responsive img-centered img-circle img-profile clickable" onclick="inputProfile()" src="<%= @celeb.profile_pic.blank? ? "images/profile.png" : @celeb.profile_pic %>"/>
                 <input id="input-profile" name="profile" type="file" onchange="readURL(this)" required/>
 
                 <p class="help-block text-danger"></p>
@@ -42,7 +42,7 @@
             <div class="row control-group">
               <div class="form-group col-xs-6 col-xs-offset-3 floating-label-form-group controls">
                 <label>닉네임</label>
-                <input type="text" class="form-control" placeholder="Nickname" name="name" required data-validation-required-message="Please enter your nickname.">
+                <input type="text" class="form-control" placeholder="Nickname" name="name" value="<%= @celeb.name %>" required data-validation-required-message="Please enter your nickname.">
 
                 <p class="help-block text-danger"></p>
               </div>

@@ -1,5 +1,5 @@
 class CelebsController < ApplicationController
-  layout 'application_blank', only: [:show]
+  layout 'application_outbound', only: [:show]
   before_action :check_celeb, except: [:show, :new, :create]
 
   def show
@@ -27,7 +27,11 @@ class CelebsController < ApplicationController
     @celeb.name = params[:name]
     @celeb.profile_pic = upload_profile(params[:profile])
     if @celeb.save!
-      redirect_to celeb_pair_path
+      unless @celeb.paired?
+        redirect_to celeb_pair_path
+      else
+        redirect_to messages_path
+      end
     else
       redirect_to celeb_edit_path
     end

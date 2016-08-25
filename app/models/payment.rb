@@ -54,7 +54,7 @@ class Payment < ActiveRecord::Base
   end
 
   def notify_pay_success
-    sender.command(:CMPT_PAY)
+    sender.command(:complete_payment)
   end
 
   def notify_refund_success

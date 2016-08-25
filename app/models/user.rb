@@ -97,8 +97,38 @@ class User < ActiveRecord::Base
     end
   end
 
+  def command(com)
+    begin
+      self.send((com.to_s + '!').to_sym)
+    rescue AASM::InvalidTransition
+      state_transition_error
+    end
+  end
+
+  def text_message(text)
+    if messaging?
+      msg = current_message
+      msg.text = text
+      msg.save!
+      command(:confirm_message)
+    else
+      state_enter_guide
+    end
+  end
+
+  def video_message(video_url)
+    if replying?
+      msg = current_message
+      msg.video_url = video_url
+      msg.save!
+      command(:confirm_reply)
+    else
+      state_enter_guide
+    end
+  end
+
   def optin(target_type, target_id)
-    case target_type
+    case target_type.to_sym
       when :CLB
         self.celeb = Celeb.find(target_id)
         save!
@@ -111,7 +141,7 @@ class User < ActiveRecord::Base
                            sending_user_id: id,
                            receiving_user_id: target_id
                          })
-          command(:INIT_MSG)
+          command(:initiate_message)
         else
           optin_message_error
         end
@@ -126,7 +156,7 @@ class User < ActiveRecord::Base
                              sending_user_id: id,
                              receiving_user_id: original_msg.sending_user_id
                            })
-            command(:INIT_RPL)
+            command(:initiate_reply)
           elsif original_msg.replied?
             already_replied_error
           else
@@ -136,92 +166,6 @@ class User < ActiveRecord::Base
           optin_reply_error
         end
 
-    end
-  end
-
-  def command(com)
-    begin
-      case com
-        when :INIT_MSG
-          initiate_message!
-        when :INIT_RPL
-          initiate_reply!
-        when :STRT_MSG
-          start_messaging!
-        when :STRT_RPL
-          start_replying!
-        when :CONF_MSG
-          confirm_message!
-        when :CONF_RPL
-          confirm_reply!
-        when :CMPT_MSG
-          complete_message!
-        when :CMPT_RPL
-          complete_reply!
-        when :INIT_PAY
-          initiate_payment!
-        when :CMPT_PAY
-          complete_payment!
-        when :END_CONV
-          end_conversation!
-      end
-    rescue AASM::InvalidTransition
-      state_transition_error
-    end
-  end
-
-  def state_enter_action
-    case status.to_sym
-      when :waiting
-        unless current_message.blank?
-          if current_message.completed?
-            current_message.deliver!
-          else
-            current_message.cancel!
-          end
-        end
-      when :message_initiated
-      when :reply_initiated
-      when :messaging
-      when :replying
-      when :message_confirm
-      when :reply_confirm
-      when :message_completed
-        current_message.complete!
-      when :reply_completed
-        current_message.complete!
-        current_message.deliver!
-      when :payment_initiated
-        Payment.create({
-                         message_id: current_message.id,
-                         sending_user_id: current_message.sending_user_id,
-                         receiving_user_id: current_message.receiving_user_id,
-                         pay_amount: current_message.receiver.celeb.price
-                       })
-      when :payment_completed
-        current_message.deliver!
-    end
-  end
-
-  def text_message(text)
-    if messaging?
-      msg = current_message
-      msg.text = text
-      msg.save!
-      command(:CONF_MSG)
-    else
-      state_enter_guide
-    end
-  end
-
-  def video_message(video_url)
-    if replying?
-      msg = current_message
-      msg.video_url = video_url
-      msg.save!
-      command(:CONF_RPL)
-    else
-      state_enter_guide
     end
   end
 

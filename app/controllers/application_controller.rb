@@ -23,9 +23,9 @@ class ApplicationController < ActionController::Base
 
   def check_celeb_status
     celeb = current_celeb
-    if celeb.name.blank? or celeb.profile_pic.blank?
+    if !celeb.info_filled?
       redirect_to celeb_edit_path
-    elsif celeb.user.blank?
+    elsif !celeb.paired?
       redirect_to celeb_pair_path
     end
   end

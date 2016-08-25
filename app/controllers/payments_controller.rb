@@ -1,5 +1,5 @@
 class PaymentsController < ApplicationController
-  layout 'application_blank'
+  layout 'application_external'
 
   def show
     @payment = Payment.find(params[:id])

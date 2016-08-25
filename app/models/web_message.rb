@@ -15,18 +15,17 @@ class WebMessage < ActiveRecord::Base
   def process_message
     user = current_user
     case message_type
-      when self.class.message_types[:optin]
-        target_type = payload.split('_')[0].to_sym
-        target_id = payload.split('_')[1]
-        user.optin(target_type, target_id)
       when self.class.message_types[:quick_reply]
-        user.command(payload.to_sym)
+        user.command(payload)
       when self.class.message_types[:postback]
-        user.command(payload.to_sym)
+        user.command(payload)
       when self.class.message_types[:text]
         user.text_message(text)
       when self.class.message_types[:video]
         user.video_message(payload)
+      when self.class.message_types[:optin]
+        target_type, target_id = payload.split('_')
+        user.optin(target_type, target_id)
     end
   end
 

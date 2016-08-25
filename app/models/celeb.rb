@@ -29,5 +29,12 @@ class Celeb < ActiveRecord::Base
     end
   end
 
+  def info_filled?
+    !name.blank? and !profile_pic.blank?
+  end
+
+  def paired?
+    !user.blank?
+  end
 
 end

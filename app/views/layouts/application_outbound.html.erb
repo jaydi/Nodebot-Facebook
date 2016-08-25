@@ -27,32 +27,7 @@
 
       <!-- Brand and toggle get grouped for better mobile display -->
       <div class="navbar-header page-scroll">
-        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-          <span class="sr-only">Toggle navigation</span> Menu <i class="fa fa-bars"></i>
-        </button>
-        <a class="navbar-brand" href="/messages">KICKY - 인플루언서 대시보드</a>
-      </div>
-
-      <!-- Collect the nav links, forms, and other content for toggling -->
-      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-        <ul class="nav navbar-nav navbar-right">
-          <% if @celeb.blank? %>
-              <li>
-                <a href="/user_sessions/new">로그인</a>
-              </li>
-
-              <li>
-                <a href="/celebs/new">가입</a>
-              </li>
-          <% else %>
-              <li>
-                <a href="/celeb/edit">계정관리</a>
-              </li>
-              <li>
-                <a href="/user_session/destroy">로그아웃</a>
-              </li>
-          <% end %>
-        </ul>
+        <a class="navbar-brand" href="#page-top">KICKY</a>
       </div>
 
     </div>
