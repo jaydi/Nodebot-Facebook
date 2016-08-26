@@ -15,4 +15,5 @@
 //= require turbolinks
 //= require bootstrap.min
 //= require freelancer
+//= require jquery.iframetracker.js
 //= require_tree .
