@@ -1,35 +1,3 @@
-<script>
-  $(document).ready(function() {
-    window.setTimeout(listenFBiframe, 1500);
-  });
-
-  function listenFBiframe() {
-    var $fbi = $('.fb-send-to-messenger iframe');
-
-    if (!$fbi.width())
-      $('#guide-fb-login').show();
-
-    $fbi.iframeTracker({
-      blurCallback: function(){
-        window.setTimeout(function() {
-          $('.fb-messenger-button').hide();
-          $('#guide-fb-messenger').show();
-        }, 500)
-      }
-    });
-  }
-
-  function openFB() {
-    $('#guide-fb-login').hide();
-    $('#guide-refresh').show();
-    window.open('https://www.facebook.com', '_blank');
-  }
-
-  function openFBM() {
-    window.open('https://m.me/982472715207823', '_blank');
-  }
-</script>
-
 <section class="first">
 
   <div class="container">
@@ -46,20 +14,22 @@
       </div>
     </div>
 
+    <div class="row">
+      <div class="col-lg-12 text-center">
+        <p>메시지를 보내고 답장도 받을 수 있습니다.</p>
+      </div>
+    </div>
+
     <div class="row" style="margin-top: 20px;">
-      <div class="col-lg-12">
+      <div class="col-lg-4 col col-lg-offset-4 well">
 
         <div id="guide-fb-login" class="guide text-center">
-          <span>먼저 <a href="javascript:openFB()">페이스북에 로그인</a>해주세요</span>
+          <span>먼저 페이스북 메신저에 로그인</span>
         </div>
 
-        <div id="guide-refresh" class="guide text-center">
-          <span><a href="javascript:location.reload()">페이스북에 로그인 후 클릭</a></span>
-        </div>
-
-        <div id="guide-fb-messenger" class="guide text-center">
-          <span><a href="javascript:openFBM()">페이스북 메신저</a>에서 계속 진행해주세요</span>
-        </div>
+        <!--<div id="guide-refresh" class="guide text-center">-->
+          <!--<span><a href="javascript:location.reload()">페이지를 새로고침</a></span>-->
+        <!--</div>-->
 
         <div class="fb-messenger-button">
           <script>
@@ -88,6 +58,10 @@
                data-ref="MSG_<%= @model.user.id %>"
                color="blue"
                size="standard"/>
+        </div>
+
+        <div id="guide-fb-messenger" class="guide text-center" style="width: 244.75px; margin-left: -61.1875px; margin-top: 20px;">
+          <span><a href="javascript:openFBM()">페이스북 메신저에서 계속 진행</a></span>
         </div>
 
       </div>

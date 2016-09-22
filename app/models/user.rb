@@ -93,7 +93,7 @@ class User < ActiveRecord::Base
         @message = nil
       end
     else
-      @message = Message.on_progress(id).last
+      @message = Message.in_progress(id).last
     end
   end
 

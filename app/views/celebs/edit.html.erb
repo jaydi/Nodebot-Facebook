@@ -32,7 +32,7 @@
 
             <div class="row control-group">
               <div class="form-group col-xs-6 col-xs-offset-3 floating-label-form-group controls input-image">
-                <img id="img-profile" class="img-responsive img-centered img-circle img-profile clickable" onclick="inputProfile()" src="<%= @celeb.profile_pic.blank? ? "images/profile.png" : @celeb.profile_pic %>"/>
+                <img id="img-profile" class="img-responsive img-centered img-circle img-profile clickable" onclick="inputProfile()" src="<%= @celeb.profile_pic.blank? ? "/images/profile.png" : @celeb.profile_pic %>"/>
                 <input id="input-profile" name="profile" type="file" onchange="readURL(this)" required/>
 
                 <p class="help-block text-danger"></p>

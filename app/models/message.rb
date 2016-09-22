@@ -17,14 +17,14 @@ class Message < ActiveRecord::Base
   }
 
   scope :sent_by, ->(user_id) {
-    where(sending_user_id: user_id)
+    where(sending_user_id: user_id).where(status: [statuses[:delivered], statuses[:replied], statuses[:wasted]])
   }
 
   scope :received_by, ->(user_id) {
-    where(receiving_user_id: user_id)
+    where(receiving_user_id: user_id).where(status: [statuses[:delivered], statuses[:replied], statuses[:wasted]])
   }
 
-  scope :on_progress, ->(user_id) {
+  scope :in_progress, ->(user_id) {
     where(sending_user_id: user_id).where(status: [statuses[:initiated], statuses[:completed]])
   }
 

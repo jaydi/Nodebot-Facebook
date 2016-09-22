@@ -3,44 +3,65 @@
   <div class="container">
 
     <div class="row">
-      <div class="col-lg-6 col-lg-offset-3">
-        <h3><%= @message.sender.name %></h3>
-        <p><%= @message.text %></p>
-      </div>
-    </div>
+      <div class="col-lg-8 col-lg-offset-2">
+        <div class="list-group">
 
-    <div class="row">
-      <div class="col-lg-12">
-        <div class="fb-messenger-button">
-          <script>
-            window.fbAsyncInit = function () {
-              FB.init({
-                appId: "1747584958855089",
-                xfbml: true,
-                version: "v2.6"
-              });
-            };
+          <div class="list-group-item">
 
-            (function (d, s, id) {
-              var js, fjs = d.getElementsByTagName(s)[0];
-              if (d.getElementById(id)) {
-                return;
-              }
-              js = d.createElement(s);
-              js.id = id;
-              js.src = "//connect.facebook.net/en_US/sdk.js";
-              fjs.parentNode.insertBefore(js, fjs);
-            }(document, 'script', 'facebook-jssdk'));
-          </script>
-          <div class="fb-send-to-messenger"
-               messenger_app_id="1747584958855089"
-               page_id="982472715207823"
-               data-ref="RPL_<%= @message.id %>"
-               color="blue"
-               size="standard"/>
+            <h4 class="list-group-item-heading"><%= @message.sender.name %></h4>
+
+            <p class="list-group-item-text"><%= @message.text %></p>
+
+            <% if @message.delivered? %>
+                <div class="well" style="margin-top: 20px;">
+                  <div class="text-center" style="margin-bottom: 10px;">
+                    <span><a href="javascript:openFBM()">페이스북 메신저</a>에서 답장</span>
+                  </div>
+                  <div class="fb-messenger-button">
+                    <script>
+                      window.fbAsyncInit = function () {
+                        FB.init({
+                          appId: "1747584958855089",
+                          xfbml: true,
+                          version: "v2.6"
+                        });
+                      };
+
+                      (function (d, s, id) {
+                        var js, fjs = d.getElementsByTagName(s)[0];
+                        if (d.getElementById(id)) {
+                          return;
+                        }
+                        js = d.createElement(s);
+                        js.id = id;
+                        js.src = "//connect.facebook.net/en_US/sdk.js";
+                        fjs.parentNode.insertBefore(js, fjs);
+                      }(document, 'script', 'facebook-jssdk'));
+                    </script>
+                    <div class="fb-send-to-messenger"
+                         messenger_app_id="1747584958855089"
+                         page_id="982472715207823"
+                         data-ref="RPL_<%= @message.id %>"
+                         color="blue"
+                         size="standard"/>
+                  </div>
+                </div>
+            <% end %>
+
+          </div>
+
+          <% if @message.replied? %>
+            <div class="list-group-item">
+              <h4 class="list-group-item-heading">나의 답장</h4>
+
+              <embed src="<%= @message.reply_message.video_url %>"/>
+            </div>
+          <% end %>
+
         </div>
       </div>
     </div>
+
 
   </div>
 

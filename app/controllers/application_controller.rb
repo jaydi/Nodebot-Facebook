@@ -41,4 +41,12 @@ class ApplicationController < ActionController::Base
     session[:celeb_id] = nil
     @celeb = nil
   end
+
+  def set_minimal_layout_flag
+    @minimal_layout = true
+  end
+
+  def set_door_layout_flag
+    @door_layout = true
+  end
 end

@@ -14,6 +14,49 @@
 //= require jquery_ujs
 //= require turbolinks
 //= require bootstrap.min
+//= require html5shiv
+//= require respond.min
 //= require freelancer
 //= require jquery.iframetracker.js
 //= require_tree .
+
+$(document).ready(function () {
+  window.setTimeout(listenFBiframe, 500);
+});
+
+function listenFBiframe() {
+  var $fbi = $('.fb-send-to-messenger iframe');
+  if ($fbi.length)
+    $fbi.load(function () {
+      window.setTimeout(function () {
+        console.log($fbi.height());
+        if ($fbi.height() < 40)
+          guide('fb-login');
+      }, 500);
+      $fbi.iframeTracker({
+        blurCallback: function () {
+          window.setTimeout(function () {
+            guide('fb-messenger');
+          }, 500)
+        }
+      });
+    });
+  else
+    window.setTimeout(listenFBiframe, 500);
+}
+
+//  function openFB() {
+//    guide('refresh');
+//    window.open('https://www.facebook.com', '_blank');
+//  }
+
+function openFBM() {
+  window.open('https://m.me/kickybot', '_blank');
+}
+
+function guide(which) {
+  $('#guide-fb-login').hide();
+  $('#guide-refresh').hide();
+  $('#guide-fb-messenger').hide();
+  $('#guide-' + which).show();
+}

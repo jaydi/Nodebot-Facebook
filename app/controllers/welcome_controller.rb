@@ -1,7 +1,5 @@
 class WelcomeController < ApplicationController
-  layout 'application_external'
-
   def door
+    set_door_layout_flag
   end
-
 end

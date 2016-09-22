@@ -1,6 +1,6 @@
 class CelebsController < ApplicationController
-  layout 'application_outbound', only: [:show]
   before_action :check_celeb, except: [:show, :new, :create]
+  before_action :set_minimal_layout_flag, only: [:show]
 
   def show
     @model = Celeb.find(params[:id])

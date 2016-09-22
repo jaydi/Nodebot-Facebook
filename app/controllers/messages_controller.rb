@@ -3,7 +3,7 @@ class MessagesController < ApplicationController
   before_action :check_celeb_status
 
   def index
-    @messages = Message.received_by(@celeb.user.id).delivered.initials
+    @messages = Message.initials.received_by(@celeb.user.id).order(created_at: :desc)
   end
 
   def show
