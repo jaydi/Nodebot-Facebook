@@ -46,8 +46,7 @@ class Message < ActiveRecord::Base
     delivered: 30,
     replied: 40,
     wasted: 50,
-    canceled: 60,
-    withdrawn: 70
+    canceled: 60
   }
 
   aasm column: :status, enum: true do
@@ -77,10 +76,6 @@ class Message < ActiveRecord::Base
 
     event :cancel do
       transitions from: [:initiated, :completed], to: :canceled
-    end
-
-    event :withdraw do
-      transitions from: :delivered, to: :withdrawn
     end
   end
 

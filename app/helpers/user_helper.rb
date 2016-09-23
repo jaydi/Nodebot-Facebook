@@ -56,7 +56,7 @@ module UserHelper
         quick_reply_strt_rpl = QuickReply.new({title: '네', payload: 'start_replying'})
         quick_reply_end_conv = QuickReply.new({title: '아니오', payload: 'end_conversation'})
         quick_replies = [quick_reply_strt_rpl, quick_reply_end_conv]
-        Waikiki::MessageSender.send_quick_reply_message(self, "#{current_message.sender.name}에게 답장하시겠어요?", quick_replies)
+        Waikiki::MessageSender.send_quick_reply_message(self, "#{current_message.receiver.name}에게 답장하시겠어요?", quick_replies)
 
       when :messaging
         Waikiki::MessageSender.send_text_message(self, "하고싶은 말을 입력해주세요.")
