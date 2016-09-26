@@ -86,7 +86,7 @@ module UserHelper
         Waikiki::MessageSender.send_text_message(self, "답장을 전달했습니다. :)")
 
       when :payment_initiated
-        button_pay = Button.new({type: 'web_url', url: "#{APP_CONFIG[:host_url]}/payments/#{current_message.payment.id}", title: 'PAY'})
+        button_pay = Button.new({type: 'web_url', url: "#{APP_CONFIG[:host_url]}/payments/#{current_message.payment.id}", title: '결제'})
         buttons = [button_pay]
         Waikiki::MessageSender.send_button_message(self, "아래 링크에서 결제를 진행해주세요.", buttons)
 
@@ -121,10 +121,13 @@ module UserHelper
   def notify_reply(reply_msg)
     begin
       Waikiki::MessageSender.send_attachment_message(self, Attachment.new({type: 'video', payload: reply_msg.video_url}))
+      button_reply = Button.new({type: 'postback', title: '답장하기', payload: "reply_to:#{reply_msg.id}"})
+      buttons = [button_reply]
+      Waikiki::MessageSender.send_button_message(self, '', buttons)
+      Waikiki::MessageSender.send_text_message(self, "#{reply_msg.sender.celeb.name}에게서 답장을 받았습니다!")
     rescue HTTPClient::TimeoutError
       my_logger.error "reply message #{reply_msg.id} raised an error with http-timeout"
     end
-    Waikiki::MessageSender.send_text_message(self, "#{reply_msg.sender.celeb.name}에게서 답장을 받았습니다!")
   end
 
   def notify_refund(refund_payment)

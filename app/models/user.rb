@@ -99,7 +99,13 @@ class User < ActiveRecord::Base
 
   def command(com)
     begin
-      self.send((com.to_s + '!').to_sym)
+      func, *args = com.to_s.split(':')
+      if args.length > 0
+        self.send(func, *args)
+      else
+        self.send(func)
+      end
+      self.save!
     rescue AASM::InvalidTransition
       state_transition_error
     end
@@ -149,15 +155,15 @@ class User < ActiveRecord::Base
       when :RPL
         if current_message.blank?
           end_conversation! unless waiting?
-          original_msg = Message.find(target_id)
-          if original_msg.delivered?
+          initial_msg = Message.find(target_id)
+          if initial_msg.delivered?
             Message.create({
-                             initial_message_id: original_msg.id,
+                             initial_message_id: initial_msg.id,
                              sending_user_id: id,
-                             receiving_user_id: original_msg.sending_user_id
+                             receiving_user_id: initial_msg.sending_user_id
                            })
             command(:initiate_reply)
-          elsif original_msg.replied?
+          elsif initial_msg.replied?
             already_replied_error
           else
             reply_error
@@ -167,6 +173,28 @@ class User < ActiveRecord::Base
         end
 
     end
+  end
+
+  def reply_to(target_id)
+    if current_message.blank?
+      end_conversation! unless waiting?
+      initial_msg = Message.find(target_id)
+      Message.create({
+                       initial_message_id: initial_msg.id,
+                       sending_user_id: id,
+                       receiving_user_id: initial_msg.sending_user_id
+                     })
+      self.status = :message_initiated
+      save!
+      command(:start_messaging)
+    else
+      optin_message_error
+    end
+  end
+
+  def read_stamp(watermark)
+    delivered_messages = Message.received_by(id).delivered.before(Time.at(watermark / 1000))
+    delivered_messages.each { |dm| dm.read! }
   end
 
 end

@@ -8,14 +8,6 @@ class Message < ActiveRecord::Base
   belongs_to :receiver, class_name: 'User', foreign_key: :receiving_user_id
   belongs_to :initial_message, class_name: 'Message', foreign_key: :initial_message_id
 
-  scope :initials, -> {
-    where(initial_message_id: nil)
-  }
-
-  scope :replies, -> {
-    where.not(initial_message_id: nil)
-  }
-
   scope :sent_by, ->(user_id) {
     where(sending_user_id: user_id).where(status: [statuses[:delivered], statuses[:replied], statuses[:wasted]])
   }
@@ -40,6 +32,10 @@ class Message < ActiveRecord::Base
     where(status: statuses[:delivered]).where(initial_message_id: nil).where('updated_at < ?', 1.day.ago.beginning_of_day)
   }
 
+  scope :before, ->(time) {
+    where(created_at: Time.at(0)..time)
+  }
+
   enum status: {
     initiated: 10,
     completed: 20,
@@ -53,6 +49,7 @@ class Message < ActiveRecord::Base
     state :initiated, initial: true
     state :completed
     state :delivered, after_enter: [:mark_if_reply]
+    state :read
     state :replied, after_enter: [:notify_reply]
     state :wasted, after_enter: [:refund]
     state :canceled
@@ -64,6 +61,10 @@ class Message < ActiveRecord::Base
 
     event :deliver do
       transitions from: :completed, to: :delivered
+    end
+
+    event :read do
+      transitions from: :delivered, to: :read
     end
 
     event :reply do

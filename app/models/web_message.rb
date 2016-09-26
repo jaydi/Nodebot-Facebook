@@ -9,7 +9,9 @@ class WebMessage < ActiveRecord::Base
     file: 15,
     location: 16,
     postback: 20,
-    optin: 30
+    optin: 30,
+    delivery: 40,
+    read: 50
   }
 
   def process_message
@@ -26,6 +28,8 @@ class WebMessage < ActiveRecord::Base
       when self.class.message_types[:optin]
         target_type, target_id = payload.split('_')
         user.optin(target_type, target_id)
+      when self.class.message_types[:read]
+        user.read_stamp(payload.to_i)
     end
   end
 
