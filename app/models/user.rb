@@ -11,61 +11,54 @@ class User < ActiveRecord::Base
 
   enum status: {
     waiting: 10,
-    message_initiated: 20,
-    reply_initiated: 21,
-    messaging: 30,
-    replying: 31,
-    message_confirm: 40,
-    reply_confirm: 41,
-    message_completed: 50,
-    reply_completed: 51,
-    payment_initiated: 60,
-    payment_completed: 70
+    nickname_setting: 20,
+    message_initiated: 110,
+    messaging: 120,
+    message_confirm: 130,
+    message_completed: 140,
+    payment_initiated: 200,
+    payment_completed: 210,
+    reply_initiated: 300,
+    replying: 310,
+    reply_confirm: 320,
+    reply_completed: 330,
   }
 
   aasm column: :status, enum: true do
-    state :waiting, initial: true, after_enter: [:state_enter_action]
+    state :waiting, initial: true, after_enter: [:state_enter_action, :state_enter_guide]
+    state :nickname_setting, after_enter: [:state_enter_action, :state_enter_guide], before_exit: [:state_exit_guide]
+
     state :message_initiated, after_enter: [:state_enter_action, :state_enter_guide]
-    state :reply_initiated, after_enter: [:state_enter_action, :state_enter_guide]
     state :messaging, after_enter: [:state_enter_action, :state_enter_guide]
-    state :replying, after_enter: [:state_enter_action, :state_enter_guide]
     state :message_confirm, after_enter: [:state_enter_action, :state_enter_guide]
-    state :reply_confirm, after_enter: [:state_enter_action, :state_enter_guide]
     state :message_completed, after_enter: [:state_enter_action, :state_enter_guide]
-    state :reply_completed, after_enter: [:state_enter_action, :state_enter_guide, :end_conversation, :save]
+
     state :payment_initiated, after_enter: [:state_enter_action, :state_enter_guide]
     state :payment_completed, after_enter: [:state_enter_action, :state_enter_guide, :end_conversation, :save]
+
+    state :reply_initiated, after_enter: [:state_enter_action, :state_enter_guide]
+    state :replying, after_enter: [:state_enter_action, :state_enter_guide]
+    state :reply_confirm, after_enter: [:state_enter_action, :state_enter_guide]
+    state :reply_completed, after_enter: [:state_enter_action, :state_enter_guide, :end_conversation, :save]
+
+    event :start_setting_nickname do
+      transitions from: :message_initiated, to: :nickname_setting
+    end
 
     event :initiate_message do
       transitions from: :waiting, to: :message_initiated
     end
 
-    event :initiate_reply do
-      transitions from: :waiting, to: :reply_initiated
-    end
-
     event :start_messaging do
-      transitions from: :message_initiated, to: :messaging
-    end
-
-    event :start_replying do
-      transitions from: :reply_initiated, to: :replying
+      transitions from: [:message_initiated, :message_confirm], to: :messaging
     end
 
     event :confirm_message do
       transitions from: :messaging, to: :message_confirm
     end
 
-    event :confirm_reply do
-      transitions from: :replying, to: :reply_confirm
-    end
-
     event :complete_message do
       transitions from: :message_confirm, to: :message_completed
-    end
-
-    event :complete_reply do
-      transitions from: :reply_confirm, to: :reply_completed
     end
 
     event :initiate_payment do
@@ -76,9 +69,29 @@ class User < ActiveRecord::Base
       transitions from: :payment_initiated, to: :payment_completed
     end
 
+    event :initiate_reply do
+      transitions from: :waiting, to: :reply_initiated
+    end
+
+    event :start_replying do
+      transitions from: [:reply_initiated, :reply_confirm], to: :replying
+    end
+
+    event :confirm_reply do
+      transitions from: :replying, to: :reply_confirm
+    end
+
+    event :complete_reply do
+      transitions from: :reply_confirm, to: :reply_completed
+    end
+
     event :end_conversation do
       transitions to: :waiting
     end
+  end
+
+  def newbie?
+    Message.sent_by(self).count == 0
   end
 
   def celeb?
@@ -101,11 +114,11 @@ class User < ActiveRecord::Base
     begin
       func, *args = com.to_s.split(':')
       if args.length > 0
-        self.send(func, *args)
+        send(func, *args)
       else
-        self.send(func)
+        send(func)
       end
-      self.save!
+      save!
     rescue AASM::InvalidTransition
       state_transition_error
     end
@@ -117,6 +130,10 @@ class User < ActiveRecord::Base
       msg.text = text
       msg.save!
       command(:confirm_message)
+    elsif nickname_setting?
+      self.name = text[0..9]
+      save!
+      command(:start_messaging)
     else
       state_enter_guide
     end

@@ -40,9 +40,10 @@ class Message < ActiveRecord::Base
     initiated: 10,
     completed: 20,
     delivered: 30,
-    replied: 40,
-    wasted: 50,
-    canceled: 60
+    read: 40,
+    replied: 50,
+    wasted: 60,
+    canceled: 70
   }
 
   aasm column: :status, enum: true do
