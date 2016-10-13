@@ -171,17 +171,17 @@ module UserHelper
   def notify_reply(reply_msg)
     begin
       Waikiki::MessageSender.send_attachment_message(self, Attachment.new({type: 'video', payload: reply_msg.video_url}))
-
-      msg_str = "#{reply_msg.sender.celeb.name}에게서 답장을 받았어요!"
-      Waikiki::MessageSender.send_text_message(self, msg_str)
-
-      msg_str = "버튼을 눌러서 대화를 이어갈 수 있어요."
-      button_reply = Button.new({type: 'postback', title: '답장하기', payload: "reply_to:#{reply_msg.id}"})
-      buttons = [button_reply]
-      Waikiki::MessageSender.send_button_message(self, msg_str, buttons)
     rescue HTTPClient::TimeoutError
       my_logger.error "reply message #{reply_msg.id} raised an error with http-timeout"
     end
+    
+    msg_str = "#{reply_msg.sender.celeb.name}에게서 답장을 받았어요!"
+    Waikiki::MessageSender.send_text_message(self, msg_str)
+
+    msg_str = "버튼을 눌러서 대화를 이어갈 수 있어요."
+    button_reply = Button.new({type: 'postback', title: '답장하기', payload: "reply_to:#{reply_msg.id}"})
+    buttons = [button_reply]
+    Waikiki::MessageSender.send_button_message(self, msg_str, buttons)
   end
 
   def notify_refund(refund_payment)
