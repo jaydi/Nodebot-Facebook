@@ -51,7 +51,7 @@ class Message < ActiveRecord::Base
     state :completed
     state :delivered, after_enter: [:mark_if_reply]
     state :read
-    state :replied, after_enter: [:notify_reply]
+    state :replied, after_enter: [:notify_reply_if_necessary]
     state :wasted, after_enter: [:refund]
     state :canceled
     state :withdrawn
@@ -89,8 +89,8 @@ class Message < ActiveRecord::Base
     initial_message.reply! if reply?
   end
 
-  def notify_reply
-    sender.notify_reply(reply_message)
+  def notify_reply_if_necessary
+    sender.notify_reply(reply_message) if sender.celeb?
   end
 
   def refund
