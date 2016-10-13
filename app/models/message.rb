@@ -20,6 +20,10 @@ class Message < ActiveRecord::Base
     where(sending_user_id: user_id).where(status: [statuses[:initiated], statuses[:completed]])
   }
 
+  scope :fan_messages, ->(user_id) {
+    where(receiving_user_id: user_id).where(status: [statuses[:delivered], statuses[:replied], statuses[:wasted]]).where.not(text: nil)
+  }
+
   scope :delivered, -> {
     where(status: statuses[:delivered])
   }
@@ -92,7 +96,7 @@ class Message < ActiveRecord::Base
   def send_noti_if_reply
     if reply?
       initial_message.reply!
-      receiver.notify_reply(reply_message) if celeb_message?
+      receiver.notify_reply(self) if celeb_message?
     end
   end
 
