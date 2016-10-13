@@ -50,7 +50,7 @@ class User < ActiveRecord::Base
     end
 
     event :start_messaging do
-      transitions from: [:message_initiated, :message_confirm], to: :messaging
+      transitions from: [:nickname_setting, :message_initiated, :message_confirm], to: :messaging
     end
 
     event :confirm_message do
