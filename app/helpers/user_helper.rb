@@ -174,7 +174,7 @@ module UserHelper
     rescue HTTPClient::TimeoutError
       my_logger.error "reply message #{reply_msg.id} raised an error with http-timeout"
     end
-    
+
     msg_str = "#{reply_msg.sender.celeb.name}에게서 답장을 받았어요!"
     Waikiki::MessageSender.send_text_message(self, msg_str)
 
