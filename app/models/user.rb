@@ -95,7 +95,7 @@ class User < ActiveRecord::Base
   end
 
   def celeb?
-    !celeb.blank?
+    celeb.present?
   end
 
   def current_message

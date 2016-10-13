@@ -49,9 +49,9 @@ class Message < ActiveRecord::Base
   aasm column: :status, enum: true do
     state :initiated, initial: true
     state :completed
-    state :delivered, after_enter: [:mark_if_reply]
+    state :delivered, after_enter: [:send_noti_if_reply]
     state :read
-    state :replied, after_enter: [:notify_reply_if_necessary]
+    state :replied
     state :wasted, after_enter: [:refund]
     state :canceled
     state :withdrawn
@@ -82,15 +82,18 @@ class Message < ActiveRecord::Base
   end
 
   def reply?
-    !initial_message.blank?
+    initial_message.present?
   end
 
-  def mark_if_reply
-    initial_message.reply! if reply?
+  def celeb_message?
+    sender.celeb? and video_url.present?
   end
 
-  def notify_reply_if_necessary
-    sender.notify_reply(reply_message) if sender.celeb?
+  def send_noti_if_reply
+    if reply?
+      initial_message.reply!
+      receiver.notify_reply(reply_message) if celeb_message?
+    end
   end
 
   def refund

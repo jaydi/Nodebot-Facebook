@@ -66,7 +66,7 @@ module UserHelper
       when :message_initiated
         if newbie?
           msg_str = "안녕하세요, #{name}님. 키키봇입니다. 저를 통해 #{current_message.receiver.celeb.name}님과 메시지를 주고받을 수 있어요."
-          msg_str += " 메시지를 보내면, #{current_message.receiver.celeb.name}님에게 전달됩니다."
+          msg_str += " 제게 메시지를 보내면, #{current_message.receiver.celeb.name}님에게 전달됩니다."
           msg_str += " #{current_message.receiver.celeb.name}님이 영상답장을 하면, #{name}님에게 바로 전달해드려요."
           Waikiki::MessageSender.send_text_message(self, msg_str)
 
