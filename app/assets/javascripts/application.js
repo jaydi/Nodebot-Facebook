@@ -42,5 +42,5 @@ function listenFBiframe() {
 }
 
 function openFBM() {
-  window.open('https://www.messenger.com/t/kickybot', '_blank');
+  window.open('https://m.me/kickybot', '_blank');
 }
