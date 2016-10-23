@@ -49,11 +49,11 @@ module UserHelper
   def state_enter_guide
     case status.to_sym
       when :waiting
-        if previous_changes["status"].present?
-          if previous_changes["status"].first == "message_completed"
+        if status_changed?
+          if status_was == "message_completed"
             msg_str = "알겠습니다. 메시지는 잘 전달했어요. :)"
             Waikiki::MessageSender.send_text_message(self, msg_str)
-          elsif previous_changes["status"].first == "message_confirm" or previous_changes["status"].first == "reply_confirm"
+          elsif status_was == "message_confirm" or status_was == "reply_confirm"
             msg_str = "알겠습니다. 저는 그럼 이만.."
             Waikiki::MessageSender.send_text_message(self, msg_str)
           else
