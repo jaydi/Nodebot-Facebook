@@ -28,6 +28,7 @@ function listenFBiframe() {
   var $fbi = $('.fb-send-to-messenger iframe');
   if ($fbi.length)
     $fbi.load(function () {
+      $('#fb-loading-spinner').hide();
       $fbi.iframeTracker({
         blurCallback: function () {
           window.setTimeout(function () {
