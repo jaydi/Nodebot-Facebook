@@ -4,66 +4,79 @@
 
     <div class="row">
       <div class="col-lg-12">
-        <img class="img-responsive img-centered img-circle img-profile" src="<%= @model.profile_pic %>" alt="">
+        <img class="img-responsive img-centered img-circle img-profile" src="<%= @celeb.profile_pic %>" alt="">
       </div>
     </div>
 
     <div class="row">
       <div class="col-lg-12 text-center">
-        <h2><%= @model.name %></h2>
+        <h2><%= @celeb.name %></h2>
       </div>
     </div>
 
     <div class="row">
       <div class="col-lg-12 text-center">
-        <p>메시지를 보내고 답장도 받을 수 있습니다.</p>
+        <p>메시지를 보내고 답장을 받을 수 있습니다.</p>
       </div>
     </div>
 
     <div class="row" style="margin-top: 20px;">
-      <div class="col-lg-4 col col-lg-offset-4 well">
+      <div class="col-lg-12">
+        <button type="button" class="btn btn-default center-block" data-toggle="modal" data-target="#myModal">
+          <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>  대화 시작하기
+        </button>
+      </div>
+    </div>
 
-        <div id="guide-fb-login" class="guide text-center">
-          <span>먼저 페이스북 메신저에 로그인</span>
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel"><%= @celeb.name %>님과 대화</h4>
+          </div>
+
+          <div class="modal-body text-center">
+            <div>
+              대화를 시작합니다.<br/>
+              메시징은 <b>페이스북 메신저</b>에서 진행됩니다.<br/>
+              아래 버튼을 클릭한 후, <b>페이스북 메신저</b>를 확인해주세요.
+            </div>
+            <div class="fb-messenger-button" style="margin-top: 20px;">
+              <script>
+                window.fbAsyncInit = function () {
+                  FB.init({
+                    appId: "1747584958855089",
+                    xfbml: true,
+                    version: "v2.6"
+                  });
+                };
+
+                (function (d, s, id) {
+                  var js, fjs = d.getElementsByTagName(s)[0];
+                  if (d.getElementById(id)) {
+                    return;
+                  }
+                  js = d.createElement(s);
+                  js.id = id;
+                  js.src = "//connect.facebook.net/en_US/sdk.js";
+                  fjs.parentNode.insertBefore(js, fjs);
+                }(document, 'script', 'facebook-jssdk'));
+              </script>
+              <div class="fb-send-to-messenger"
+                   messenger_app_id="1747584958855089"
+                   page_id="982472715207823"
+                   data-ref="MSG_<%= @celeb.user.id %>"
+                   color="blue"
+                   size="standard"/>
+            </div>
+
+            <div id="guide-fb-messenger" class="fb-messenger-guide text-center">
+              <span><a href="javascript:openFBM()">페이스북 메신저에서 계속 진행</a></span>
+            </div>
+          </div>
         </div>
-
-        <!--<div id="guide-refresh" class="guide text-center">-->
-          <!--<span><a href="javascript:location.reload()">페이지를 새로고침</a></span>-->
-        <!--</div>-->
-
-        <div class="fb-messenger-button">
-          <script>
-            window.fbAsyncInit = function () {
-              FB.init({
-                appId: "1747584958855089",
-                xfbml: true,
-                version: "v2.6"
-              });
-            };
-
-            (function (d, s, id) {
-              var js, fjs = d.getElementsByTagName(s)[0];
-              if (d.getElementById(id)) {
-                return;
-              }
-              js = d.createElement(s);
-              js.id = id;
-              js.src = "//connect.facebook.net/en_US/sdk.js";
-              fjs.parentNode.insertBefore(js, fjs);
-            }(document, 'script', 'facebook-jssdk'));
-          </script>
-          <div class="fb-send-to-messenger"
-               messenger_app_id="1747584958855089"
-               page_id="982472715207823"
-               data-ref="MSG_<%= @model.user.id %>"
-               color="blue"
-               size="standard"/>
-        </div>
-
-        <div id="guide-fb-messenger" class="guide text-center" style="width: 244.75px; margin-left: -61.1875px; margin-top: 20px;">
-          <span><a href="javascript:openFBM()">페이스북 메신저에서 계속 진행</a></span>
-        </div>
-
       </div>
     </div>
 

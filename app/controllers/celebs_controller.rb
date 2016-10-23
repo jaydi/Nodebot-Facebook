@@ -3,7 +3,7 @@ class CelebsController < ApplicationController
   before_action :set_minimal_layout_flag, only: [:show]
 
   def show
-    @model = Celeb.find(params[:id])
+    @celeb = Celeb.find(params[:id])
   end
 
   def new
