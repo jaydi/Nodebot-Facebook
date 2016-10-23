@@ -56,6 +56,9 @@ module UserHelper
           elsif previous_changes["status"].first == "message_confirm" or previous_changes["status"].first == "reply_confirm"
             msg_str = "알겠습니다. 저는 그럼 이만.."
             Waikiki::MessageSender.send_text_message(self, msg_str)
+          else
+            msg_str = "넵. 그럼 이만.."
+            Waikiki::MessageSender.send_text_message(self, msg_str)
           end
         end
 
@@ -189,7 +192,7 @@ module UserHelper
   end
 
   def state_transition_error
-    Waikiki::MessageSender.send_text_message(self, "수행할 수 없는 명령입니다.")
+    Waikiki::MessageSender.send_text_message(self, "지금은 수행할 수 없는 명령입니다.")
   end
 
 end
