@@ -41,7 +41,7 @@ class CelebsController < ApplicationController
   end
 
   def destroy
-    if @celeb.destroy!
+    if @celeb.deactivate!
       destroy_session
     end
   end

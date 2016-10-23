@@ -6,5 +6,7 @@ class RefundRequestJob < ActiveJob::Base
     return unless payment.refund_request?
 
     # TODO
+
+    payment.succeed_refund!
   end
 end

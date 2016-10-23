@@ -13,49 +13,66 @@
             <p class="list-group-item-text"><%= @message.text %></p>
 
             <% if @message.delivered? %>
-                <div class="well" style="margin-top: 20px;">
-                  <div class="text-center" style="margin-bottom: 10px;">
-                    <span><a href="javascript:openFBM()">페이스북 메신저</a>에서 답장</span>
-                  </div>
-                  <div class="fb-messenger-button">
-                    <script>
-                      window.fbAsyncInit = function () {
-                        FB.init({
-                          appId: "1747584958855089",
-                          xfbml: true,
-                          version: "v2.6"
-                        });
-                      };
+                <div class="well text-center" style="margin-top: 20px;">
+                  <% if @message.payment.present? %>
+                      <div>
+                        아래 버튼을 눌러서 답장할 수 있습니다.<br/>
+                        답장 수익금: <%= @message.payment.pay_amount * 7 / 10 %>원
+                      </div>
+                      <div class="fb-messenger-button">
+                        <i id="fb-loading-spinner" class="fa fa-circle-o-notch fa-spin" style="font-size:24px"></i>
+                        <script>
+                          window.fbAsyncInit = function () {
+                            FB.init({
+                              appId: "1747584958855089",
+                              xfbml: true,
+                              version: "v2.6"
+                            });
+                          };
 
-                      (function (d, s, id) {
-                        var js, fjs = d.getElementsByTagName(s)[0];
-                        if (d.getElementById(id)) {
-                          return;
-                        }
-                        js = d.createElement(s);
-                        js.id = id;
-                        js.src = "//connect.facebook.net/en_US/sdk.js";
-                        fjs.parentNode.insertBefore(js, fjs);
-                      }(document, 'script', 'facebook-jssdk'));
-                    </script>
-                    <div class="fb-send-to-messenger"
-                         messenger_app_id="1747584958855089"
-                         page_id="982472715207823"
-                         data-ref="RPL_<%= @message.id %>"
-                         color="blue"
-                         size="standard"/>
-                  </div>
+                          (function (d, s, id) {
+                            var js, fjs = d.getElementsByTagName(s)[0];
+                            if (d.getElementById(id)) {
+                              return;
+                            }
+                            js = d.createElement(s);
+                            js.id = id;
+                            js.src = "//connect.facebook.net/en_US/sdk.js";
+                            fjs.parentNode.insertBefore(js, fjs);
+                          }(document, 'script', 'facebook-jssdk'));
+                        </script>
+                        <div class="fb-send-to-messenger"
+                             messenger_app_id="1747584958855089"
+                             page_id="982472715207823"
+                             data-ref="RPL_<%= @message.id %>"
+                             color="blue"
+                             size="standard"/>
+                      </div>
+
+                      <div id="guide-fb-messenger" class="fb-messenger-guide text-center">
+                        <span><a href="javascript:openFBM()">페이스북 메신저에서 계속 진행</a></span>
+
+                        <div id="guide-fb-messenger-app" class="alert alert-danger" style="margin-top: 20px;">
+                          페이스북 메신저는 데스크탑 브라우저 혹은 스마트폰 앱 환경에서 잘 작동합니다. 스마트폰을 사용중일 경우, <b>페이스북 메신저 앱을 먼저 설치</b>해주세요.
+                        </div>
+                      </div>
+                  <% else %>
+                      <div>
+                        보낸이가 결제하지 않은 메시지입니다.<br/>
+                        메시지를 볼 수는 있지만, 답장하고 수익금을 얻을 수는 없습니다.
+                      </div>
+                  <% end %>
                 </div>
             <% end %>
 
           </div>
 
           <% if @message.replied? %>
-            <div class="list-group-item">
-              <h4 class="list-group-item-heading">나의 답장</h4>
+              <div class="list-group-item">
+                <h4 class="list-group-item-heading">나의 답장</h4>
 
-              <embed src="<%= @message.reply_message.video_url %>"/>
-            </div>
+                <embed style="width: 100%" src="<%= @message.reply_message.video_url %>"/>
+              </div>
           <% end %>
 
         </div>

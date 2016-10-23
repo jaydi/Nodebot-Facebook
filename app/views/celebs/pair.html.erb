@@ -9,10 +9,16 @@
       </div>
     </div>
 
-    <div class="row">
+    <div class="row text-center">
       <div class="col-lg-12">
+        <div>
+          팬들에게서 메시지를 받고 영상답장을 하면서 수익을 얻을 수 있습니다.<br/>
+          메시징은 페이스북 메신저의 키키봇을 통해서 진행됩니다.<br/>
+          키키봇은 팬들과 BJ님 사이에서 메시지를 전달하고 답장금액을 결제하는 역할을 합니다.<br/>
+          아래 버튼을 눌러서 BJ님의 페이스북 계정과 키키봇을 연동해주세요.
+        </div>
         <div class="fb-messenger-button">
-
+          <i id="fb-loading-spinner" class="fa fa-circle-o-notch fa-spin" style="font-size:24px"></i>
           <script>
             window.fbAsyncInit = function () {
               FB.init({
@@ -39,7 +45,13 @@
                data-ref="CLB_<%= @celeb.id %>"
                color="blue"
                size="standard"/>
+        </div>
 
+        <div id="guide-fb-messenger" class="fb-messenger-guide text-center">
+          <span><a href="javascript:openFBM()">페이스북 메신저에서 계속 진행</a></span>
+          <div id="guide-fb-messenger-app" class="alert alert-danger" style="margin-top: 20px;">
+            페이스북 메신저는 데스크탑 브라우저 혹은 스마트폰 앱 환경에서 잘 작동합니다. 스마트폰을 사용중일 경우, <b>페이스북 메신저 앱을 먼저 설치</b>해주세요.
+          </div>
         </div>
       </div>
     </div>

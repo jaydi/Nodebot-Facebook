@@ -4,7 +4,7 @@
 
 .fb-messenger-button {
   width: 122.39px;
-  margin: 0 auto;
+  margin: 20px auto;
 }
 
 .fb-messenger-guide {
@@ -33,4 +33,8 @@ input#input-profile {
   #guide-fb-messenger-app {
     display: none;
   }
+}
+
+.message-label {
+  float: right
 }

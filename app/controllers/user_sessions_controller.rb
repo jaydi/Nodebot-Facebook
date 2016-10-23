@@ -6,7 +6,7 @@ class UserSessionsController < ApplicationController
   end
 
   def create
-    celeb = Celeb.where(email: params[:email]).first
+    celeb = Celeb.where(email: params[:email]).active.first
 
     if celeb.blank?
       # TODO ERROR
