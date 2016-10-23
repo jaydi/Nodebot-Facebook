@@ -40,19 +40,7 @@ module Waikiki
       end
 
       def send_quick_reply_message(user, text, quick_replies)
-        # send(user, {text: text, quick_replies: quick_replies})
-        # send as buttons (temp)
-        buttons = quick_replies.map { |qr| Button.new({type: 'postback', title: qr.title, payload: qr.payload}) }
-        send(user,
-             attachment: {
-               type: 'template',
-               payload: {
-                 template_type: 'button',
-                 text: text,
-                 buttons: buttons
-               }
-             }
-        )
+        send(user, {text: text, quick_replies: quick_replies})
       end
 
       def send_attachment_message(user, attachment)
