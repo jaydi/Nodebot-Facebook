@@ -23,6 +23,9 @@ Rails.application.routes.draw do
     end
   end
 
+  # this always has to be located at the LAST
+  get ':name' => 'celebs#show_by_name'
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

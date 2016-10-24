@@ -1,9 +1,14 @@
 class CelebsController < ApplicationController
-  before_action :check_celeb, except: [:show, :new, :create]
+  before_action :check_celeb, except: [:show, :show_by_name, :new, :create]
   before_action :set_minimal_layout_flag, only: [:show]
 
   def show
     @celeb = Celeb.find(params[:id])
+  end
+
+  def show_by_name
+    @celeb = Celeb.find_by_name(params[:name])
+    render :show
   end
 
   def new

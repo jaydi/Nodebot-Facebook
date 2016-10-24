@@ -53,11 +53,8 @@ module UserHelper
           if status_was == "message_completed"
             msg_str = "알겠습니다. 메시지는 잘 전달했어요. :)"
             Waikiki::MessageSender.send_text_message(self, msg_str)
-          elsif status_was == "message_confirm" or status_was == "reply_confirm"
+          elsif status_was == "message_confirm" or status_was == "reply_confirm" or status_was == "message_initiated" or status_was == "reply_initiated"
             msg_str = "알겠습니다. 저는 그럼 이만.."
-            Waikiki::MessageSender.send_text_message(self, msg_str)
-          else
-            msg_str = "넵. 그럼 이만.."
             Waikiki::MessageSender.send_text_message(self, msg_str)
           end
         end
@@ -165,10 +162,6 @@ module UserHelper
 
   def already_replied_error
     Waikiki::MessageSender.send_text_message(self, "이미 답장한 메시지입니다.")
-  end
-
-  def reply_error
-    Waikiki::MessageSender.send_text_message(self, "답장할 수 없는 메시지입니다.")
   end
 
   def notify_reply(reply_msg)

@@ -182,8 +182,6 @@ class User < ActiveRecord::Base
             command(:initiate_reply)
           elsif initial_msg.replied?
             already_replied_error
-          else
-            reply_error
           end
         else
           optin_reply_error
