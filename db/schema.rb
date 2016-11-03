@@ -55,7 +55,6 @@ ActiveRecord::Schema.define(version: 20161102064758) do
     t.integer  "initial_message_id", limit: 4
     t.integer  "sending_user_id",    limit: 4,     null: false
     t.integer  "receiving_user_id",  limit: 4,     null: false
-    t.integer  "kind",               limit: 4,     null: false
     t.text     "text",               limit: 65535
     t.string   "video_url",          limit: 255
     t.integer  "status",             limit: 4,     null: false
@@ -64,7 +63,6 @@ ActiveRecord::Schema.define(version: 20161102064758) do
   end
 
   add_index "messages", ["initial_message_id"], name: "index_messages_on_initial_message_id", using: :btree
-  add_index "messages", ["kind"], name: "index_messages_on_kind", using: :btree
   add_index "messages", ["receiving_user_id"], name: "index_messages_on_receiving_user_id", using: :btree
   add_index "messages", ["sending_user_id"], name: "index_messages_on_sending_user_id", using: :btree
   add_index "messages", ["status"], name: "index_messages_on_status", using: :btree

@@ -6,7 +6,7 @@ class CreateCelebs < ActiveRecord::Migration
       t.string :encrypted_password_iv, null: false
       t.string :name, index: true
       t.string :profile_pic
-      t.integer :price
+      t.integer :price, default: 10000, null: false
       t.string :auth_token, index: true
       t.datetime :auth_tokened_at
       t.integer :status, index: true, null: false

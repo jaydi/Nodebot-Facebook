@@ -134,6 +134,8 @@ class User < ActiveRecord::Base
       self.name = text[0..9]
       save!
       command(:start_messaging)
+    elsif text == '?'
+      state_enter_guide
     end
   end
 
@@ -143,8 +145,6 @@ class User < ActiveRecord::Base
       msg.video_url = video_url
       msg.save!
       command(:confirm_reply)
-    else
-      state_enter_guide
     end
   end
 
