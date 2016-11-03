@@ -9,8 +9,8 @@ class PaymentsController < ApplicationController
     payment = Payment.find(params[:id])
     if payment.pay_request?
       payment.succeed_pay!
-    elsif payment.refund_request?
-      payment.succeed_refund!
+    elsif payment.cancel_request?
+      payment.succeed_cancel!
     end
     render :nothing => true, :status => 200
   end

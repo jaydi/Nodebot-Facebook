@@ -134,8 +134,6 @@ class User < ActiveRecord::Base
       self.name = text[0..9]
       save!
       command(:start_messaging)
-    else
-      state_enter_guide
     end
   end
 

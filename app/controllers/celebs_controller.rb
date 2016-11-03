@@ -1,14 +1,9 @@
 class CelebsController < ApplicationController
-  before_action :check_celeb, except: [:show, :show_by_name, :new, :create]
-  before_action :set_minimal_layout_flag, only: [:show]
-
-  def show
-    @celeb = Celeb.find(params[:id])
-  end
+  before_action :check_celeb, except: [:show_by_name, :new, :create]
+  before_action :set_minimal_layout_flag, only: [:show_by_name]
 
   def show_by_name
     @celeb = Celeb.find_by_name(params[:name])
-    render :show
   end
 
   def new
@@ -16,12 +11,13 @@ class CelebsController < ApplicationController
   end
 
   def create
-    celeb = Celeb.new(celeb_params)
-    if celeb.save!
+    begin
+      celeb = Celeb.new(celeb_params)
+      celeb.save!
       create_session(celeb)
-      redirect_to celeb_edit_path
-    else
-      redirect_to new_celeb_path
+      redirect_to celebs_edit_path
+    rescue ActiveRecord::RecordInvalids
+      redirect_to new_celeb_path, flash: {error_message: celeb.errors.messages}
     end
   end
 
@@ -31,24 +27,40 @@ class CelebsController < ApplicationController
   def update
     @celeb.name = params[:name]
     @celeb.profile_pic = upload_profile(params[:profile])
-    if @celeb.save!
-      unless @celeb.paired?
-        redirect_to celeb_pair_path
-      else
-        redirect_to messages_path
-      end
+    if Celeb.find_by_name(@celeb.name).present?
+      redirect_to celebs_edit_path, flash: {error_message: '이미 존재하는 닉네임입니다.'}
     else
-      redirect_to celeb_edit_path
+      begin
+        @celeb.save!
+        unless @celeb.paired?
+          redirect_to celebs_pair_path
+        else
+          redirect_to messages_path
+        end
+      rescue
+        redirect_to celebs_edit_path, flash: {error_message: '계정 업데이트에 실패했습니다.'}
+      end
     end
   end
 
   def pair
   end
 
-  def destroy
-    if @celeb.deactivate!
-      destroy_session
+  def edit_password
+  end
+
+  def update_password
+    if params[:current_password] == @celeb.password
+      @celeb.password = params[:new_password]
+      @celeb.save!
+      redirect_to celebs_edit_path, flash: {info_message: '비밀번호가 변경되었습니다.'}
+    else
+      redirect_to celebs_edit_password_path, flash: {error_message: '현재 비밀번호가 일치하지 않습니다.'}
     end
+  end
+
+  def destroy
+    destroy_session if @celeb.deactivate!
   end
 
   private

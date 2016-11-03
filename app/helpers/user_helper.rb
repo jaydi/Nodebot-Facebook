@@ -35,9 +35,8 @@ module UserHelper
       when :payment_initiated
         Payment.create({
                          message_id: current_message.id,
-                         sending_user_id: current_message.sending_user_id,
-                         receiving_user_id: current_message.receiving_user_id,
-                         pay_amount: current_message.receiver.celeb.price
+                         pay_amount: current_message.receiver.celeb.price,
+                         status: Payment.statuses[:pay_request]
                        })
 
       when :payment_completed
@@ -180,8 +179,8 @@ module UserHelper
     Waikiki::MessageSender.send_button_message(self, msg_str, buttons)
   end
 
-  def notify_refund(refund_payment)
-    Waikiki::MessageSender.send_text_message(self, "#{refund_payment.message.text}\n\n#{refund_payment.message.receiver.celeb.name}님이 위 메시지에 대해 답장을 못하셨습니다.. :( #{refund_payment.pay_amount}원 환불해드렸어요.")
+  def notify_cancel(canceled_payment)
+    Waikiki::MessageSender.send_text_message(self, "#{canceled_payment.message.text}\n\n#{canceled_payment.message.receiver.celeb.name}님이 위 메시지에 대해 답장을 못하셨습니다.. :( #{canceled_payment.pay_amount}원 환불해드렸어요.")
   end
 
   def state_transition_error

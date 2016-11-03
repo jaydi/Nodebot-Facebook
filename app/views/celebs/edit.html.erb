@@ -33,7 +33,7 @@
             <div class="row control-group">
               <div class="form-group col-xs-6 col-xs-offset-3 floating-label-form-group controls input-image">
                 <img id="img-profile" class="img-responsive img-centered img-circle img-profile clickable" onclick="inputProfile()" src="<%= @celeb.profile_pic.blank? ? "/images/profile.png" : @celeb.profile_pic %>"/>
-                <input id="input-profile" name="profile" type="file" onchange="readURL(this)" required/>
+                <input id="input-profile" name="profile" type="file" required/>
 
                 <p class="help-block text-danger"></p>
               </div>
@@ -52,7 +52,7 @@
 
             <div id="success"></div>
             <div class="row">
-              <div class="form-group col-xs-6 col-xs-offset-3">
+              <div class="form-group col-xs-6 col-xs-offset-3 text-right">
                 <button type="submit" class="btn btn-success btn-lg">확인</button>
               </div>
             </div>

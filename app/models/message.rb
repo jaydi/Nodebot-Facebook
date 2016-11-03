@@ -53,7 +53,7 @@ class Message < ActiveRecord::Base
   aasm column: :status, enum: true do
     state :initiated, initial: true
     state :completed
-    state :delivered, after_enter: [:send_noti_if_reply]
+    state :delivered, after_enter: [:send_notice_if_reply]
     state :read
     state :replied
     state :wasted, after_enter: [:refund]
@@ -93,7 +93,7 @@ class Message < ActiveRecord::Base
     sender.celeb? and video_url.present?
   end
 
-  def send_noti_if_reply
+  def send_notice_if_reply
     if reply?
       initial_message.reply!
       receiver.notify_reply(self) if celeb_message?
@@ -101,7 +101,7 @@ class Message < ActiveRecord::Base
   end
 
   def refund
-    payment.request_refund! unless payment.blank?
+    payment.cancel unless payment.blank?
   end
 
 end

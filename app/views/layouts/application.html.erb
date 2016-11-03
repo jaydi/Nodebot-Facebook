@@ -15,6 +15,34 @@
   <!-- Custom Fonts -->
   <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
   <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+
+  <script>
+    $(document).ready(function () {
+      toastr.options = {
+        "closeButton": false,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": false,
+        "positionClass": "toast-top-center",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "5000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+      }
+      <% if flash[:info_message].present? %>
+      toastr.info('<%= flash[:info_message] %>');
+      <% end %>
+      <% if flash[:error_message].present? %>
+      toastr.error('<%= flash[:error_message] %>');
+      <% end %>
+    });
+  </script>
 </head>
 <body>
 
@@ -56,13 +84,13 @@
                 </li>
             <% else %>
                 <li>
-                  <a href="javascript:window.location.href = '/celebs/<%= @celeb.id %>'">내 페이지</a>
+                  <a href="javascript:window.location.href = '/<%= @celeb.name %>'">내 페이지</a>
                 </li>
                 <li>
-                  <a href="/celeb/edit">계정관리</a>
+                  <a href="/celebs/edit">계정관리</a>
                 </li>
                 <li>
-                  <a href="/user_session/destroy">로그아웃</a>
+                  <a href="/user_sessions/destroy">로그아웃</a>
                 </li>
             <% end %>
           </ul>
@@ -81,6 +109,7 @@
       <div class="row">
         <div class="footer-col col-md-4">
           <h3>Location</h3>
+
           <p>8 14th St Teheran Rd<br>Gangnam, Seoul 06234</p>
         </div>
 
@@ -96,7 +125,7 @@
         <div class="footer-col col-md-4">
           <h3>About Kicky</h3>
 
-          <p>Kicky is a middle-bot service for celebrities and fans to connect closer together in a new way.</p>
+          <p>Kicky is a messenger-bot service for celebrities and fans to connect closer together in a new way.</p>
         </div>
       </div>
     </div>

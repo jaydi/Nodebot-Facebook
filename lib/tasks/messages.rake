@@ -9,6 +9,6 @@ namespace :messages do
   private
 
   def my_logger
-    @my_logger ||= ::Logger.new("#{Rails.root}/log/#{Rails.env}_messages_rake.log")
+    @my_logger ||= ::Logger.new("#{Rails.root}/log/#{Rails.env}_messages_task.log")
   end
 end

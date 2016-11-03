@@ -5,6 +5,8 @@ class Celeb < ActiveRecord::Base
 
   attr_encrypted :password, :key => APP_CONFIG[:secret_key]
 
+  validates :email, :uniqueness => true
+
   enum status: {
     pending: 10,
     active: 20,
@@ -35,6 +37,12 @@ class Celeb < ActiveRecord::Base
 
   def paired?
     !user.blank?
+  end
+
+  def generate_auth_token
+    token = (0...20).map { (65 + rand(26)).chr }.join
+    update_attributes({auth_token: token, auth_tokened_at: Time.now})
+    token
   end
 
 end

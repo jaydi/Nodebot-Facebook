@@ -50,6 +50,9 @@ gem 'attr_encrypted'
 # For image storage
 gem 'cloudinary'
 
+# Mail Check
+gem 'mailcatcher'
+
 # Use Unicorn as the app server
 # gem 'unicorn'
 

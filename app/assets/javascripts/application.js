@@ -18,6 +18,11 @@
 //= require respond.min
 //= require freelancer
 //= require jquery.iframetracker.js
+//= require toastr.min.js
+//= require jquery.ui.widget.js
+//= require jquery.iframe-transport.js
+//= require jquery.fileupload.js
+//= require jquery.cloudinary.js
 //= require_tree .
 
 $(document).ready(function () {
