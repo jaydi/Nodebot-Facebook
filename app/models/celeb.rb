@@ -14,8 +14,8 @@ class Celeb < ActiveRecord::Base
   }
 
   aasm column: :status, enum: true do
-    state :pending, initial: true
-    state :active
+    state :pending
+    state :active, initial: true
     state :inactive
 
     event :initiate do
