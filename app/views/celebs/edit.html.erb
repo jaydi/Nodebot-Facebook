@@ -1,13 +1,9 @@
 <script>
-  function inputProfile() {
-    $('#input-profile').trigger('click');
-  }
-
-  function readURL(input) {
+  function showPreview(input) {
     if (input.files && input.files[0]) {
       var reader = new FileReader();
       reader.onload = function (e) {
-        $('#img-profile').attr('src', e.target.result);
+        $('#img-profile').css('background-image', 'url("' + e.target.result + '")');
       }
       reader.readAsDataURL(input.files[0]);
     }
@@ -32,8 +28,8 @@
 
             <div class="row control-group">
               <div class="form-group col-xs-6 col-xs-offset-3 floating-label-form-group controls input-image">
-                <img id="img-profile" class="img-responsive img-centered img-circle img-profile clickable" onclick="inputProfile()" src="<%= @celeb.profile_pic.blank? ? "/images/profile.png" : @celeb.profile_pic %>"/>
-                <input id="input-profile" name="profile" type="file" required/>
+                <img id="img-profile" class="img-responsive img-centered img-circle img-profile clickable" onclick="$('#input-profile').trigger('click');" style="background-image: url('<%= @celeb.profile_pic.blank? ? "/images/profile.png" : @celeb.profile_pic %>')"/>
+                <input id="input-profile" name="profile" onchange="showPreview(this)" type="file" required/>
 
                 <p class="help-block text-danger"></p>
               </div>
