@@ -50,14 +50,16 @@ gem 'attr_encrypted'
 # For image storage
 gem 'cloudinary'
 
-# Mail Check
-gem 'mailcatcher'
-
 # Use Unicorn as the app server
 # gem 'unicorn'
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
+
+group :local do
+  # Mail Check
+  gem 'mailcatcher'
+end
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
