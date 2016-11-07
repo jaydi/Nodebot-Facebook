@@ -35,7 +35,7 @@ class CelebsController < ApplicationController
         unless @celeb.paired?
           redirect_to celebs_pair_path
         else
-          redirect_to messages_path
+          redirect_to messages_path, flash: {info_message: '계정 정보가 업데이트 되었습니다.'}
         end
       rescue
         redirect_to celebs_edit_path, flash: {error_message: '계정 업데이트에 실패했습니다.'}

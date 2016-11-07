@@ -22,7 +22,7 @@ Rails.application.routes.draw do
   resources :messages, only: [:index, :show]
 
   resources :payments, only: [:show] do
-    member do
+    collection do
       post 'callback'
     end
   end
