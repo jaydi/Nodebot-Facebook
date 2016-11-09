@@ -3,13 +3,7 @@ module UserHelper
   def state_enter_action
     case status.to_sym
       when :waiting
-        unless current_message.blank?
-          if current_message.completed?
-            current_message.deliver!
-          else
-            current_message.cancel!
-          end
-        end
+        current_message.cancel! if current_message.present? and (current_message.message_initiated? or current_message.message_confirm?)
 
       when :nickname_setting
 
@@ -27,6 +21,7 @@ module UserHelper
 
       when :message_completed
         current_message.complete!
+        current_message.deliver!
 
       when :reply_completed
         current_message.complete!
@@ -40,7 +35,9 @@ module UserHelper
                        })
 
       when :payment_completed
-        current_message.deliver!
+
+      when :payment_cancelled
+        current_message.payment.waste!
 
     end
   end
@@ -49,7 +46,7 @@ module UserHelper
     case status.to_sym
       when :waiting
         if status_changed?
-          if status_was == "message_completed" or status_was == "payment_initiated"
+          if status_was == "message_completed"
             msg_str = "알겠습니다. 메시지는 잘 전달했어요. :)"
             Waikiki::MessageSender.send_text_message(self, msg_str)
           elsif status_was == "message_confirm" or status_was == "reply_confirm" or status_was == "message_initiated" or status_was == "reply_initiated"
@@ -104,12 +101,16 @@ module UserHelper
       when :payment_initiated
         msg_str = "#{current_message.receiver.celeb.price}원을 결제합니다. 아래 링크에서 결제를 진행해주세요."
         button_kakao_pay = Button.new({type: 'web_url', url: "#{APP_CONFIG[:host_url]}/payments/#{current_message.payment.id}", title: '카카오페이'})
-        button_cancel = Button.new({type: 'postback', title: '취소', payload: "end_conversation"})
+        button_cancel = Button.new({type: 'postback', title: '취소', payload: "cancel_payment"})
         buttons = [button_kakao_pay, button_cancel]
         Waikiki::MessageSender.send_button_message(self, msg_str, buttons)
 
       when :payment_completed
         msg_str = "메시지를 전달했습니다. 답장영상이 도착하면 바로 전달해드릴게요. :)"
+        Waikiki::MessageSender.send_text_message(self, msg_str)
+
+      when :payment_cancelled
+        msg_str = "알겠습니다. 메시지는 잘 전달했어요. :)"
         Waikiki::MessageSender.send_text_message(self, msg_str)
 
       when :reply_initiated

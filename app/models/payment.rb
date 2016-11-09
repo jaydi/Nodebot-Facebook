@@ -24,6 +24,7 @@ class Payment < ActiveRecord::Base
     state :cancel_request
     state :cancel_fail
     state :cancel_success, after_enter: :notify_cancel_success
+    state :wasted
 
     event :fail_pay do
       transitions from: :pay_request, to: :pay_fail
