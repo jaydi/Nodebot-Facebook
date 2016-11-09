@@ -21,7 +21,6 @@ module UserHelper
 
       when :message_completed
         current_message.complete!
-        current_message.deliver!
 
       when :reply_completed
         current_message.complete!
@@ -35,9 +34,11 @@ module UserHelper
                        })
 
       when :payment_completed
+        current_message.deliver!
 
       when :payment_cancelled
         current_message.payment.waste!
+        current_message.deliver!
 
     end
   end
