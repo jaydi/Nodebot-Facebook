@@ -1,43 +1,48 @@
 <section id="sign-up" class="first">
   <div class="container" style="height: 300px;">
 
-    <% if @payment.pay_request? %>
-        <script>
-          $(document).ready(function () {
-            IMP.request_pay({
-              pg: "kakao",
-              pay_method: "card",
-              escrow: false,
-              merchant_uid: <%= @payment.id %>,
-              name: "<%= Rails.env.production? ? "유료메시지_#{@payment.message.receiver.celeb.name}" : "결제테스트" %>",
-              amount: <%= @payment.pay_amount %>,
-              buyer_name: "<%= @payment.message.sender.name %>",
-              digital: true
-            }, function (rsp) {
-              var msg = "";
-              msg += " PG ID:" + rsp.pg_tid;
-              msg += " 아임포트 ID:" + rsp.imp_uid;
-              msg += " 거래 ID:" + rsp.merchant_uid;
-              msg += " 결제금액:" + rsp.paid_amount;
-              msg += " 카드승인번호:" + rsp.apply_num;
-              msg += " 결제상태:" + rsp.status;
-              msg += " 결제시각:" + rsp.paid_at;
-              msg += " 매출전표:" + rsp.receipt_url;
-              msg += " 에러메시지:" + rsp.error_message;
-              if (rsp.success) {
-                msg = "결제가 완료되었습니다. " + msg;
-              } else {
-                msg = "결제에 실패하였습니다. " + msg;
-              }
-              console.log(msg);
+    <div class="row">
+      <div class="col-lg-12 text-center">
+        <% if @payment.pay_request? %>
+            <script>
+              $(document).ready(function () {
+                IMP.request_pay({
+                  pg: "kakao",
+                  pay_method: "card",
+                  escrow: false,
+                  merchant_uid: <%= @payment.id %>,
+                  name: "<%= Rails.env.production? ? "유료메시지_#{@payment.message.receiver.celeb.name}" : "결제테스트" %>",
+                  amount: <%= @payment.pay_amount %>,
+                  buyer_name: "<%= @payment.message.sender.name %>",
+                  digital: true
+                }, function (rsp) {
+                  var msg = "";
+                  if (rsp.success) {
+                    msg = "결제가 완료되었습니다.";
+                  } else {
+                    msg = "결제에 실패하였습니다.";
+                  }
+                  $("#payment-completed-guide").html(msg);
 
-              window.location.href = "https://m.me/kickybot"
-            });
-          });
-        </script>
-    <% else %>
-      <p>진행할 수 없는 결제입니다.</p>
-    <% end %>
+                  msg += " PGID:" + rsp.pg_tid;
+                  msg += " 아임포트ID:" + rsp.imp_uid;
+                  msg += " 거래ID:" + rsp.merchant_uid;
+                  msg += " 결제금액:" + rsp.paid_amount;
+                  msg += " 카드승인번호:" + rsp.apply_num;
+                  msg += " 결제상태:" + rsp.status;
+                  msg += " 결제시각:" + rsp.paid_at;
+                  msg += " 매출전표:" + rsp.receipt_url;
+                  msg += " 에러메시지:" + rsp.error_message;
+                  console.log(msg);
+                });
+              });
+            </script>
+            <p id="payment-completed-guide"></p>
+        <% else %>
+            <p>진행할 수 없는 결제입니다.</p>
+        <% end %>
+      </div>
+    </div>
 
   </div>
 </section>
