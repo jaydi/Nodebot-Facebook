@@ -19,7 +19,7 @@ class Payment < ActiveRecord::Base
 
   aasm column: :status, enum: true do
     state :pay_request
-    state :pay_fail
+    state :pay_fail, after_enter: :notify_pay_fail
     state :pay_success, after_enter: :notify_pay_success
     state :cancel_request
     state :cancel_fail
@@ -59,6 +59,10 @@ class Payment < ActiveRecord::Base
 
   def notify_pay_success
     message.sender.command(:complete_payment)
+  end
+
+  def notify_pay_fail
+    message.sender.notify_pay_fail(self)
   end
 
   def notify_cancel_success

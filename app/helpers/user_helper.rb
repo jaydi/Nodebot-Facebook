@@ -49,11 +49,11 @@ module UserHelper
     case status.to_sym
       when :waiting
         if status_changed?
-          if status_was == "message_completed"
+          if status_was == "message_completed" or status_was == "payment_initiated"
             msg_str = "알겠습니다. 메시지는 잘 전달했어요. :)"
             Waikiki::MessageSender.send_text_message(self, msg_str)
           elsif status_was == "message_confirm" or status_was == "reply_confirm" or status_was == "message_initiated" or status_was == "reply_initiated"
-            msg_str = "알겠습니다. 저는 그럼 이만.."
+            msg_str = "저는 그럼 이만.."
             Waikiki::MessageSender.send_text_message(self, msg_str)
           end
         end
@@ -102,9 +102,10 @@ module UserHelper
         Waikiki::MessageSender.send_quick_reply_message(self, msg_str, quick_replies)
 
       when :payment_initiated
-        msg_str = "#{current_message.receiver.celeb.price}원을 결제합니다. 아래 링크중 하나에서 결제를 진행해주세요."
-        button_naver_pay = Button.new({type: 'web_url', url: "#{APP_CONFIG[:host_url]}/payments/#{current_message.payment.id}", title: '네이버페이'})
-        buttons = [button_naver_pay]
+        msg_str = "#{current_message.receiver.celeb.price}원을 결제합니다. 아래 링크에서 결제를 진행해주세요."
+        button_kakao_pay = Button.new({type: 'web_url', url: "#{APP_CONFIG[:host_url]}/payments/#{current_message.payment.id}", title: '카카오페이'})
+        button_cancel = Button.new({type: 'postback', title: '취소', payload: "end_conversation"})
+        buttons = [button_kakao_pay, button_cancel]
         Waikiki::MessageSender.send_button_message(self, msg_str, buttons)
 
       when :payment_completed
@@ -177,6 +178,11 @@ module UserHelper
     button_reply = Button.new({type: 'postback', title: '답장하기', payload: "reply_to:#{reply_msg.id}"})
     buttons = [button_reply]
     Waikiki::MessageSender.send_button_message(self, msg_str, buttons)
+  end
+
+  def notify_pay_fail(failed_payment)
+    Waikiki::MessageSender.send_text_message(self, "결제에 실패했습니다.\n에러메시지: #{failed_payment.pg_message}")
+    state_enter_guide
   end
 
   def notify_cancel(canceled_payment)

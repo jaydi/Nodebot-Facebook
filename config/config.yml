@@ -4,16 +4,18 @@ defaults: &defaults
   page_access_token: EAAY1a1Sv97EBAFe7AZBRhfZBc2amJTs6uBd6YPnwoMeqInKTfBfJlZCFE9i8jexUZCNXNc4HGJmldvf0KLt4mZBwgZCssT2ZArQvGC41Q2eJ1H8oOH3Ov3KJiJhDZBMt93LhpoLhY76lRaeo4RY5cUcgRZBN7o7fViQ0G6BBw5io9XQZDZD
   graph_api_url: https://graph.facebook.com/v2.6
   secret_key: JTs6uBd6YPnwoMeqInKTfBfJlZCFE9i8
+  import_api_key: 0645047318061418
+  import_api_secret: ltRDFNeLrIkw87TfYUS9n2Yuz1qBqz1M3TpIHEu9mOFvVyLTtD3QG1lf3MQulSgoMG7tkBCHpidlRYek
 
 test:
   <<: *defaults
   host_url: localhost:3000
 
-local:
+development:
   <<: *defaults
   host_url: localhost:3000
 
-development:
+staging:
   <<: *defaults
 
 production:
