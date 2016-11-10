@@ -42,11 +42,11 @@
                           }(document, 'script', 'facebook-jssdk'));
                         </script>
                         <div class="fb-send-to-messenger"
-                             messenger_app_id="1747584958855089"
-                             page_id="982472715207823"
+                             messenger_app_id="<%= APP_CONFIG[:fb_messenger_app_id] %>s"
+                             page_id="<%= APP_CONFIG[:fb_page_id] %>"
                              data-ref="RPL_<%= @message.id %>"
                              color="blue"
-                             size="standard"/>
+                             size="large"/>
                       </div>
 
                       <div id="guide-fb-messenger" class="fb-messenger-guide text-center">

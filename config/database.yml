@@ -5,7 +5,7 @@ default: &default
   pool: 32
   username: waikiki
   password: dhkdlzlzlfh!!
-  host: 52.78.1.14
+  host: metabot.tk
   database: waikiki_development
 
 test:

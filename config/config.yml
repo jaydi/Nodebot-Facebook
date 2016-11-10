@@ -1,22 +1,24 @@
 defaults: &defaults
   host_url: https://www.metabot.tk
-  page_id: 982472715207823
-  page_access_token: EAAY1a1Sv97EBAFe7AZBRhfZBc2amJTs6uBd6YPnwoMeqInKTfBfJlZCFE9i8jexUZCNXNc4HGJmldvf0KLt4mZBwgZCssT2ZArQvGC41Q2eJ1H8oOH3Ov3KJiJhDZBMt93LhpoLhY76lRaeo4RY5cUcgRZBN7o7fViQ0G6BBw5io9XQZDZD
-  graph_api_url: https://graph.facebook.com/v2.6
-  secret_key: JTs6uBd6YPnwoMeqInKTfBfJlZCFE9i8
+  encryption_key: JTs6uBd6YPnwoMeqInKTfBfJlZCFE9i8
+  fb_messenger_app_id: 1747584958855089
+  fb_page_id: 982472715207823
+  fb_page_access_token: EAAY1a1Sv97EBAFe7AZBRhfZBc2amJTs6uBd6YPnwoMeqInKTfBfJlZCFE9i8jexUZCNXNc4HGJmldvf0KLt4mZBwgZCssT2ZArQvGC41Q2eJ1H8oOH3Ov3KJiJhDZBMt93LhpoLhY76lRaeo4RY5cUcgRZBN7o7fViQ0G6BBw5io9XQZDZD
+  fb_graph_api_url: https://graph.facebook.com/v2.6
   import_api_key: 0645047318061418
   import_api_secret: ltRDFNeLrIkw87TfYUS9n2Yuz1qBqz1M3TpIHEu9mOFvVyLTtD3QG1lf3MQulSgoMG7tkBCHpidlRYek
 
 test:
   <<: *defaults
-  host_url: localhost:3000
 
 development:
   <<: *defaults
-  host_url: localhost:3000
 
 staging:
   <<: *defaults
+  redis_url: redis://localhost:6379
 
 production:
   <<: *defaults
+  host_url: https://kicky.video
+  redis_url: redis://localhost:6379
