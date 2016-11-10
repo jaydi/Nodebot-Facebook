@@ -1,5 +1,5 @@
 class CelebMailer < ApplicationMailer
-  default from: 'noreply@kicky.video'
+  default from: 'noreply@kiki.video'
 
   def new_password_email(celeb)
     @celeb = celeb

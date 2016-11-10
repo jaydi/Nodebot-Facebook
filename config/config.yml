@@ -20,5 +20,5 @@ staging:
 
 production:
   <<: *defaults
-  host_url: https://kicky.video
+  host_url: https://kiki.video
   redis_url: redis://localhost:6379

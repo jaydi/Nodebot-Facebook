@@ -19,7 +19,7 @@
 //= require freelancer
 //= require jquery.iframetracker.js
 //= require toastr.min.js
-//= require import.js
+//= require iamport.js
 //= require_tree .
 
 $(document).ready(function () {
@@ -62,5 +62,5 @@ function listenFBiframe() {
 }
 
 function openFBM() {
-  window.open('https://m.me/kickybot', '_blank');
+  window.open('https://m.me/kikibot', '_blank');
 }
