@@ -20,3 +20,5 @@
 # Ignore IntelliJ config files
 /.idea/*
 *.iml
+
+Gemfile.lock
