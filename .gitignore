@@ -15,7 +15,8 @@
 /log/*
 !/log/.keep
 /tmp
+/shared
 
 # Ignore IntelliJ config files
-Nodebot.iml
 /.idea/*
+*.iml
