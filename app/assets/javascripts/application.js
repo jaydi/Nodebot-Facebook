@@ -62,5 +62,5 @@ function listenFBiframe() {
 }
 
 function openFBM() {
-  window.open('https://m.me/kikibot', '_blank');
+  window.open('https://m.me/waikikibot', '_blank');
 }
