@@ -3,10 +3,10 @@ default: &default
   encoding: utf8mb4
   reconnect: true
   pool: 32
-  username: waikiki
-  password: dhkdlzlzlfh!!
   host: metabot.tk
   database: waikiki_development
+  username: waikiki
+  password: dhkdlzlzlfh!!
 
 test:
   <<: *default
@@ -26,7 +26,7 @@ staging:
 
 production:
   <<: *default
-  username: waikiki
-  password: asjkgF,_ls12n#T
   host: kiki.video
   database: waikiki_production
+  username: waikiki
+  password: asjkgF,_ls12n#T
