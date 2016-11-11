@@ -1,9 +1,9 @@
-:pidfile: ../shared/pids/sidekiq.pid
+:pidfile: ./shared/pids/sidekiq.pid
 :daemon: true
 
 staging:
   :verbose: true
-  :logfile: ../shared/log/sidekiq.staging.log
+  :logfile: ./shared/log/sidekiq.staging.log
   :concurrency: 5
   :timeout: 30
   :queues:
@@ -11,7 +11,7 @@ staging:
 
 production:
   :verbose: false
-  :logfile: ../shared/log/sidekiq.production.log
+  :logfile: ./shared/log/sidekiq.production.log
   :concurrency: 20
   :timeout: 3
   :queues:

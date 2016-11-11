@@ -26,4 +26,7 @@ staging:
 
 production:
   <<: *default
+  username: waikiki
+  password: asjkgF,_ls12n#T
+  host: kiki.video
   database: waikiki_production
