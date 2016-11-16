@@ -10,24 +10,24 @@ class Celeb < ActiveRecord::Base
   enum status: {
     pending: 10,
     active: 20,
-    inactive: 30
+    deactivated: 30
   }
 
   aasm column: :status, enum: true do
-    state :pending
-    state :active, initial: true
-    state :inactive
+    state :pending, initial: true
+    state :active
+    state :deactivated
 
     event :initiate do
       transitions from: :pending, to: :active
     end
 
     event :deactivate do
-      transitions from: :active, to: :inactive
+      transitions from: :active, to: :deactivated
     end
 
     event :activate do
-      transitions from: :inactive, to: :active
+      transitions from: :deactivated, to: :active
     end
   end
 

@@ -50,9 +50,12 @@ group :development, :test do
 end
 
 group :test do
-  # Test DB
   gem 'sqlite3'
   gem 'shoulda-matchers', '~> 3.1'
+  gem 'factory_girl_rails'
+  gem 'webmock'
+  gem 'sinatra'
+  gem 'sinatra-contrib'
 end
 
 group :development do

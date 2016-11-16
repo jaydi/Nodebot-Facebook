@@ -1,6 +1,7 @@
 defaults: &defaults
   host_url: https://www.metabot.tk
   encryption_key: JTs6uBd6YPnwoMeqInKTfBfJlZCFE9i8
+  fb_webhook_token: this__is__nodebot__
   fb_messenger_app_id: 1747584958855089
   fb_page_id: 982472715207823
   fb_page_access_token: EAAY1a1Sv97EBAFe7AZBRhfZBc2amJTs6uBd6YPnwoMeqInKTfBfJlZCFE9i8jexUZCNXNc4HGJmldvf0KLt4mZBwgZCssT2ZArQvGC41Q2eJ1H8oOH3Ov3KJiJhDZBMt93LhpoLhY76lRaeo4RY5cUcgRZBN7o7fViQ0G6BBw5io9XQZDZD

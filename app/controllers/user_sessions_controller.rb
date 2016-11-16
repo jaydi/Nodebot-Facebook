@@ -19,7 +19,13 @@ class UserSessionsController < ApplicationController
     end
 
     create_session(celeb)
-    redirect_to messages_path
+    if !celeb.info_filled?
+      redirect_to celebs_edit_path
+    elsif !celeb.paired?
+      redirect_to celebs_pair_path
+    else
+      redirect_to messages_path
+    end
   end
 
   def request_new_password
@@ -43,6 +49,7 @@ class UserSessionsController < ApplicationController
   private
 
   def set_new_password_and_send(celeb)
+    return if Rails.env.test?
     new_password = (0...8).map { (65 + rand(26)).chr }.join
     celeb.password = new_password
     celeb.save!

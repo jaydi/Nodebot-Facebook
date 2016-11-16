@@ -18,16 +18,7 @@ class ApplicationController < ActionController::Base
     begin
       @celeb ||= current_celeb
     rescue ActiveRecord::RecordNotFound
-      redirect_to new_user_session_path if @celeb.blank?
-    end
-  end
-
-  def check_celeb_status
-    celeb = current_celeb
-    if !celeb.info_filled?
-      redirect_to celebs_edit_path
-    elsif !celeb.paired?
-      redirect_to celebs_pair_path
+      redirect_to new_user_session_path
     end
   end
 

@@ -1,6 +1,5 @@
 class MessagesController < ApplicationController
   before_action :check_celeb
-  before_action :check_celeb_status
 
   def index
     @messages = Message.fan_messages(@celeb.user.id).order(created_at: :desc)

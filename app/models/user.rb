@@ -157,7 +157,8 @@ class User < ActiveRecord::Base
   def optin(target_type, target_id)
     case target_type.to_sym
       when :CLB
-        self.celeb = Celeb.find(target_id)
+        celeb = Celeb.find(target_id)
+        celeb.initiate!
         save!
         optin_celeb_guide
 

@@ -5,10 +5,10 @@ class WebMessagesController < ApplicationController
   end
 
   def verify_webhook
-    if params['hub.verify_token'] == 'this__is__nodebot__'
-      render text: params['hub.challenge']
+    if params['hub.verify_token'] == "#{APP_CONFIG[:fb_webhook_token]}"
+      render text: params['hub.challenge'], status: 200
     else
-      render text: 'Error, wrong validation token'
+      render text: 'error, wrong validation token', status: 200
     end
   end
 
@@ -16,12 +16,12 @@ class WebMessagesController < ApplicationController
     web_messages.each do |wm|
       if wm.save!
         WebMessageHandlingJob.perform_later(wm.id)
-        my_logger.info "saved web message with id: #{wm.id}"
+        my_logger.info "saved web message(#{wm.id}) with params: #{params}"
       else
         my_logger.info "web message save error with params: #{params}"
       end
     end
-    render :nothing => true, :status => 200
+    render nothing: true, status: 200
   end
 
   private

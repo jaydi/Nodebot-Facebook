@@ -61,6 +61,7 @@ class CelebsController < ApplicationController
 
   def destroy
     destroy_session if @celeb.deactivate!
+    redirect_to root_path
   end
 
   private
@@ -70,6 +71,7 @@ class CelebsController < ApplicationController
   end
 
   def upload_profile(profile_dispatch)
+    return 'test_url' if Rails.env.test?
     res = Cloudinary::Uploader.upload(profile_dispatch.tempfile.path, crop: :fill, width: 256, height: 256)
     res['secure_url']
   end
