@@ -3,28 +3,21 @@ module UserHelper
   def state_enter_action
     case status.to_sym
       when :waiting
-        current_message.cancel! if current_message.present? and (current_message.message_initiated? or current_message.message_confirm?)
+        current_message.deliver! if current_message.present? and current_message.completed?
 
       when :nickname_setting
 
       when :message_initiated
 
-      when :reply_initiated
-
       when :messaging
 
-      when :replying
-
       when :message_confirm
-
-      when :reply_confirm
 
       when :message_completed
         current_message.complete!
 
-      when :reply_completed
-        current_message.complete!
-        current_message.deliver!
+      when :message_cancelled
+        current_message.cancel!
 
       when :payment_initiated
         Payment.create({
@@ -40,6 +33,19 @@ module UserHelper
         current_message.payment.waste!
         current_message.deliver!
 
+      when :reply_initiated
+
+      when :replying
+
+      when :reply_confirm
+
+      when :reply_completed
+        current_message.complete!
+        current_message.deliver!
+
+      when :reply_cancelled
+        current_message.cancel!
+
     end
   end
 
@@ -49,9 +55,6 @@ module UserHelper
         if status_changed?
           if status_was == "message_completed"
             msg_str = "알겠습니다. 메시지는 잘 전달했어요. :)"
-            Waikiki::MessageSender.send_text_message(self, msg_str)
-          elsif status_was == "message_confirm" or status_was == "reply_confirm" or status_was == "message_initiated" or status_was == "reply_initiated"
-            msg_str = "저는 그럼 이만.."
             Waikiki::MessageSender.send_text_message(self, msg_str)
           end
         end
@@ -75,7 +78,7 @@ module UserHelper
         else
           msg_str = "안녕하세요, #{name}님. #{current_message.receiver.celeb.name}님과 대화를 시작합니다. :)"
           quick_reply_strt_msg = QuickReply.new({title: '네', payload: 'start_messaging'})
-          quick_reply_end_conv = QuickReply.new({title: '아니오', payload: 'end_conversation'})
+          quick_reply_end_conv = QuickReply.new({title: '아니오', payload: 'cancel_message'})
           quick_replies = [quick_reply_strt_msg, quick_reply_end_conv]
           Waikiki::MessageSender.send_quick_reply_message(self, msg_str, quick_replies)
         end
@@ -88,7 +91,7 @@ module UserHelper
         msg_str = "#{current_message.text}\n\n위 내용을 전달할게요."
         quick_reply_cmpt_msg = QuickReply.new({title: '네', payload: 'complete_message'})
         quick_reply_restrt_msg = QuickReply.new({title: '다시 쓸래요', payload: 'start_messaging'})
-        quick_reply_end_conv = QuickReply.new({title: '관둘래요', payload: 'end_conversation'})
+        quick_reply_end_conv = QuickReply.new({title: '관둘래요', payload: 'cancel_message'})
         quick_replies = [quick_reply_cmpt_msg, quick_reply_restrt_msg, quick_reply_end_conv]
         Waikiki::MessageSender.send_quick_reply_message(self, msg_str, quick_replies)
 
@@ -98,6 +101,10 @@ module UserHelper
         quick_reply_end_conv = QuickReply.new({title: '이걸로 됐어요', payload: 'end_conversation'})
         quick_replies = [quick_reply_init_pay, quick_reply_end_conv]
         Waikiki::MessageSender.send_quick_reply_message(self, msg_str, quick_replies)
+
+      when :message_cancelled
+        msg_str = "알겠습니다. 저는 그럼 이만.."
+        Waikiki::MessageSender.send_text_message(self, msg_str)
 
       when :payment_initiated
         msg_str = "#{current_message.receiver.celeb.price}원을 결제합니다. 아래 링크에서 결제를 진행해주세요."
@@ -135,6 +142,10 @@ module UserHelper
 
       when :reply_completed
         msg_str = "답장을 전달했어요. #{self.celeb.price * 7 / 10}원의 수익을 얻으셨습니다. :)"
+        Waikiki::MessageSender.send_text_message(self, msg_str)
+
+      when :reply_cancelled
+        msg_str = "알겠습니다. 저는 그럼 이만.."
         Waikiki::MessageSender.send_text_message(self, msg_str)
 
     end

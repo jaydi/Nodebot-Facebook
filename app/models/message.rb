@@ -20,24 +20,13 @@ class Message < ActiveRecord::Base
     where(sending_user_id: user_id).where(status: [statuses[:initiated], statuses[:completed]])
   }
 
-  scope :fan_messages, ->(user_id) {
-    where(receiving_user_id: user_id).where(status: [statuses[:delivered], statuses[:replied], statuses[:wasted]]).where.not(text: nil)
-  }
-
-  scope :delivered, -> {
-    where(status: statuses[:delivered])
-  }
-
-  scope :replied, -> {
-    where(status: statuses[:replied])
-  }
-
   scope :timed_outs, -> {
     where(status: statuses[:delivered]).where(initial_message_id: nil).where('updated_at < ?', 1.day.ago.beginning_of_day)
   }
 
-  scope :before, ->(time) {
-    where(created_at: Time.at(0)..time)
+  enum kind: {
+    fan_message: 10,
+    celeb_reply: 20
   }
 
   enum status: {
@@ -47,17 +36,17 @@ class Message < ActiveRecord::Base
     read: 40,
     replied: 50,
     wasted: 60,
-    canceled: 70
+    cancelled: 70
   }
 
   aasm column: :status, enum: true do
     state :initiated, initial: true
     state :completed
-    state :delivered, after_enter: [:send_notice_if_reply]
+    state :delivered, after_enter: [:after_reply]
     state :read
     state :replied
     state :wasted, after_enter: [:refund]
-    state :canceled
+    state :cancelled
     state :withdrawn
 
     event :complete do
@@ -81,7 +70,7 @@ class Message < ActiveRecord::Base
     end
 
     event :cancel do
-      transitions from: [:initiated, :completed], to: :canceled
+      transitions from: [:initiated, :completed], to: :cancelled
     end
   end
 
@@ -89,19 +78,13 @@ class Message < ActiveRecord::Base
     initial_message.present?
   end
 
-  def celeb_message?
-    sender.celeb? and video_url.present?
-  end
-
-  def send_notice_if_reply
-    if reply?
-      initial_message.reply!
-      receiver.notify_reply(self) if celeb_message?
-    end
+  def after_reply
+    initial_message.reply! if reply?
+    receiver.notify_reply(self) if celeb_reply?
   end
 
   def refund
-    payment.cancel unless payment.blank?
+    payment.cancel if payment.present? and payment.pay_success?
   end
 
 end

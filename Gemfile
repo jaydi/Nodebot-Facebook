@@ -54,8 +54,6 @@ group :test do
   gem 'shoulda-matchers', '~> 3.1'
   gem 'factory_girl_rails'
   gem 'webmock'
-  gem 'sinatra'
-  gem 'sinatra-contrib'
 end
 
 group :development do

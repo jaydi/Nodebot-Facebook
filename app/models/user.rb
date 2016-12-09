@@ -16,6 +16,7 @@ class User < ActiveRecord::Base
     messaging: 120,
     message_confirm: 130,
     message_completed: 140,
+    message_cancelled: 150,
     payment_initiated: 200,
     payment_completed: 210,
     payment_cancelled: 220,
@@ -23,6 +24,7 @@ class User < ActiveRecord::Base
     replying: 310,
     reply_confirm: 320,
     reply_completed: 330,
+    reply_cancelled: 340
   }
 
   aasm column: :status, enum: true do
@@ -33,6 +35,7 @@ class User < ActiveRecord::Base
     state :messaging, after_enter: [:state_enter_action, :state_enter_guide]
     state :message_confirm, after_enter: [:state_enter_action, :state_enter_guide]
     state :message_completed, after_enter: [:state_enter_action, :state_enter_guide]
+    state :message_cancelled, after_enter: [:state_enter_action, :state_enter_guide, :end_conversation, :save]
 
     state :payment_initiated, after_enter: [:state_enter_action, :state_enter_guide]
     state :payment_completed, after_enter: [:state_enter_action, :state_enter_guide, :end_conversation, :save]
@@ -42,6 +45,7 @@ class User < ActiveRecord::Base
     state :replying, after_enter: [:state_enter_action, :state_enter_guide]
     state :reply_confirm, after_enter: [:state_enter_action, :state_enter_guide]
     state :reply_completed, after_enter: [:state_enter_action, :state_enter_guide, :end_conversation, :save]
+    state :reply_cancelled, after_enter: [:state_enter_action, :state_enter_guide, :end_conversation, :save]
 
     event :start_setting_nickname do
       transitions from: :message_initiated, to: :nickname_setting
@@ -61,6 +65,10 @@ class User < ActiveRecord::Base
 
     event :complete_message do
       transitions from: :message_confirm, to: :message_completed
+    end
+
+    event :cancel_message do
+      transitions from: [:message_initiated, :message_confirm], to: :message_cancelled
     end
 
     event :initiate_payment do
@@ -89,6 +97,10 @@ class User < ActiveRecord::Base
 
     event :complete_reply do
       transitions from: :reply_confirm, to: :reply_completed
+    end
+
+    event :cancel_reply do
+      transitions from: [:reply_initiated, :reply_confirm], to: :reply_cancelled
     end
 
     event :end_conversation do
@@ -157,7 +169,7 @@ class User < ActiveRecord::Base
   def optin(target_type, target_id)
     case target_type.to_sym
       when :CLB
-        celeb = Celeb.find(target_id)
+        self.celeb = Celeb.find(target_id)
         celeb.initiate!
         save!
         optin_celeb_guide
@@ -167,7 +179,8 @@ class User < ActiveRecord::Base
           end_conversation! unless waiting?
           Message.create({
                            sending_user_id: id,
-                           receiving_user_id: target_id
+                           receiving_user_id: target_id,
+                           kind: :fan_message
                          })
           command(:initiate_message)
         else
@@ -182,7 +195,8 @@ class User < ActiveRecord::Base
             Message.create({
                              initial_message_id: initial_msg.id,
                              sending_user_id: id,
-                             receiving_user_id: initial_msg.sending_user_id
+                             receiving_user_id: initial_msg.sending_user_id,
+                             kind: :celeb_reply
                            })
             command(:initiate_reply)
           elsif initial_msg.replied?
@@ -202,10 +216,10 @@ class User < ActiveRecord::Base
       Message.create({
                        initial_message_id: initial_msg.id,
                        sending_user_id: id,
-                       receiving_user_id: initial_msg.sending_user_id
+                       receiving_user_id: initial_msg.sending_user_id,
+                       kind: :fan_message
                      })
-      self.status = :message_initiated
-      save!
+      update_attribute(:status, :message_initiated)
       command(:start_messaging)
     else
       optin_message_error

@@ -1,5 +1,5 @@
 namespace :payments do
-  desc '만료된 결제들과 버림'
+  desc '오래된 결제들 버림'
   task :waste => :environment do
     Payment.timed_outs.each do |p|
       p.waste!

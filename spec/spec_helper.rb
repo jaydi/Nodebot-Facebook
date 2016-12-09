@@ -17,7 +17,6 @@
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 require 'webmock/rspec'
-require 'support/mock_server'
 require 'factory_girl_rails'
 
 WebMock.disable_net_connect!(
@@ -97,7 +96,7 @@ RSpec.configure do |config|
   # as the one that triggered the failure.
   Kernel.srand config.seed
 =end
-  config.before(:each) do
-    stub_request(:any, /mock-server/).to_rack(MockServer)
-  end
+  # config.before(:each) do
+  #   stub_request(:any, /mock-server/).to_rack(MockServer)
+  # end
 end

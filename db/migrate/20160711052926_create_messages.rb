@@ -6,6 +6,7 @@ class CreateMessages < ActiveRecord::Migration
       t.integer :receiving_user_id, index: true, null: false
       t.text :text
       t.string :video_url
+      t.integer :kind, index: true, null: false
       t.integer :status, index: true, null: false
       t.timestamps null: false
     end
