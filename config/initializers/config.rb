@@ -6,5 +6,5 @@ require 'waikiki/message_sender'
 
 # Active Job
 Rails.application.configure do
-  config.active_job.queue_adapter = Rails.env.production? ? :sidekiq : :inline
+  config.active_job.queue_adapter = (Rails.env.staging? or Rails.env.production?) ? :sidekiq : :inline
 end

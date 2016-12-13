@@ -39,6 +39,8 @@ gem 'whenever'
 gem 'attr_encrypted'
 # For image storage
 gem 'cloudinary'
+# For pagination
+gem 'kaminari'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

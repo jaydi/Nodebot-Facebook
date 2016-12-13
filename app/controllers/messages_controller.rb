@@ -2,7 +2,7 @@ class MessagesController < ApplicationController
   before_action :check_celeb
 
   def index
-    @messages = Message.fan_message.received_by(@celeb.user.id).order(created_at: :desc)
+    @messages = Message.fan_message.received_by(@celeb.user.id).order(id: :desc).page(params[:page]).per(50)
   end
 
   def show
