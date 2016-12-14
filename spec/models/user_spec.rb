@@ -54,12 +54,6 @@ describe User do
         user.start_messaging!
         expect(user.status).to eq('messaging')
       end
-      it 'can go to messaging from nickname setting' do
-        user = FactoryGirl.create(:user, status: :nickname_setting)
-        FactoryGirl.create(:message, sender: user)
-        user.start_messaging!
-        expect(user.status).to eq('messaging')
-      end
       it 'can go to message confirm' do
         user = FactoryGirl.create(:user, status: :messaging)
         FactoryGirl.create(:message, sender: user)
@@ -84,7 +78,7 @@ describe User do
       it 'can be finished after message completed' do
         user = FactoryGirl.create(:user, status: :message_completed)
         message = FactoryGirl.create(:message, sender: user, status: :completed)
-        user.end_conversation!
+        user.reject_payment!
         expect(user.status).to eq('waiting')
         expect(user.current_message).to be_nil
         expect(message.reload.status).to eq('delivered')

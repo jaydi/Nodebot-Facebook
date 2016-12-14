@@ -13,11 +13,13 @@ class User < ActiveRecord::Base
   enum status: {
     waiting: 10,
     nickname_setting: 20,
+    nickname_set: 21,
     message_initiated: 110,
     messaging: 120,
     message_confirm: 130,
     message_completed: 140,
     message_cancelled: 150,
+    payment_rejected: 201,
     payment_initiated: 200,
     payment_completed: 210,
     payment_cancelled: 220,
@@ -30,26 +32,32 @@ class User < ActiveRecord::Base
 
   aasm column: :status, enum: true do
     state :waiting, initial: true, after_enter: [:state_enter_action, :state_enter_message]
-    state :nickname_setting, after_enter: [:state_enter_action, :state_enter_message], before_exit: [:state_exit_message]
+    state :nickname_setting, after_enter: [:state_enter_action, :state_enter_message]
+    state :nickname_set, after_enter: [:state_enter_action, :state_enter_message, :start_messaging]
 
     state :message_initiated, after_enter: [:state_enter_action, :state_enter_message]
     state :messaging, after_enter: [:state_enter_action, :state_enter_message]
     state :message_confirm, after_enter: [:state_enter_action, :state_enter_message]
     state :message_completed, after_enter: [:state_enter_action, :state_enter_message]
-    state :message_cancelled, after_enter: [:state_enter_action, :state_enter_message, :end_conversation, :save]
+    state :message_cancelled, after_enter: [:state_enter_action, :state_enter_message, :end_conversation]
 
+    state :payment_rejected, after_enter: [:state_enter_action, :state_enter_message, :end_conversation]
     state :payment_initiated, after_enter: [:state_enter_action, :state_enter_message]
-    state :payment_completed, after_enter: [:state_enter_action, :state_enter_message, :end_conversation, :save]
-    state :payment_cancelled, after_enter: [:state_enter_action, :state_enter_message, :end_conversation, :save]
+    state :payment_completed, after_enter: [:state_enter_action, :state_enter_message, :end_conversation]
+    state :payment_cancelled, after_enter: [:state_enter_action, :state_enter_message, :end_conversation]
 
     state :reply_initiated, after_enter: [:state_enter_action, :state_enter_message]
     state :replying, after_enter: [:state_enter_action, :state_enter_message]
     state :reply_confirm, after_enter: [:state_enter_action, :state_enter_message]
-    state :reply_completed, after_enter: [:state_enter_action, :state_enter_message, :end_conversation, :save]
-    state :reply_cancelled, after_enter: [:state_enter_action, :state_enter_message, :end_conversation, :save]
+    state :reply_completed, after_enter: [:state_enter_action, :state_enter_message, :end_conversation]
+    state :reply_cancelled, after_enter: [:state_enter_action, :state_enter_message, :end_conversation]
 
     event :start_setting_nickname do
       transitions from: :message_initiated, to: :nickname_setting
+    end
+
+    event :set_nickname do
+      transitions from: :nickname_setting, to: :nickname_set
     end
 
     event :initiate_message do
@@ -57,7 +65,7 @@ class User < ActiveRecord::Base
     end
 
     event :start_messaging do
-      transitions from: [:nickname_setting, :message_initiated, :message_confirm], to: :messaging
+      transitions from: [:nickname_set, :message_initiated, :message_confirm], to: :messaging
     end
 
     event :confirm_message do
@@ -70,6 +78,10 @@ class User < ActiveRecord::Base
 
     event :cancel_message do
       transitions from: [:message_initiated, :message_confirm], to: :message_cancelled
+    end
+
+    event :reject_payment do
+      transitions from: :message_completed, to: :payment_rejected
     end
 
     event :initiate_payment do
@@ -152,7 +164,7 @@ class User < ActiveRecord::Base
     elsif nickname_setting?
       self.name = text[0..9]
       save!
-      command(:start_messaging)
+      command(:set_nickname)
     else
       state_enter_guide
     end
