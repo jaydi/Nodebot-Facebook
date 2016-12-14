@@ -6,6 +6,7 @@ class User < ActiveRecord::Base
 
   include AASM
   include UserHelper
+  include MessengerHelper
 
   belongs_to :celeb
 
@@ -28,24 +29,24 @@ class User < ActiveRecord::Base
   }
 
   aasm column: :status, enum: true do
-    state :waiting, initial: true, after_enter: [:state_enter_action, :state_enter_guide]
-    state :nickname_setting, after_enter: [:state_enter_action, :state_enter_guide], before_exit: [:state_exit_guide]
+    state :waiting, initial: true, after_enter: [:state_enter_action, :state_enter_message]
+    state :nickname_setting, after_enter: [:state_enter_action, :state_enter_message], before_exit: [:state_exit_message]
 
-    state :message_initiated, after_enter: [:state_enter_action, :state_enter_guide]
-    state :messaging, after_enter: [:state_enter_action, :state_enter_guide]
-    state :message_confirm, after_enter: [:state_enter_action, :state_enter_guide]
-    state :message_completed, after_enter: [:state_enter_action, :state_enter_guide]
-    state :message_cancelled, after_enter: [:state_enter_action, :state_enter_guide, :end_conversation, :save]
+    state :message_initiated, after_enter: [:state_enter_action, :state_enter_message]
+    state :messaging, after_enter: [:state_enter_action, :state_enter_message]
+    state :message_confirm, after_enter: [:state_enter_action, :state_enter_message]
+    state :message_completed, after_enter: [:state_enter_action, :state_enter_message]
+    state :message_cancelled, after_enter: [:state_enter_action, :state_enter_message, :end_conversation, :save]
 
-    state :payment_initiated, after_enter: [:state_enter_action, :state_enter_guide]
-    state :payment_completed, after_enter: [:state_enter_action, :state_enter_guide, :end_conversation, :save]
-    state :payment_cancelled, after_enter: [:state_enter_action, :state_enter_guide, :end_conversation, :save]
+    state :payment_initiated, after_enter: [:state_enter_action, :state_enter_message]
+    state :payment_completed, after_enter: [:state_enter_action, :state_enter_message, :end_conversation, :save]
+    state :payment_cancelled, after_enter: [:state_enter_action, :state_enter_message, :end_conversation, :save]
 
-    state :reply_initiated, after_enter: [:state_enter_action, :state_enter_guide]
-    state :replying, after_enter: [:state_enter_action, :state_enter_guide]
-    state :reply_confirm, after_enter: [:state_enter_action, :state_enter_guide]
-    state :reply_completed, after_enter: [:state_enter_action, :state_enter_guide, :end_conversation, :save]
-    state :reply_cancelled, after_enter: [:state_enter_action, :state_enter_guide, :end_conversation, :save]
+    state :reply_initiated, after_enter: [:state_enter_action, :state_enter_message]
+    state :replying, after_enter: [:state_enter_action, :state_enter_message]
+    state :reply_confirm, after_enter: [:state_enter_action, :state_enter_message]
+    state :reply_completed, after_enter: [:state_enter_action, :state_enter_message, :end_conversation, :save]
+    state :reply_cancelled, after_enter: [:state_enter_action, :state_enter_message, :end_conversation, :save]
 
     event :start_setting_nickname do
       transitions from: :message_initiated, to: :nickname_setting
@@ -137,8 +138,8 @@ class User < ActiveRecord::Base
         send(func)
       end
       save!
-    rescue AASM::InvalidTransition
-      state_transition_error
+    rescue
+      invalid_command_error
     end
   end
 
