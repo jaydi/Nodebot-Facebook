@@ -201,7 +201,7 @@ section.success {
   }
 }
 #portfolio .portfolio-item {
-  margin: 0 0 15px;
+  margin-bottom: 15px;
   right: 0;
 }
 #portfolio .portfolio-item .portfolio-link {
@@ -245,7 +245,7 @@ section.success {
 }
 @media (min-width: 768px) {
   #portfolio .portfolio-item {
-    margin: 0 0 30px;
+    margin-bottom: 30px;
   }
 }
 .floating-label-form-group {
