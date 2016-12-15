@@ -28,14 +28,14 @@
             <div class="list-group">
               <% @messages.each do |m| %>
                   <a href="javascript:showMessage(<%= m.id %>)" class="list-group-item <%= 'disabled' if m.wasted? %>">
-                    <% if m.replied? %>
+                    <% if m.repliable? %>
+                        <span class="message-label label label-pill label-primary">답장가능</span>
+                    <% elsif m.replied? %>
                         <span class="message-label label label-pill label-success">답장완료</span>
                     <% elsif m.wasted? %>
                         <span class="message-label label label-pill label-default">만료됨</span>
-                    <% elsif m.payment.blank? %>
-                        <span class="message-label label label-pill label-warning">미결제</span>
                     <% else %>
-                        <span class="message-label label label-pill label-primary">답장가능</span>
+                        <span class="message-label label label-pill label-warning">미결제</span>
                     <% end %>
                     <h4 class="list-group-item-heading"><%= m.sender.name %></h4>
                     <p class="list-group-item-text"><%= m.text %></p>

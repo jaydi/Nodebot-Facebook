@@ -204,7 +204,7 @@ class User < ActiveRecord::Base
         if current_message.blank?
           end_conversation! unless waiting?
           initial_msg = Message.find(target_id)
-          if initial_msg.delivered?
+          if initial_msg.repliable?
             Message.create({
                              initial_message_id: initial_msg.id,
                              sending_user_id: id,
@@ -212,8 +212,8 @@ class User < ActiveRecord::Base
                              kind: :celeb_reply
                            })
             command(:initiate_reply)
-          elsif initial_msg.replied?
-            already_replied_error
+          else
+            cannot_be_replied_error
           end
         else
           optin_reply_error

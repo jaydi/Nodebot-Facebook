@@ -152,8 +152,8 @@ module UserHelper
     state_enter_message
   end
 
-  def already_replied_error
-    send_text("이미 답장한 메시지입니다.")
+  def cannot_be_replied_error
+    send_text("답장할 수 없는 메시지입니다.")
   end
 
   def notify_reply(reply_msg)

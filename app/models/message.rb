@@ -74,6 +74,10 @@ class Message < ActiveRecord::Base
     end
   end
 
+  def repliable?
+    delivered? and payment.present? and payment.pay_success?
+  end
+
   def reply?
     initial_message.present?
   end
