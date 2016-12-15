@@ -1,5 +1,5 @@
 defaults: &defaults
-  host_url: https://www.metabot.tk
+  host_url: https://metabot.tk
   encryption_key: JTs6uBd6YPnwoMeqInKTfBfJlZCFE9i8
   fb_webhook_token: this__is__nodebot__
   fb_messenger_app_id: 1747584958855089

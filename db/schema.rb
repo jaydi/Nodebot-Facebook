@@ -21,89 +21,89 @@ ActiveRecord::Schema.define(version: 20161102064758) do
   end
 
   create_table "celebs", force: :cascade do |t|
-    t.string   "email",                                 null: false
-    t.string   "encrypted_password",                    null: false
-    t.string   "encrypted_password_iv",                 null: false
-    t.string   "name"
-    t.string   "profile_pic"
-    t.integer  "price",                 default: 10000, null: false
-    t.string   "auth_token"
+    t.string   "email",                 limit: 255,                 null: false
+    t.string   "encrypted_password",    limit: 255,                 null: false
+    t.string   "encrypted_password_iv", limit: 255,                 null: false
+    t.string   "name",                  limit: 255
+    t.string   "profile_pic",           limit: 255
+    t.integer  "price",                 limit: 4,   default: 10000, null: false
+    t.string   "auth_token",            limit: 255
     t.datetime "auth_tokened_at"
-    t.integer  "status",                                null: false
-    t.datetime "created_at",                            null: false
-    t.datetime "updated_at",                            null: false
+    t.integer  "status",                limit: 4,                   null: false
+    t.datetime "created_at",                                        null: false
+    t.datetime "updated_at",                                        null: false
   end
 
-  add_index "celebs", ["auth_token"], name: "index_celebs_on_auth_token"
-  add_index "celebs", ["email"], name: "index_celebs_on_email"
-  add_index "celebs", ["name"], name: "index_celebs_on_name"
-  add_index "celebs", ["status"], name: "index_celebs_on_status"
+  add_index "celebs", ["auth_token"], name: "index_celebs_on_auth_token", length: {"auth_token"=>191}, using: :btree
+  add_index "celebs", ["email"], name: "index_celebs_on_email", length: {"email"=>191}, using: :btree
+  add_index "celebs", ["name"], name: "index_celebs_on_name", length: {"name"=>191}, using: :btree
+  add_index "celebs", ["status"], name: "index_celebs_on_status", using: :btree
 
   create_table "exchange_requests", force: :cascade do |t|
-    t.integer  "celeb_id",                    null: false
-    t.integer  "bank_id",                     null: false
-    t.string   "account_holder",              null: false
-    t.string   "encrypted_account_number",    null: false
-    t.string   "encrypted_account_number_iv", null: false
-    t.integer  "amount",                      null: false
-    t.integer  "status",                      null: false
-    t.datetime "created_at",                  null: false
-    t.datetime "updated_at",                  null: false
+    t.integer  "celeb_id",                    limit: 4,   null: false
+    t.integer  "bank_id",                     limit: 4,   null: false
+    t.string   "account_holder",              limit: 255, null: false
+    t.string   "encrypted_account_number",    limit: 255, null: false
+    t.string   "encrypted_account_number_iv", limit: 255, null: false
+    t.integer  "amount",                      limit: 4,   null: false
+    t.integer  "status",                      limit: 4,   null: false
+    t.datetime "created_at",                              null: false
+    t.datetime "updated_at",                              null: false
   end
 
   create_table "messages", force: :cascade do |t|
-    t.integer  "initial_message_id"
-    t.integer  "sending_user_id",    null: false
-    t.integer  "receiving_user_id",  null: false
-    t.text     "text"
-    t.string   "video_url"
-    t.integer  "kind",               null: false
-    t.integer  "status",             null: false
-    t.datetime "created_at",         null: false
-    t.datetime "updated_at",         null: false
+    t.integer  "initial_message_id", limit: 4
+    t.integer  "sending_user_id",    limit: 4,     null: false
+    t.integer  "receiving_user_id",  limit: 4,     null: false
+    t.text     "text",               limit: 65535
+    t.string   "video_url",          limit: 255
+    t.integer  "kind",               limit: 4,     null: false
+    t.integer  "status",             limit: 4,     null: false
+    t.datetime "created_at",                       null: false
+    t.datetime "updated_at",                       null: false
   end
 
-  add_index "messages", ["initial_message_id"], name: "index_messages_on_initial_message_id"
-  add_index "messages", ["kind"], name: "index_messages_on_kind"
-  add_index "messages", ["receiving_user_id"], name: "index_messages_on_receiving_user_id"
-  add_index "messages", ["sending_user_id"], name: "index_messages_on_sending_user_id"
-  add_index "messages", ["status"], name: "index_messages_on_status"
+  add_index "messages", ["initial_message_id"], name: "index_messages_on_initial_message_id", using: :btree
+  add_index "messages", ["kind"], name: "index_messages_on_kind", using: :btree
+  add_index "messages", ["receiving_user_id"], name: "index_messages_on_receiving_user_id", using: :btree
+  add_index "messages", ["sending_user_id"], name: "index_messages_on_sending_user_id", using: :btree
+  add_index "messages", ["status"], name: "index_messages_on_status", using: :btree
 
   create_table "payments", force: :cascade do |t|
-    t.integer  "message_id", null: false
-    t.integer  "pay_amount", null: false
-    t.integer  "status",     null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.integer  "message_id", limit: 4, null: false
+    t.integer  "pay_amount", limit: 4, null: false
+    t.integer  "status",     limit: 4, null: false
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
   end
 
-  add_index "payments", ["message_id"], name: "index_payments_on_message_id"
-  add_index "payments", ["status"], name: "index_payments_on_status"
+  add_index "payments", ["message_id"], name: "index_payments_on_message_id", using: :btree
+  add_index "payments", ["status"], name: "index_payments_on_status", using: :btree
 
   create_table "users", force: :cascade do |t|
-    t.integer  "celeb_id"
-    t.string   "sender_id",  null: false
-    t.string   "name",       null: false
-    t.integer  "status",     null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.integer  "celeb_id",   limit: 4
+    t.string   "sender_id",  limit: 255, null: false
+    t.string   "name",       limit: 255, null: false
+    t.integer  "status",     limit: 4,   null: false
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
   end
 
-  add_index "users", ["sender_id"], name: "index_users_on_sender_id"
-  add_index "users", ["status"], name: "index_users_on_status"
+  add_index "users", ["sender_id"], name: "index_users_on_sender_id", length: {"sender_id"=>191}, using: :btree
+  add_index "users", ["status"], name: "index_users_on_status", using: :btree
 
   create_table "web_messages", force: :cascade do |t|
-    t.string   "message_id"
-    t.string   "sender_id",                null: false
-    t.integer  "message_type",             null: false
-    t.integer  "sequence"
-    t.text     "text"
-    t.string   "payload"
-    t.integer  "sent_timestamp", limit: 8, null: false
-    t.datetime "created_at",               null: false
-    t.datetime "updated_at",               null: false
+    t.string   "message_id",     limit: 255
+    t.string   "sender_id",      limit: 255,   null: false
+    t.integer  "message_type",   limit: 4,     null: false
+    t.integer  "sequence",       limit: 4
+    t.text     "text",           limit: 65535
+    t.string   "payload",        limit: 255
+    t.integer  "sent_timestamp", limit: 8,     null: false
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
   end
 
-  add_index "web_messages", ["sender_id"], name: "index_web_messages_on_sender_id"
+  add_index "web_messages", ["sender_id"], name: "index_web_messages_on_sender_id", length: {"sender_id"=>191}, using: :btree
 
 end
