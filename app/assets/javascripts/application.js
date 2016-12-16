@@ -68,12 +68,29 @@ function isMobile() {
   return isMobile;
 }
 
+function getMobileOperatingSystem() {
+  var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+  if (/windows phone/i.test(userAgent))
+    return "Windows";
+  if (/android/i.test(userAgent))
+    return "Android";
+  if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream)
+    return "iOS";
+  return "unknown";
+}
+
 function openFBM() {
   if (isMobile()) {
     $("#fb-messenger-toss").attr("src", "fb-messenger://user/");
     setTimeout(function() {
-      window.open("https://itunes.apple.com/app/messenger/id454638411?mt=8", '_blank');
+      var os = getMobileOperatingSystem();
+      if (os == "Android")
+        window.open("market://details?id=com.facebook.orca");
+      else if (os == "iOS")
+        window.open("https://itunes.apple.com/app/messenger/id454638411?mt=8");
+      else
+        alert("지원하지 않는 모바일OS 입니다. 데스크탑 브라우저를 이용해주세요.");
     }, 500);
   } else
-    window.open("https://m.me/" + $("#fb-messenger-toss").data("page"), '_blank');
+    window.open("https://m.me/" + $("#fb-messenger-toss").data("page"));
 }
