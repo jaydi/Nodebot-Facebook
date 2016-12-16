@@ -87,7 +87,7 @@ function openFBM() {
       if (os == "Android")
         window.open("market://details?id=com.facebook.orca");
       else if (os == "iOS")
-        window.open("https://itunes.apple.com/app/messenger/id454638411?mt=8");
+        window.open("itms://itunes.apple.com/app/messenger/id454638411?mt=8");
       else
         alert("지원하지 않는 모바일OS 입니다. 데스크탑 브라우저를 이용해주세요.");
     }, 500);

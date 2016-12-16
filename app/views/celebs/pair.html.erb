@@ -1,6 +1,7 @@
 <script>
   function showProceedButton() {
     $('#button-proceed').show();
+    $('#guide-pair').hide();
   }
 </script>
 
@@ -15,7 +16,13 @@
       </div>
     </div>
 
-    <div class="row text-center">
+    <div class="row">
+      <div id="button-proceed" class="form-group col-xs-6 col-xs-offset-3 text-center" style="display: none">
+        <a href="/messages"><button class="btn btn-success btn-lg">대시보드로 가기</button></a>
+      </div>
+    </div>
+
+    <div class="row text-center" id="guide-pair">
       <div class="col-lg-12">
         <div>
           팬들에게서 메시지를 받고 영상답장을 하면서 수익을 얻을 수 있습니다.<br/>
@@ -54,18 +61,12 @@
         </div>
 
         <div id="guide-fb-messenger" class="fb-messenger-guide text-center">
-          <span><a href="javascript:openFBM();showProceedButton();">페이스북 메신저 확인</a></span>
+          <span><a href="javascript:openFBM();showProceedButton();"><button class="btn btn-success btn-lg">페이스북 메신저 확인</button></a></span>
           <div id="guide-fb-messenger-app" class="alert alert-danger" style="margin-top: 20px;">
             페이스북 메신저는 데스크탑 브라우저 혹은 스마트폰 앱 환경에서 잘 작동합니다. 스마트폰을 사용중일 경우, <b>페이스북 메신저 앱을 먼저 설치</b>해주세요.
           </div>
           <iframe id="fb-messenger-toss" width="1px" height="1px" style="visibility:hidden" data-page="<%= APP_CONFIG[:fb_page_name] %>"></iframe>
         </div>
-      </div>
-    </div>
-
-    <div class="row">
-      <div id="button-proceed" class="form-group col-xs-6 col-xs-offset-3 text-center" style="display: none">
-        <a href="/messages"><button class="btn btn-success btn-lg">대시보드로 가기</button></a>
       </div>
     </div>
 
