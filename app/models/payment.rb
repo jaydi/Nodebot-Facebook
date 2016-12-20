@@ -51,6 +51,22 @@ class Payment < ActiveRecord::Base
     end
   end
 
+  def platform_share
+    (pay_amount * commission_rate / 100).to_i
+  end
+
+  def celeb_share
+    pay_amount - platform_share
+  end
+
+  def settle
+    celeb = message.receiver.celeb
+    celeb.balance += celeb_share
+    celeb.save!
+    celeb.user.notify_profit(self)
+    # TODO create settlement
+  end
+
   def cancel
     request_cancel!
     CancelRequestJob.perform_later(id)

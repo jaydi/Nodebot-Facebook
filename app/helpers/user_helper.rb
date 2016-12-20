@@ -15,6 +15,7 @@ module UserHelper
         Payment.create({
                          message_id: current_message.id,
                          pay_amount: current_message.receiver.celeb.price,
+                         commission_rate: current_message.receiver.celeb.commission_rate,
                          status: Payment.statuses[:pay_request]
                        })
 
@@ -128,7 +129,7 @@ module UserHelper
         ])
 
       when :reply_completed
-        msg_str = "답장을 전달했어요. #{self.celeb.price * 7 / 10}원의 수익을 얻으셨습니다. :)"
+        msg_str = "답장을 전달했어요."
         send_text(msg_str)
 
       when :reply_cancelled
@@ -179,6 +180,10 @@ module UserHelper
 
   def notify_cancel(canceled_payment)
     send_text("#{canceled_payment.message.text}\n\n#{canceled_payment.message.receiver.celeb.name}님이 위 메시지에 대해 답장을 못하셨습니다.. :( #{canceled_payment.pay_amount}원 환불해드렸어요.")
+  end
+
+  def notify_profit(payment)
+    send_text("#{payment.celeb_share}원의 수익을 얻으셨습니다. :)")
   end
 
   def invalid_command_error

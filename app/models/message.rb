@@ -44,8 +44,8 @@ class Message < ActiveRecord::Base
     state :completed
     state :delivered, after_enter: [:after_reply]
     state :read
-    state :replied
-    state :wasted, after_enter: [:refund]
+    state :replied, after_enter: [:settle_payment]
+    state :wasted, after_enter: [:refund_payment]
     state :cancelled
     state :withdrawn
 
@@ -87,7 +87,11 @@ class Message < ActiveRecord::Base
     receiver.notify_reply(self) if celeb_reply?
   end
 
-  def refund
+  def settle_payment
+    payment.settle if payment.present? and payment.pay_success?
+  end
+
+  def refund_payment
     payment.cancel if payment.present? and payment.pay_success?
   end
 

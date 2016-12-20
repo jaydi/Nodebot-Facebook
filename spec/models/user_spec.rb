@@ -28,6 +28,7 @@ describe User do
     it 'should make reply message' do
       user = FactoryGirl.create(:celeb_user)
       message = FactoryGirl.create(:message, receiver: user, status: :delivered)
+      FactoryGirl.create(:payment, message: message, status: :pay_success)
       expect { user.optin(:RPL, message.id) }.to change(Message, :count).by(1)
       expect(user.status).to eq('reply_initiated')
       expect(user.current_message.initial_message.id).to eq(message.id)
@@ -138,10 +139,14 @@ describe User do
         user = FactoryGirl.create(:user)
         celeb_user = FactoryGirl.create(:celeb_user, status: :reply_confirm)
         message = FactoryGirl.create(:message, sender: user, receiver: celeb_user, status: :delivered)
+        payment = FactoryGirl.create(:payment, message: message, status: :pay_success)
         reply_message = FactoryGirl.create(:reply_message, sender: celeb_user, receiver: user, initial_message: message)
+
         celeb_user.complete_reply!
+
         expect(celeb_user.status).to eq('waiting')
         expect(celeb_user.current_message).to be_nil
+        expect(celeb_user.celeb.reload.balance).to eq(payment.celeb_share)
         expect(reply_message.reload.status).to eq('delivered')
       end
       it 'can go back from reply confirm' do

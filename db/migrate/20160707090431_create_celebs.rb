@@ -7,6 +7,8 @@ class CreateCelebs < ActiveRecord::Migration
       t.string :name, index: true
       t.string :profile_pic
       t.integer :price, default: 10000, null: false
+      t.integer :balance, default: 0, null: false
+      t.decimal :commission_rate, precision: 5, scale: 2, default: 30.00, null: false
       t.string :auth_token, index: true
       t.datetime :auth_tokened_at
       t.integer :status, index: true, null: false

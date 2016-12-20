@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe Payment do
 
-  it 'should change associated statuses after payment succeeded' do
+  it 'should change associated values after payment succeeded' do
     user = FactoryGirl.create(:user, status: :payment_initiated)
     message = FactoryGirl.create(:message, sender: user, status: :completed)
     payment = FactoryGirl.create(:payment, message: message)
