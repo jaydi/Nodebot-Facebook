@@ -11,7 +11,7 @@ RSpec.describe MessagesController do
 
   it 'should not show message of other celeb' do
     # make another celeb and pair
-    other_celeb = FactoryGirl.create(:info_filled_celeb, email: 'other@e.mail')
+    other_celeb = FactoryGirl.create(:celeb_without_pairing, email: 'other@e.mail')
     FactoryGirl.create(:user, celeb: other_celeb)
     # test with another paired celeb
     get :show, { id: message.id }, { celeb_id: other_celeb.id }

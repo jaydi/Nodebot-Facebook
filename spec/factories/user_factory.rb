@@ -5,6 +5,6 @@ FactoryGirl.define do
     status User.statuses[:waiting]
   end
   factory :celeb_user, class: User, parent: :user do
-    celeb { FactoryGirl.create(:info_filled_celeb) }
+    celeb { FactoryGirl.create(:celeb_without_pairing) }
   end
 end

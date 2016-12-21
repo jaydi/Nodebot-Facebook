@@ -1,9 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe UserSessionsController do
-  let(:celeb) { FactoryGirl.create(:celeb) }
-  let(:info_filled_celeb) { FactoryGirl.create(:info_filled_celeb) }
-  let(:paired_celeb) { FactoryGirl.create(:celeb_user).celeb }
+  let(:celeb) { FactoryGirl.create(:celeb_without_info) }
+  let(:info_filled_celeb) { FactoryGirl.create(:celeb_without_pairing) }
+  let(:paired_celeb) { FactoryGirl.create(:celeb) }
 
   it 'should show sign in page' do
     get :new

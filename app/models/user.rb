@@ -8,7 +8,7 @@ class User < ActiveRecord::Base
   include UserHelper
   include MessengerHelper
 
-  belongs_to :celeb
+  has_one :celeb
 
   enum status: {
     waiting: 10,

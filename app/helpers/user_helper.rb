@@ -186,6 +186,14 @@ module UserHelper
     send_text("#{payment.celeb_share}원의 수익을 얻으셨습니다. :)")
   end
 
+  def notify_exchange_success(exchange_request)
+    send_text("#{exchange_request.bank.name}의 #{exchange_request.account_holder}님 계좌로 #{exchange_request.amount}원 환전입금되었습니다. :)")
+  end
+
+  def notify_exchange_failure(exchange_request)
+    send_text("#{exchange_request.bank.name}의 #{exchange_request.account_holder}님 계좌로 #{exchange_request.amount}원 환전처리가 실패했습니다. :(\n실패사유: #{exchange_request.failure_reason}")
+  end
+
   def invalid_command_error
     send_text("수행할 수 없는 명령입니다.")
   end

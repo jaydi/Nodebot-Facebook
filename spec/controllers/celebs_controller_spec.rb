@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe CelebsController do
-  let(:celeb) { FactoryGirl.create(:celeb) }
-  let(:active_celeb) { FactoryGirl.create(:info_filled_celeb, status: Celeb.statuses[:active]) }
+  let(:celeb) { FactoryGirl.create(:celeb_without_info) }
+  let(:active_celeb) { FactoryGirl.create(:celeb_without_pairing, status: Celeb.statuses[:active]) }
 
   it 'should show celeb page by name' do
     get :show_by_name, { name: active_celeb.name }
@@ -66,6 +66,12 @@ RSpec.describe CelebsController do
     expect(response.status).to eq(302)
     expect(response).to redirect_to(celebs_edit_path)
     expect(celeb.reload.password).to eq(new_pswd)
+  end
+
+  it 'should show revenue management page' do
+    get :revenue_management, nil, { celeb_id: celeb.id }
+    expect(response.status).to eq(200)
+    expect(response).to render_template(:revenue_management)
   end
 
   it 'should deactivate celeb' do

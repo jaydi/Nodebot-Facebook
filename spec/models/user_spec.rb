@@ -5,7 +5,7 @@ describe User do
   context 'optin actions' do
     it 'should be associated with celeb' do
       user = FactoryGirl.create(:user)
-      celeb = FactoryGirl.create(:info_filled_celeb)
+      celeb = FactoryGirl.create(:celeb_without_pairing)
       user.optin(:CLB, celeb.id)
       expect(user.celeb.id).to eq(celeb.id)
     end

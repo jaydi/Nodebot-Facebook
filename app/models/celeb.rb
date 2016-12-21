@@ -1,7 +1,7 @@
 class Celeb < ActiveRecord::Base
   include AASM
 
-  has_one :user
+  belongs_to :user
 
   attr_encrypted :password, :key => APP_CONFIG[:encryption_key]
 

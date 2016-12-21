@@ -1,6 +1,7 @@
 class CreateCelebs < ActiveRecord::Migration
   def change
     create_table :celebs do |t|
+      t.references :user
       t.string :email, index: true, null: false
       t.string :encrypted_password, null: false
       t.string :encrypted_password_iv, null: false

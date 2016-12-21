@@ -21,6 +21,7 @@ ActiveRecord::Schema.define(version: 20161102064758) do
   end
 
   create_table "celebs", force: :cascade do |t|
+    t.integer  "user_id"
     t.string   "email",                                                         null: false
     t.string   "encrypted_password",                                            null: false
     t.string   "encrypted_password_iv",                                         null: false
@@ -49,6 +50,8 @@ ActiveRecord::Schema.define(version: 20161102064758) do
     t.string   "encrypted_account_number_iv", null: false
     t.integer  "amount",                      null: false
     t.integer  "status",                      null: false
+    t.string   "failure_reason"
+    t.datetime "processed_at"
     t.datetime "created_at",                  null: false
     t.datetime "updated_at",                  null: false
   end
@@ -84,7 +87,6 @@ ActiveRecord::Schema.define(version: 20161102064758) do
   add_index "payments", ["status"], name: "index_payments_on_status"
 
   create_table "users", force: :cascade do |t|
-    t.integer  "celeb_id"
     t.string   "sender_id",  null: false
     t.string   "name",       null: false
     t.integer  "status",     null: false

@@ -8,6 +8,8 @@ class CreateExchangeRequests < ActiveRecord::Migration
       t.string :encrypted_account_number_iv, null: false
       t.integer :amount, null: false
       t.integer :status, null: false
+      t.string :failure_reason
+      t.datetime :processed_at
       t.timestamps null: false
     end
   end

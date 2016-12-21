@@ -10,13 +10,18 @@ Rails.application.routes.draw do
   post 'user_sessions/send_new_password' => 'user_sessions#send_new_password'
   delete 'user_sessions/destroy' => 'user_sessions#destroy'
 
-  resources :celebs, only: [:new, :create]
+  resources :celebs, only: [:new, :create] do
+    collection do
+      resources :exchange_requests, only: [:new, :create]
+    end
+  end
   get 'celebs/edit' => 'celebs#edit'
   put 'celebs' => 'celebs#update'
   patch 'celebs' => 'celebs#update'
   get 'celebs/pair' => 'celebs#pair'
   get 'celebs/edit_password' => 'celebs#edit_password'
   put 'celebs/update_password' => 'celebs#update_password'
+  get 'celebs/revenue_management' => 'celebs#revenue_management'
   delete 'celebs' => 'celebs#destroy'
 
   resources :messages, only: [:index, :show]
