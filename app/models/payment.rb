@@ -21,7 +21,7 @@ class Payment < ActiveRecord::Base
     state :pay_request
     state :pay_fail, after_enter: :notify_pay_fail
     state :pay_success, after_enter: :notify_pay_success
-    state :cancel_request
+    state :cancel_request, after_enter: :send_cancel_request
     state :cancel_fail
     state :cancel_success, after_enter: :notify_cancel_success
     state :wasted
@@ -59,17 +59,16 @@ class Payment < ActiveRecord::Base
     pay_amount - platform_share
   end
 
+  def send_cancel_request
+    CancelRequestJob.perform_later(id)
+  end
+
   def settle
     celeb = message.receiver.celeb
     celeb.balance += celeb_share
     celeb.save!
     celeb.user.notify_profit(self)
     # TODO create settlement
-  end
-
-  def cancel
-    request_cancel!
-    CancelRequestJob.perform_later(id)
   end
 
   private

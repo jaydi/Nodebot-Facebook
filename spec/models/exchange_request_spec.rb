@@ -2,10 +2,12 @@ require 'rails_helper'
 
 describe ExchangeRequest do
 
-  it 'should change associated values after created' do
+  it 'should change associated values on creation' do
     celeb = FactoryGirl.create(:celeb, balance: 10_000)
+    balance_before = celeb.balance
     exchange_request = FactoryGirl.create(:exchange_request, celeb: celeb, amount: 5_000)
-    expect(celeb.balance).to eq(5_000)
+    balance_after = celeb.reload.balance
+    expect(balance_before - balance_after).to eq(exchange_request.amount)
     expect(exchange_request.status).to eq('requested')
   end
 

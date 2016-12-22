@@ -5,7 +5,7 @@ class CancelRequestJob < ActiveJob::Base
     payment = Payment.find(id)
     return unless payment.cancel_request?
 
-    # TODO
+    # TODO send actual request
 
     payment.succeed_cancel!
   end

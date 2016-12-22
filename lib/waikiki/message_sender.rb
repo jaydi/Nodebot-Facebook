@@ -30,8 +30,6 @@ module Waikiki
           else
             my_logger.error "send message failed with response: #{res.body}"
           end
-        else
-          puts "sent message to user with sender id: #{user.sender_id}"
         end
       end
 

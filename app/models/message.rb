@@ -42,7 +42,7 @@ class Message < ActiveRecord::Base
   aasm column: :status, enum: true do
     state :initiated, initial: true
     state :completed
-    state :delivered, after_enter: [:after_reply]
+    state :delivered, after_enter: [:set_time_out, :after_reply]
     state :read
     state :replied, after_enter: [:settle_payment]
     state :wasted, after_enter: [:refund_payment]
@@ -82,6 +82,14 @@ class Message < ActiveRecord::Base
     initial_message.present?
   end
 
+  def set_time_out
+    if Rails.env.production?
+      MessageTimeOutWorker.perform_in(24.hours, id)
+    else
+      MessageTimeOutWorker.perform_in(15.minutes, id)
+    end
+  end
+
   def after_reply
     initial_message.reply! if reply?
     receiver.notify_reply(self) if celeb_reply?
@@ -92,7 +100,7 @@ class Message < ActiveRecord::Base
   end
 
   def refund_payment
-    payment.cancel if payment.present? and payment.pay_success?
+    payment.request_cancel! if payment.present? and payment.pay_success?
   end
 
 end
