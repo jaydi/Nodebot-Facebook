@@ -3,9 +3,9 @@
 
     <div class="row">
       <div class="col-lg-8 col-lg-offset-2">
-        <h3>수익잔액: <%= number_to_currency(@celeb.balance, locale: :ko) %></h3>
+        <h3>수익잔액 <%= currency_format(@celeb.balance) %></h3>
         <p>
-          환전완료 누적: <%= number_to_currency(@exchanged_sum, locale: :ko) %>
+          환전누적 <%= currency_format(@exchanged_sum) %>
         </p>
       </div>
     </div>
@@ -18,22 +18,22 @@
 
     <div class="row">
       <div class="col-lg-8 col-lg-offset-2">
-        <div class="list-group">
+        <div class="list-group item-list-box">
           <% @exchange_requests.each do |er| %>
               <div class="list-group-item">
                 <% if er.requested? %>
                     <span class="message-label label label-pill label-primary">환전진행중</span>
-                <% elsif m.succeeded? %>
+                <% elsif er.succeeded? %>
                     <span class="message-label label label-pill label-success">환전완료</span>
-                <% elsif m.failed? %>
+                <% elsif er.failed? %>
                     <span class="message-label label label-pill label-warning">환전실패</span>
                 <% end %>
-                <h4 class="list-group-item-heading"><%= number_to_currency(er.amount, locale: :ko) %></h4>
+                <h4 class="list-group-item-heading"><%= currency_format(er.amount) %></h4>
                 <p class="list-group-item-text">
                   입금처: <%= er.bank.name %> <%= er.account_holder %><br/>
-                  <% if m.succeeded? %>
+                  <% if er.succeeded? %>
                       입금일시: <%= er.processed_at %>
-                  <% elsif m.failed? %>
+                  <% elsif er.failed? %>
                       실패사유: <%= er.failure_reason %>
                   <% end %>
                 </p>

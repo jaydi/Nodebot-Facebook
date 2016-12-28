@@ -11,7 +11,6 @@
 </script>
 
 <section id="sign-up" class="first">
-
   <div class="container">
 
     <div class="row">
@@ -27,7 +26,7 @@
         <%= form_tag '/celebs', method: :put, id: :edit_celeb_form, multipart: true do %>
 
             <div class="row control-group">
-              <div class="form-group col-xs-6 col-xs-offset-3 floating-label-form-group controls input-image">
+              <div class="form-group col-lg-6 col-lg-offset-3 floating-label-form-group controls input-image">
                 <img id="img-profile" class="img-responsive img-centered img-circle img-profile clickable" onclick="$('#input-profile').trigger('click');" style="background-image: url('<%= @celeb.profile_pic.blank? ? "/images/profile.png" : @celeb.profile_pic %>')"/>
                 <input id="input-profile" name="profile" onchange="showPreview(this)" type="file" required/>
 
@@ -36,7 +35,7 @@
             </div>
 
             <div class="row control-group">
-              <div class="form-group col-xs-6 col-xs-offset-3 floating-label-form-group controls">
+              <div class="form-group col-lg-6 col-lg-offset-3 floating-label-form-group controls">
                 <label>닉네임</label>
                 <input type="text" class="form-control" placeholder="Nickname" name="name" value="<%= @celeb.name %>" required data-validation-required-message="Please enter your nickname.">
 
@@ -55,9 +54,13 @@
 
         <% end %>
 
+        <div class="row">
+          <div class="col-lg-6 col-lg-offset-3 text-right">
+            <a href="/celebs/edit_password">비밀번호 변경</a>
+          </div>
+        </div>
       </div>
     </div>
 
   </div>
-
 </section>

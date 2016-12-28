@@ -8,7 +8,7 @@ Rails.application.routes.draw do
   resources :user_sessions, only: [:new, :create]
   get 'user_sessions/request_new_password' => 'user_sessions#request_new_password'
   post 'user_sessions/send_new_password' => 'user_sessions#send_new_password'
-  delete 'user_sessions/destroy' => 'user_sessions#destroy'
+  get 'user_sessions/destroy' => 'user_sessions#destroy'
 
   resources :celebs, only: [:new, :create] do
     collection do

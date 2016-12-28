@@ -7,6 +7,7 @@ class ExchangeRequestsController < ApplicationController
   end
 
   def new
+    @banks = Bank.all
   end
 
   def create

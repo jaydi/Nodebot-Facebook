@@ -11,7 +11,7 @@ class ExchangeRequest < ActiveRecord::Base
   after_create :notify_admin
 
   scope :issued_by, ->(celeb_id) {
-    where(celeb_id: celeb_id)
+    where(celeb_id: celeb_id).order(id: :desc)
   }
 
   enum status: {
@@ -38,7 +38,7 @@ class ExchangeRequest < ActiveRecord::Base
 
   def check_balance
     if amount > celeb.balance
-      errors.add(:amount, "Exchange amount cannot be bigger than balance")
+      errors.add("잔액부족", "환전요청금액이 잔액을 초과할 수 없습니다.")
     end
   end
 
