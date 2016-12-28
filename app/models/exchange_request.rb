@@ -23,7 +23,7 @@ class ExchangeRequest < ActiveRecord::Base
   aasm column: :status, enum: true do
     state :requested, initial: true
     state :succeeded, after_enter: [:notify_exchange_result]
-    state :failed, after_enter: [:notify_exchange_result]
+    state :failed, after_enter: [:adjust_balance, :notify_exchange_result]
 
     event :succeed do
       transitions from: :requested, to: :succeeded
@@ -43,13 +43,18 @@ class ExchangeRequest < ActiveRecord::Base
   end
 
   def adjust_balance
-    celeb.balance -= amount
-    celeb.save!
+    if requested?
+      celeb.balance -= amount
+      celeb.save!
+    elsif failed?
+      celeb.balance += amount
+      celeb.save!
+    end
   end
 
   def notify_admin
     1+1
-    # TODO send email? sms?
+    # TODO send email? sms? fb message?
   end
 
   def notify_exchange_result

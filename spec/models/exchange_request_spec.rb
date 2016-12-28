@@ -32,10 +32,14 @@ describe ExchangeRequest do
     expect(exchange_request.status).to eq('succeeded')
   end
 
-  it 'can fail' do
-    exchange_request = FactoryGirl.create(:exchange_request)
+  it 'should change associated values on fail' do
+    celeb = FactoryGirl.create(:celeb, balance: 10_000)
+    exchange_request = FactoryGirl.create(:exchange_request, celeb: celeb, amount: 5_000)
+    balance_before = celeb.reload.balance
     exchange_request.fail!
+    balance_after = celeb.reload.balance
     expect(exchange_request.status).to eq('failed')
+    expect(balance_after - balance_before).to eq(exchange_request.amount)
   end
 
 end

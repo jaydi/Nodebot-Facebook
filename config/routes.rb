@@ -12,7 +12,7 @@ Rails.application.routes.draw do
 
   resources :celebs, only: [:new, :create] do
     collection do
-      resources :exchange_requests, only: [:new, :create]
+      resources :exchange_requests, only: [:index, :new, :create]
     end
   end
   get 'celebs/edit' => 'celebs#edit'
@@ -21,7 +21,6 @@ Rails.application.routes.draw do
   get 'celebs/pair' => 'celebs#pair'
   get 'celebs/edit_password' => 'celebs#edit_password'
   put 'celebs/update_password' => 'celebs#update_password'
-  get 'celebs/revenue_management' => 'celebs#revenue_management'
   delete 'celebs' => 'celebs#destroy'
 
   resources :messages, only: [:index, :show]

@@ -1,0 +1,82 @@
+<section class="first">
+  <div class="container">
+
+    <div class="row">
+      <div class="col-lg-12 text-center">
+        <h2>환전신청</h2>
+        <hr class="star-primary">
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2">
+
+        <%= form_tag 'celebs/exchange_requests', method: :post, id: :new_exchange_request_form do %>
+
+            <div class="row control-group">
+              <div class="form-group col-xs-12 floating-label-form-group controls">
+                <label>수익잔액</label>
+                <p><%= number_to_currency(@celeb.balance, locale: :ko) %></p>
+              </div>
+            </div>
+
+            <div class="row control-group">
+              <div class="form-group col-xs-12 floating-label-form-group controls">
+                <label>KIKI 계정 비밀번호</label>
+                <input type="password" class="form-control" placeholder="Password" name="password" required data-validation-required-message="Please enter password.">
+                <p class="help-block text-danger"></p>
+              </div>
+            </div>
+
+            <div class="row control-group">
+              <div class="form-group col-xs-12 floating-label-form-group controls">
+                <label>환전신청금액</label>
+                <input type="number" class="form-control" placeholder="Exchange amount" name="exchange-amount" required data-validation-required-message="Please enter amount.">
+                <p class="help-block text-danger"></p>
+              </div>
+            </div>
+
+            <div class="row control-group">
+              <div class="form-group col-xs-12 floating-label-form-group controls">
+                <label>은행</label>
+                <select class="form-control" name="bank-id">
+                  <% @banks.each do |b| %>
+                      <option value="<%= b.id %>"><%= b.name %></option>
+                  <% end %>
+                </select>
+                <p class="help-block text-danger"></p>
+              </div>
+            </div>
+
+            <div class="row control-group">
+              <div class="form-group col-xs-12 floating-label-form-group controls">
+                <label>계좌주 이름</label>
+                <input type="text" class="form-control" placeholder="Account holder" name="account-holder" required data-validation-required-message="Please enter account holder.">
+                <p class="help-block text-danger"></p>
+              </div>
+            </div>
+
+            <div class="row control-group">
+              <div class="form-group col-xs-12 floating-label-form-group controls">
+                <label>계좌번호 ('-' 제외하고 입력)</label>
+                <input type="number" class="form-control" placeholder="Account number" name="account-number" required data-validation-required-message="Please account number.">
+                <p class="help-block text-danger"></p>
+              </div>
+            </div>
+
+            <br>
+
+            <div id="success"></div>
+            <div class="row">
+              <div class="form-group col-xs-12 text-right">
+                <button type="submit" class="btn btn-success btn-lg">환전신청</button>
+              </div>
+            </div>
+
+        <% end %>
+
+      </div>
+    </div>
+
+  </div>
+</section>

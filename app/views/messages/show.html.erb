@@ -19,8 +19,8 @@
                         아래 버튼을 눌러서 답장할 수 있습니다.<br/>
                         답장 수익금: <%= @message.payment.pay_amount * 7 / 10 %>원
                       </div>
+                      <i id="loading-spinner" class="fa fa-circle-o-notch fa-spin"></i>
                       <div class="fb-messenger-button">
-                        <i id="fb-loading-spinner" class="fa fa-circle-o-notch fa-spin" style="font-size:24px"></i>
                         <script>
                           window.fbAsyncInit = function () {
                             FB.init({

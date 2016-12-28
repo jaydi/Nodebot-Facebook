@@ -10,6 +10,5 @@ describe CelebsController do
   it { expect(get: '/celebs/pair').to route_to(controller: 'celebs', action: 'pair') }
   it { expect(get: '/celebs/edit_password').to route_to(controller: 'celebs', action: 'edit_password') }
   it { expect(put: '/celebs/update_password').to route_to(controller: 'celebs', action: 'update_password') }
-  it { expect(get: '/celebs/revenue_management').to route_to(controller: 'celebs', action: 'revenue_management') }
   it { expect(delete: '/celebs').to route_to(controller: 'celebs', action: 'destroy') }
 end

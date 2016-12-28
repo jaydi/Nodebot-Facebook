@@ -59,11 +59,6 @@ class CelebsController < ApplicationController
     end
   end
 
-  def revenue_management
-    @exchange_requests = ExchangeRequest.issued_by(@celeb.id).all
-    # TODO view
-  end
-
   def destroy
     destroy_session if @celeb.deactivate!
     redirect_to root_path

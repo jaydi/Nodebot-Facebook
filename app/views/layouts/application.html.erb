@@ -64,10 +64,13 @@
                 </li>
             <% else %>
                 <li>
-                  <a href="javascript:window.location.href = '/<%= @celeb.name %>'">내 페이지</a>
+                  <a href="javascript:window.location.href = '/<%= @celeb.name %>'">내 홍보 페이지</a>
                 </li>
                 <li>
                   <a href="/celebs/edit">계정관리</a>
+                </li>
+                <li>
+                  <a href="/celebs/exchange_requests">수익관리</a>
                 </li>
                 <li>
                   <a href="/user_sessions/destroy">로그아웃</a>
