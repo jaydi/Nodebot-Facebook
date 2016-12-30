@@ -8,10 +8,10 @@ defaults: &defaults
 test:
   <<: *defaults
 
-local:
+development:
   <<: *defaults
 
-development:
+staging:
   <<: *defaults
 
 production:
