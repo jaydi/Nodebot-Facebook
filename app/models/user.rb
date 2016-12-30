@@ -171,7 +171,7 @@ class User < ActiveRecord::Base
       save!
       command(:set_nickname)
     else
-      state_enter_guide
+      state_enter_message
     end
   end
 
