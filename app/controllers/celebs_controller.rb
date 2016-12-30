@@ -40,16 +40,21 @@ class CelebsController < ApplicationController
   def update
     attrs_to_update = {}
 
-    if @celeb.profile_pic.blank?
-      if params[:profile].blank?
-        redirect_to celebs_edit_path, flash: {error_message: '프로필 이미지를 입력해주세요.'}
-        return
-      else
-        attrs_to_update[:profile_pic] = upload_profile(params[:profile])
-      end
+    if @celeb.profile_pic.blank? and params[:profile].blank?
+      redirect_to celebs_edit_path, flash: {error_message: '프로필 이미지를 입력해주세요.'}
+      return
     end
 
-    if @celeb.name != params[:name]
+    if params[:profile].present?
+      attrs_to_update[:profile_pic] = upload_profile(params[:profile])
+    end
+
+    if @celeb.name.blank? and params[:name].blank?
+      redirect_to celebs_edit_path, flash: {error_message: '닉네임을 입력해주세요.'}
+      return
+    end
+
+    if params[:name].present? and @celeb.name != params[:name]
       if Celeb.find_by_name(params[:name]).present?
         redirect_to celebs_edit_path, flash: {error_message: '이미 존재하는 닉네임입니다.'}
         return
