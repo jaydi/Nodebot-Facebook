@@ -190,7 +190,7 @@ class User < ActiveRecord::Base
         self.celeb = Celeb.find(target_id)
         celeb.initiate!
         save!
-        optin_celeb_guide
+        optin_celeb_message
 
       when :MSG
         if current_message.blank?

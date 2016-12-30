@@ -139,7 +139,7 @@ module UserHelper
     end
   end
 
-  def optin_celeb_guide
+  def optin_celeb_message
     send_text("메신저와 연결되었습니다. 환영해요, #{celeb.name}님! :)")
   end
 
