@@ -61,7 +61,7 @@ RSpec.describe CelebsController do
   end
 
   it 'should update celeb' do
-    put :update, {name: 'Will', profile_pic: 'picture'}, {celeb_id: celeb.id}
+    put :update, {name: 'Will', profile: 'picture'}, {celeb_id: celeb.id}
     expect(response.status).to eq(302)
     expect(response).to redirect_to(celebs_pair_path)
   end

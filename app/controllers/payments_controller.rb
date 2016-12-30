@@ -3,6 +3,12 @@ class PaymentsController < ApplicationController
 
   def show
     @payment = Payment.find(params[:id])
+
+    user = @payment.message.sender
+    unless user.agreements_accepted?
+      redirect_to users_agreements_path(user_id: user.id, pending_payment_id: @payment.id, vendor: :kakao)
+      return
+    end
   end
 
   def callback

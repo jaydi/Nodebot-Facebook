@@ -1,6 +1,6 @@
 FactoryGirl.define do
   factory :message do
-    sender { FactoryGirl.create(:user) }
+    sender { FactoryGirl.create(:user, agreements_accepted: true) }
     receiver { FactoryGirl.create(:celeb_user) }
     text 'message text'
     kind 10
