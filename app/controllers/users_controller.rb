@@ -1,12 +1,12 @@
 class UsersController < ApplicationController
 
   def show_agreements
+    @user = User.find(params[:id])
     if @user.agreements_accepted?
       redirect_to payment_path(id: params[:pending_payment_id], vendor: params[:vendor])
       return
     end
 
-    @user = User.find(params[:id])
     @pending_payment_id = params[:pending_payment_id]
     @vendor = params[:vendor]
   end
