@@ -17,6 +17,7 @@
         <div class="row">
           <div class="col-lg-12 text-center well">
             <p>수신한 메시지가 없습니다.</p>
+
             <p>팬들에게 아래 링크를 홍보하고, 첫 메시지를 받아보세요!</p>
             <a><%= APP_CONFIG[:host_url].split('//')[1] %>/<%= @celeb.name %></a>
           </div>
@@ -38,6 +39,7 @@
                         <span class="message-label label label-pill label-warning">미결제</span>
                     <% end %>
                     <h4 class="list-group-item-heading"><%= m.sender.name %></h4>
+
                     <p class="list-group-item-text"><%= m.text %></p>
                   </a>
               <% end %>

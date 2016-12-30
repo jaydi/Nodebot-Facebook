@@ -15,15 +15,15 @@ describe ExchangeRequest do
     celeb = FactoryGirl.create(:celeb, balance: 5_000)
     bank = FactoryGirl.create(:bank)
     exchange_request = ExchangeRequest.new({
-                          celeb_id: celeb.id,
-                          bank_id: bank.id,
-                          account_holder: celeb.name,
-                          account_number: 1234,
-                          amount: 10_000
-                        })
+                                             celeb_id: celeb.id,
+                                             bank_id: bank.id,
+                                             account_holder: celeb.name,
+                                             account_number: 1234,
+                                             amount: 10_000
+                                           })
 
     expect(exchange_request.save).to be_falsey
-    expect(exchange_request.errors).to include(:amount)
+    expect(exchange_request.errors.messages.present?).to be_truthy
   end
 
   it 'can succeed' do

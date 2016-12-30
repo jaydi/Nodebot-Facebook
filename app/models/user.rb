@@ -7,6 +7,7 @@ class User < ActiveRecord::Base
   include AASM
   include UserHelper
   include MessengerHelper
+  include PaymentHelper
 
   has_one :celeb
 
@@ -127,6 +128,10 @@ class User < ActiveRecord::Base
 
   def celeb?
     celeb.present?
+  end
+
+  def agreements_accepted?
+    agreements_accepted
   end
 
   def current_message

@@ -15,6 +15,8 @@ Rails.application.routes.draw do
       resources :exchange_requests, only: [:index, :new, :create]
     end
   end
+  get 'celebs/agreements' => 'celebs#show_agreements'
+  post 'celebs/agreements' => 'celebs#accept_agreements'
   get 'celebs/edit' => 'celebs#edit'
   put 'celebs' => 'celebs#update'
   patch 'celebs' => 'celebs#update'
@@ -22,6 +24,9 @@ Rails.application.routes.draw do
   get 'celebs/edit_password' => 'celebs#edit_password'
   put 'celebs/update_password' => 'celebs#update_password'
   delete 'celebs' => 'celebs#destroy'
+
+  get 'users/agreements' => 'users#show_agreements'
+  post 'users/agreements' => 'users#accept_agreements'
 
   resources :messages, only: [:index, :show]
 

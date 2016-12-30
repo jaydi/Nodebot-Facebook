@@ -1,0 +1,63 @@
+<section class="first">
+  <div class="container">
+
+    <div class="row">
+      <div class="col-lg-12 text-center">
+        <h2>가입</h2>
+        <hr class="star-primary">
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-lg-6 col-lg-offset-3">
+
+        <%= form_tag '/celebs/agreements', method: :post, id: :accept_celeb_agreements_form do %>
+
+            <div class="row control-group">
+              <div class="checkbox col-xs-12 controls">
+                <label>
+                  <input type="checkbox" name="terms_accepted" required> 이용약관
+                </label>
+
+                <p class="help-block text-danger"></p>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-xs-12">
+                <iframe class="agreements" src="/terms_of_agreements_partner.html"></iframe>
+              </div>
+            </div>
+
+            <div class="row control-group">
+              <div class="checkbox col-xs-12 controls">
+                <label>
+                  <input type="checkbox" name="privacy_accepted" required> 개인정보처리방침
+                </label>
+
+                <p class="help-block text-danger"></p>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-xs-12">
+                <iframe class="agreements" src="/privacy_policy_partner.html"></iframe>
+              </div>
+            </div>
+
+            <br>
+
+            <div id="success"></div>
+            <div class="row">
+              <div class="form-group col-xs-12 text-right">
+                <button type="submit" class="btn btn-success btn-lg">시작하기</button>
+              </div>
+            </div>
+
+        <% end %>
+
+      </div>
+    </div>
+
+  </div>
+</section>

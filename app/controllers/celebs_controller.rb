@@ -1,13 +1,26 @@
 class CelebsController < ApplicationController
-  before_action :check_celeb, except: [:show_by_name, :new, :create]
+  before_action :check_celeb, except: [:show_by_name, :show_agreements, :accept_agreements, :new, :create]
+  before_action :check_celeb_agreements, only: [:new]
   before_action :set_minimal_layout_flag, only: [:show_by_name]
 
   def show_by_name
     @celeb = Celeb.find_by_name(params[:name])
   end
 
+  def show_agreements
+  end
+
+  def accept_agreements
+    if params[:terms_accepted] and params[:privacy_accepted]
+      session[:terms_accepted] = true
+      session[:privacy_accepted] = true
+      redirect_to new_celeb_path
+    else
+      redirect_to celebs_agreements_path, flash: {error_message: "모든 항목에 동의해주셔야 합니다."}
+    end
+  end
+
   def new
-    redirect_to messages_path unless @celeb.blank?
   end
 
   def create
@@ -25,21 +38,34 @@ class CelebsController < ApplicationController
   end
 
   def update
-    @celeb.name = params[:name]
-    @celeb.profile_pic = upload_profile(params[:profile])
-    if Celeb.find_by_name(@celeb.name).present?
-      redirect_to celebs_edit_path, flash: {error_message: '이미 존재하는 닉네임입니다.'}
-    else
-      begin
-        @celeb.save!
-        unless @celeb.paired?
-          redirect_to celebs_pair_path
-        else
-          redirect_to messages_path, flash: {info_message: '계정 정보가 업데이트 되었습니다.'}
-        end
-      rescue
-        redirect_to celebs_edit_path, flash: {error_message: '계정 업데이트에 실패했습니다.'}
+    attrs_to_update = {}
+
+    if @celeb.profile_pic.blank?
+      if params[:profile].blank?
+        redirect_to celebs_edit_path, flash: {error_message: '프로필 이미지를 입력해주세요.'}
+        return
+      else
+        attrs_to_update[:profile_pic] = upload_profile(params[:profile])
       end
+    end
+
+    if @celeb.name != params[:name]
+      if Celeb.find_by_name(params[:name]).present?
+        redirect_to celebs_edit_path, flash: {error_message: '이미 존재하는 닉네임입니다.'}
+        return
+      else
+        attrs_to_update[:name] = params[:name]
+      end
+    end
+
+    if @celeb.update_attributes(attrs_to_update)
+      if @celeb.paired?
+        redirect_to messages_path
+      else
+        redirect_to celebs_pair_path
+      end
+    else
+      redirect_to celebs_edit_path, flash: {error_message: '계정 업데이트에 실패했습니다: ' + @celeb.errors.messages.to_s}
     end
   end
 

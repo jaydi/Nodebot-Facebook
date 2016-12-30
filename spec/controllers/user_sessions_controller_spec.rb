@@ -12,31 +12,31 @@ RSpec.describe UserSessionsController do
   end
 
   it 'should not let sign in if false email' do
-    post :create, { email: 'false email' }
+    post :create, {email: 'false email'}
     expect(response.status).to eq(302)
     expect(response).to redirect_to(new_user_session_path)
   end
 
   it 'should not let sign in if false password' do
-    post :create, { email: celeb.email, password: 'false password' }
+    post :create, {email: celeb.email, password: 'false password'}
     expect(response.status).to eq(302)
     expect(response).to redirect_to(new_user_session_path)
   end
 
   it 'should redirect to edit page if info not filled' do
-    post :create, { email: celeb.email, password: celeb.password }
+    post :create, {email: celeb.email, password: celeb.password}
     expect(response.status).to eq(302)
     expect(response).to redirect_to(celebs_edit_path)
   end
 
   it 'should redirect to pair page if not paired' do
-    post :create, { email: info_filled_celeb.email, password: info_filled_celeb.password }
+    post :create, {email: info_filled_celeb.email, password: info_filled_celeb.password}
     expect(response.status).to eq(302)
     expect(response).to redirect_to(celebs_pair_path)
   end
 
   it 'should redirect to messages page if normal' do
-    post :create, { email: paired_celeb.email, password: paired_celeb.password }
+    post :create, {email: paired_celeb.email, password: paired_celeb.password}
     expect(response.status).to eq(302)
     expect(response).to redirect_to(messages_path)
   end
@@ -48,13 +48,13 @@ RSpec.describe UserSessionsController do
   end
 
   it 'should not send email if false email' do
-    post :send_new_password, { email: 'false email' }
+    post :send_new_password, {email: 'false email'}
     expect(response.status).to eq(302)
     expect(response).to redirect_to(user_sessions_request_new_password_path)
   end
 
   it 'should show new passowrd email guide page' do
-    post :send_new_password, { email: celeb.email }
+    post :send_new_password, {email: celeb.email}
     expect(response.status).to eq(200)
     expect(response).to render_template(:new_password_sent)
   end

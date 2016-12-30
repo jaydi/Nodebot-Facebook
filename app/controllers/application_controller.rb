@@ -1,5 +1,5 @@
 class ApplicationController < ActionController::Base
-  protect_from_forgery with: :null_session
+  protect_from_forgery with: :exception
 
   def current_celeb
     if !session[:celeb_id].blank?
@@ -32,6 +32,10 @@ class ApplicationController < ActionController::Base
     cookies[:celeb_auth_token] = nil
     session[:celeb_id] = nil
     @celeb = nil
+  end
+
+  def check_celeb_agreements
+    redirect_to celebs_agreements_path unless session[:terms_accepted] and session[:privacy_accepted]
   end
 
   def set_minimal_layout_flag

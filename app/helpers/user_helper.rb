@@ -97,7 +97,7 @@ module UserHelper
       when :payment_initiated
         msg_str = "#{current_message.receiver.celeb.price}원을 결제합니다. 아래 링크에서 결제를 진행해주세요."
         send_buttons(msg_str, buttons: [
-          {type: 'web_url', url: "#{APP_CONFIG[:host_url]}/payments/#{current_message.payment.id}", title: '카카오페이'},
+          {type: 'web_url', url: payment_url(self, current_message.payment.id, :kakao), title: '카카오페이'},
           {type: 'postback', title: '취소', payload: "cancel_payment"}
         ])
 

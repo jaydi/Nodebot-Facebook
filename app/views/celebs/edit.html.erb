@@ -8,6 +8,15 @@
       reader.readAsDataURL(input.files[0]);
     }
   }
+
+  function validateProfile() {
+    <% if @celeb.profile_pic.blank? %>
+    if (!$('#input_profile').val()) {
+      toastr.error('프로필 이미지를 입력해주세요.');
+      return false;
+    }
+    <% end %>
+  }
 </script>
 
 <section id="sign-up" class="first">
@@ -23,12 +32,12 @@
     <div class="row">
       <div class="col-lg-8 col-lg-offset-2">
 
-        <%= form_tag '/celebs', method: :put, id: :edit_celeb_form, multipart: true do %>
+        <%= form_tag '/celebs', method: :put, id: :edit_celeb_form, multipart: true, :html => {:onsubmit => "return validateProfile();"} do %>
 
             <div class="row control-group">
               <div class="form-group col-lg-6 col-lg-offset-3 floating-label-form-group controls input-image">
                 <img id="img-profile" class="img-responsive img-centered img-circle img-profile clickable" onclick="$('#input-profile').trigger('click');" style="background-image: url('<%= @celeb.profile_pic.blank? ? "/images/profile.png" : @celeb.profile_pic %>')"/>
-                <input id="input-profile" name="profile" onchange="showPreview(this)" type="file" required/>
+                <input id="input-profile" name="profile" onchange="showPreview(this)" type="file"/>
 
                 <p class="help-block text-danger"></p>
               </div>
@@ -47,7 +56,7 @@
 
             <div id="success"></div>
             <div class="row">
-              <div class="form-group col-xs-6 col-xs-offset-3 text-right">
+              <div class="form-group col-lg-6 col-lg-offset-3 text-right">
                 <button type="submit" class="btn btn-success btn-lg">확인</button>
               </div>
             </div>
@@ -59,6 +68,7 @@
             <a href="/celebs/edit_password">비밀번호 변경</a>
           </div>
         </div>
+
       </div>
     </div>
 

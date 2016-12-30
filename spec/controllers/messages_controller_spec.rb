@@ -14,7 +14,7 @@ RSpec.describe MessagesController do
     other_celeb = FactoryGirl.create(:celeb_without_pairing, email: 'other@e.mail')
     FactoryGirl.create(:user, celeb: other_celeb)
     # test with another paired celeb
-    get :show, { id: message.id }, { celeb_id: other_celeb.id }
+    get :show, {id: message.id}, {celeb_id: other_celeb.id}
     expect(response.status).to eq(302)
     expect(response).to redirect_to(messages_path)
   end

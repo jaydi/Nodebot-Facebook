@@ -1,8 +1,5 @@
 class WebMessagesController < ApplicationController
-
-  def my_logger
-    @@my_logger ||= ::Logger.new("#{Rails.root}/log/#{Rails.env}_#{self.class.name.underscore}.log")
-  end
+  protect_from_forgery with: :null_session
 
   def verify_webhook
     if params['hub.verify_token'] == "#{APP_CONFIG[:fb_webhook_token]}"
@@ -91,6 +88,10 @@ class WebMessagesController < ApplicationController
       end
     end
     msgs
+  end
+
+  def my_logger
+    @@my_logger ||= ::Logger.new("#{Rails.root}/log/#{Rails.env}_#{self.class.name.underscore}.log")
   end
 
 end
