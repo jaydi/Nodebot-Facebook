@@ -7,8 +7,9 @@ defaults: &defaults
   fb_page_access_token: EAAY1a1Sv97EBADm1lJqtVZBIZByfUaP8eZCA34f7FW5WYnmCBkAHvLgeZAcUu17bA9bFAMacMrL8VAcq2imhEZCNJI2HXtDGF8oI9bpDJmtY7wjcZB6YHhJ6LxbJBgaeb3WleUIGSSe553tHK28vmgcEVmKVyNvKX4A5fuAu5rhQZDZD
   fb_graph_api_url: https://graph.facebook.com/v2.6
   fb_page_name: waikikibot
-  import_api_key: 0645047318061418
-  import_api_secret: ltRDFNeLrIkw87TfYUS9n2Yuz1qBqz1M3TpIHEu9mOFvVyLTtD3QG1lf3MQulSgoMG7tkBCHpidlRYek
+  iamport_api_url: https://api.iamport.kr
+  iamport_api_key: 0645047318061418
+  iamport_api_secret: ltRDFNeLrIkw87TfYUS9n2Yuz1qBqz1M3TpIHEu9mOFvVyLTtD3QG1lf3MQulSgoMG7tkBCHpidlRYek
 
 test:
   <<: *defaults

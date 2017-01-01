@@ -10,7 +10,7 @@ RSpec.describe PaymentsController do
   end
 
   it 'should succeed payment' do
-    post :callback, {merchant_uid: payment.id, status: 'paid'}
+    post :callback, {id: payment.id}
     expect(response.status).to eq(200)
     expect(payment.reload.status).to eq('pay_success')
   end

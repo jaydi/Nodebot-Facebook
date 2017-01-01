@@ -22,7 +22,7 @@ class Payment < ActiveRecord::Base
     state :pay_fail, after_enter: :notify_pay_fail
     state :pay_success, after_enter: :notify_pay_success
     state :cancel_request, after_enter: :send_cancel_request
-    state :cancel_fail
+    state :cancel_fail, after_enter: :notify_cancel_fail
     state :cancel_success, after_enter: :notify_cancel_success
     state :wasted
 
@@ -83,6 +83,10 @@ class Payment < ActiveRecord::Base
 
   def notify_cancel_success
     message.sender.notify_cancel(self)
+  end
+
+  def notify_cancel_success
+    # TODO notify admin
   end
 
 end
