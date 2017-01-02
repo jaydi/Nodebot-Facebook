@@ -14,7 +14,8 @@
                   name: "<%= Rails.env.production? ? "유료메시지_#{@payment.message.receiver.celeb.name}" : "결제테스트" %>",
                   amount: <%= @payment.pay_amount %>,
                   buyer_name: "<%= @payment.message.sender.name %>",
-                  digital: true
+                  digital: true,
+                  in_app: true
                 }, function (rsp) {
                   var msg = "";
                   if (rsp.success) {
