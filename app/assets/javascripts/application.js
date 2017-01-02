@@ -23,7 +23,6 @@
 //= require_tree .
 
 $(document).ready(function () {
-  IMP.init('imp15090414');
   toastr.options = {
     "closeButton": false,
     "debug": false,
