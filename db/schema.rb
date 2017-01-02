@@ -78,6 +78,7 @@ ActiveRecord::Schema.define(version: 20161102064758) do
     t.integer  "message_id",                              null: false
     t.integer  "pay_amount",                              null: false
     t.decimal  "commission_rate", precision: 5, scale: 2, null: false
+    t.string   "failure_reason"
     t.integer  "status",                                  null: false
     t.datetime "created_at",                              null: false
     t.datetime "updated_at",                              null: false
