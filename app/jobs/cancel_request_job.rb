@@ -15,11 +15,12 @@ class CancelRequestJob < ActiveJob::Base
         merchant_uid: payment.id,
         reason: '기한 만료'
       }, {'Authorization' => token})
-      status = JSON.parse(res.body)['response']['status']
+      res = JSON.parse(res.body)
 
-      if status == 'cancelled'
+      if res['CODE'] == 0 and res['response']['status'] == 'cancelled'
         payment.succeed_cancel!
       else
+        payment.update_attributes({failure_reason: res['message']})
         payment.fail_cancel!
       end
     else

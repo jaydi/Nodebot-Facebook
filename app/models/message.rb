@@ -2,26 +2,21 @@ class Message < ActiveRecord::Base
   include AASM
 
   has_one :payment
-  has_one :reply_message, class_name: 'Message', foreign_key: :initial_message_id
 
   belongs_to :sender, class_name: 'User', foreign_key: :sending_user_id
   belongs_to :receiver, class_name: 'User', foreign_key: :receiving_user_id
   belongs_to :initial_message, class_name: 'Message', foreign_key: :initial_message_id
 
   scope :sent_by, ->(user_id) {
-    where(sending_user_id: user_id).where(status: [statuses[:delivered], statuses[:replied], statuses[:wasted]])
+    where(sending_user_id: user_id).where(status: [statuses[:delivered], statuses[:read], statuses[:replied], statuses[:wasted]])
   }
 
   scope :received_by, ->(user_id) {
-    where(receiving_user_id: user_id).where(status: [statuses[:delivered], statuses[:replied], statuses[:wasted]])
+    where(receiving_user_id: user_id).where(status: [statuses[:delivered], statuses[:read], statuses[:replied], statuses[:wasted]])
   }
 
   scope :in_progress, ->(user_id) {
     where(sending_user_id: user_id).where(status: [statuses[:initiated], statuses[:completed]])
-  }
-
-  scope :timed_outs, -> {
-    where(status: statuses[:delivered]).where(initial_message_id: nil).where('updated_at < ?', 1.day.ago.beginning_of_day)
   }
 
   enum kind: {
@@ -75,11 +70,19 @@ class Message < ActiveRecord::Base
   end
 
   def repliable?
-    delivered? and payment.present? and payment.pay_success?
+    (delivered? or read?) and payment.present? and payment.pay_success?
   end
 
   def reply?
     initial_message.present?
+  end
+
+  def in_progress?
+    initiated? or completed?
+  end
+
+  def reply_message
+    self.class.where(initial_message_id: self.id).last
   end
 
   def set_time_out

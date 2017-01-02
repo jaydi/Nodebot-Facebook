@@ -85,8 +85,8 @@ class Payment < ActiveRecord::Base
     message.sender.notify_cancel(self)
   end
 
-  def notify_cancel_success
-    # TODO notify admin
+  def notify_cancel_fail
+    Waikiki::MessageSender.send_to_admin("결체취소실패:#{self.id}:#{self.failure_reason}")
   end
 
 end
