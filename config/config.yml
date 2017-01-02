@@ -28,6 +28,7 @@ staging:
 production:
   <<: *defaults
   host_url: https://kiki.video
+  redis_url: redis://waikiki-redis.uu99gx.0001.apn2.cache.amazonaws.com:6379
   fb_messenger_app_id: 1747584958855089
   fb_page_id: 982472715207823
   fb_page_access_token: EAAY1a1Sv97EBAPeQou3mHxEobK18sIqKFFWO7h0xZAta82gFkq8CEusHjGHj6ZCzLXxqhJ65yDRW97d2N8YN46DDsYZAPBVB2fvY1yC1ZAXbgxsyO4SkJGFpJ4I4czX8ZAWOQml5La4yTbuDlng7Tzvwz1AUOMX3xpg7gJzMEeQZDZD

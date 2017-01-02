@@ -10,11 +10,13 @@ default: &default
 
 test:
   <<: *default
+  host: localhost
   adapter: sqlite3
   database: db/test.sqlite3
 
 spec:
   <<: *default
+  host: localhost
   adapter: sqlite3
   database: db/test.sqlite3
 
@@ -26,7 +28,7 @@ staging:
 
 production:
   <<: *default
-  host: kiki.video
+  host: waikiki.cmoobuk7z8ar.ap-northeast-2.rds.amazonaws.com
   database: waikiki_production
   username: waikiki
   password: asjkgF,_ls12n#T
