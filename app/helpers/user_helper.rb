@@ -113,7 +113,7 @@ module UserHelper
         msg_str = "#{current_message.receiver.name}님에게 답장을 시작합니다."
         send_quick_replies(msg_str, quick_replies: [
           {title: '응', payload: 'start_replying'},
-          {title: '아니야 됐어', payload: 'end_conversation'}
+          {title: '아니야 됐어', payload: 'cancel_reply'}
         ])
 
       when :replying
@@ -125,7 +125,7 @@ module UserHelper
         send_quick_replies(msg_str, quick_replies: [
           {title: '응 이걸로 보내', payload: 'complete_reply'},
           {title: '다시 할래', payload: 'start_replying'},
-          {title: '관둘래', payload: 'end_conversation'}
+          {title: '관둘래', payload: 'cancel_reply'}
         ])
 
       when :reply_completed
