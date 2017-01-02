@@ -1,10 +1,11 @@
 class CelebsController < ApplicationController
-  before_action :check_celeb, except: [:show_by_name, :show_agreements, :accept_agreements, :new, :create]
+  before_action :get_celeb, except: [:show_by_name, :show_agreements, :accept_agreements, :new, :create]
   before_action :check_celeb_agreements, only: [:new]
   before_action :set_minimal_layout_flag, only: [:show_by_name]
 
   def show_by_name
-    @celeb = Celeb.find_by_name(params[:name])
+    @celeb = Celeb.active.find_by_name(params[:name])
+    redirect_to root_path unless @celeb
   end
 
   def show_agreements

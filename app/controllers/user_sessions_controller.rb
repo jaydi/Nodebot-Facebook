@@ -1,12 +1,12 @@
 class UserSessionsController < ApplicationController
   layout 'application'
-  before_action :check_celeb, only: [:destroy]
+  before_action :get_celeb, only: [:destroy]
 
   def new
   end
 
   def create
-    celeb = Celeb.where(email: params[:email]).first
+    celeb = Celeb.where(email: params[:email]).where.not(status: Celeb.statuses[:deactivated]).first
 
     if celeb.blank?
       redirect_to new_user_session_path, flash: {error_message: "등록되지 않은 이메일입니다."}

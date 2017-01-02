@@ -14,12 +14,27 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def check_celeb
+  def get_celeb
     begin
       @celeb ||= current_celeb
     rescue ActiveRecord::RecordNotFound
       redirect_to new_user_session_path
     end
+  end
+
+  def check_celeb
+    get_celeb
+    if @celeb.present?
+      if not @celeb.info_filled?
+        redirect_to celebs_edit_path
+      elsif not @celeb.paired?
+        redirect_to celebs_pair_path
+      end
+    end
+  end
+
+  def check_celeb_agreements
+    redirect_to celebs_agreements_path unless session[:terms_accepted] and session[:privacy_accepted]
   end
 
   def create_session(celeb)
@@ -32,10 +47,6 @@ class ApplicationController < ActionController::Base
     cookies[:celeb_auth_token] = nil
     session[:celeb_id] = nil
     @celeb = nil
-  end
-
-  def check_celeb_agreements
-    redirect_to celebs_agreements_path unless session[:terms_accepted] and session[:privacy_accepted]
   end
 
   def set_minimal_layout_flag
