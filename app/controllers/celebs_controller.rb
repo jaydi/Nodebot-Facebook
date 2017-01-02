@@ -55,12 +55,14 @@ class CelebsController < ApplicationController
       return
     end
 
-    if params[:name].present? and @celeb.name != params[:name]
-      if Celeb.find_by_name(params[:name]).present?
+    new_name = params[:name].gsub(' ', '')
+    
+    if new_name.present? and @celeb.name != new_name
+      if Celeb.find_by_name(new_name).present?
         redirect_to celebs_edit_path, flash: {error_message: '이미 존재하는 닉네임입니다.'}
         return
       else
-        attrs_to_update[:name] = params[:name]
+        attrs_to_update[:name] = new_name
       end
     end
 
