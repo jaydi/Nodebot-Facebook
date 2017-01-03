@@ -16,7 +16,7 @@
                   amount: <%= @payment.pay_amount %>,
                   buyer_name: "<%= @payment.message.sender.name %>",
                   digital: true,
-                  app_scheme: "test"
+                  app_scheme: "https://m.me/?"
                 }, function (rsp) {
                   var msg = "";
                   if (rsp.success) {
