@@ -23,20 +23,8 @@ RSpec.describe UserSessionsController do
     expect(response).to redirect_to(new_user_session_path)
   end
 
-  it 'should redirect to edit page if info not filled' do
+  it 'should redirect to messages' do
     post :create, {email: celeb.email, password: celeb.password}
-    expect(response.status).to eq(302)
-    expect(response).to redirect_to(celebs_edit_path)
-  end
-
-  it 'should redirect to pair page if not paired' do
-    post :create, {email: info_filled_celeb.email, password: info_filled_celeb.password}
-    expect(response.status).to eq(302)
-    expect(response).to redirect_to(celebs_pair_path)
-  end
-
-  it 'should redirect to messages page if normal' do
-    post :create, {email: paired_celeb.email, password: paired_celeb.password}
     expect(response.status).to eq(302)
     expect(response).to redirect_to(messages_path)
   end

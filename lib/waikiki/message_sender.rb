@@ -72,8 +72,10 @@ module Waikiki
       end
 
       def send_to_admin(msg)
-        admin_users = User.where(id: ADMIN_USER_IDS)
-        admin_users.each { |au| send_text_message(au, msg) }
+        if Rails.env.production?
+          admin_users = User.where(id: ADMIN_USER_IDS)
+          admin_users.each { |au| send_text_message(au, msg) }
+        end
       end
 
     end

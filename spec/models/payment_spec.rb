@@ -11,10 +11,4 @@ describe Payment do
     expect(user.reload.status).to eq('waiting')
   end
 
-  it 'should invoke refund if wasted' do
-    payment = FactoryGirl.create(:payment, status: :pay_success)
-    payment.message.waste!
-    expect(payment.reload.status).to eq('cancel_success')
-  end
-
 end

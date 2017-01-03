@@ -82,7 +82,7 @@ class Message < ActiveRecord::Base
   end
 
   def reply_message
-    self.class.where(initial_message_id: self.id).last
+    @reply_message ||= self.class.where(initial_message_id: self.id).last
   end
 
   def set_time_out
@@ -90,6 +90,15 @@ class Message < ActiveRecord::Base
       MessageTimeOutWorker.perform_in(48.hours, id)
     else
       MessageTimeOutWorker.perform_in(15.minutes, id)
+    end
+  end
+
+  def time_out
+    reply_message
+    if reply_message.blank?
+      message.waste!
+    elsif reply_message.in_progress?
+      MessageTimeOutWorker.perform_in(10.minutes, id)
     end
   end
 
