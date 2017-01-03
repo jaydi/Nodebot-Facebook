@@ -6,6 +6,11 @@ require 'rails/all'
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
+Raven.configure do |config|
+  config.dsn = 'https://aa23d2cb2e3e462d997fc4374957416f:7151a1e03d084a46b11ada13b2cfd3ec@sentry.io/126065'
+  config.environments = ['staging', 'production']
+end
+
 module Waikiki
   class Application < Rails::Application
     # Settings in config/environments/* take precedence over those specified here.
@@ -24,10 +29,5 @@ module Waikiki
     config.active_record.raise_in_transactional_callbacks = true
     # use sidekiq for queue jobs
     config.active_job.queue_adapter = :sidekiq
-
-    Raven.configure do |config|
-      config.dsn = 'https://aa23d2cb2e3e462d997fc4374957416f:7151a1e03d084a46b11ada13b2cfd3ec@sentry.io/126065'
-      config.environments = ['staging', 'production']
-    end
   end
 end
