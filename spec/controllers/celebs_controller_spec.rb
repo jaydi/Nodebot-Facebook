@@ -41,10 +41,22 @@ RSpec.describe CelebsController do
   end
 
   it 'should create celeb' do
-    post :create, {email: 'email', password: 'pswd'}
+    post :create, {email: 'email', password: 'pswd', password_confirm: 'pswd'}
     expect(Celeb.count).to eq(1)
     expect(response.status).to eq(302)
     expect(response).to redirect_to(celebs_edit_path)
+  end
+
+  it 'should not create celeb on duplicate email' do
+    post :create, {email: celeb.email, password: 'pswd', password_confirm: 'pswd'}
+    expect(response.status).to eq(302)
+    expect(response).to redirect_to(new_celeb_path)
+  end
+
+  it 'should not create celeb on password mismatch' do
+    post :create, {email: celeb.email, password: 'pswd', password_confirm: 'pswd2'}
+    expect(response.status).to eq(302)
+    expect(response).to redirect_to(new_celeb_path)
   end
 
   it 'should show edit page' do

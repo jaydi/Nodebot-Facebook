@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
+  before_action :set_raven_context
 
   def current_celeb
     if !session[:celeb_id].blank?
@@ -56,4 +57,11 @@ class ApplicationController < ActionController::Base
   def set_door_layout_flag
     @door_layout = true
   end
+
+  private
+
+  def set_raven_context
+    Raven.user_context(celeb_id: session[:celeb_id])
+  end
+
 end

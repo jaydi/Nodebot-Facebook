@@ -25,13 +25,19 @@ class CelebsController < ApplicationController
   end
 
   def create
-    begin
-      celeb = Celeb.new(celeb_params)
-      celeb.save!
-      create_session(celeb)
-      redirect_to celebs_edit_path
-    rescue ActiveRecord::RecordInvalids
-      redirect_to new_celeb_path, flash: {error_message: celeb.errors.messages}
+    if Celeb.where(email: params[:email]).count != 0
+      redirect_to new_celeb_path, flash: {error_message: "이미 존재하는 이메일 주소입니다."}
+    elsif params[:password] != params[:password_confirm]
+      redirect_to new_celeb_path, flash: {error_message: "비밀번호가 일치하지 않습니다."}
+    else
+      begin
+        celeb = Celeb.new(celeb_params)
+        celeb.save!
+        create_session(celeb)
+        redirect_to celebs_edit_path
+      rescue ActiveRecord::RecordInvalids
+        redirect_to new_celeb_path, flash: {error_message: celeb.errors.messages}
+      end
     end
   end
 
