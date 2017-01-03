@@ -12,7 +12,7 @@ describe Message do
   it 'should invoke refund if wasted' do
     message = FactoryGirl.create(:message, status: :delivered)
     payment = FactoryGirl.create(:payment, message: message, status: :pay_success)
-    message.waste!
+    message.time_out
     expect(payment.reload.status).to eq('cancel_success')
   end
 

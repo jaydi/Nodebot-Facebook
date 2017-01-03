@@ -96,7 +96,7 @@ class Message < ActiveRecord::Base
   def time_out
     reply_message
     if reply_message.blank?
-      message.waste!
+      waste!
     elsif reply_message.in_progress?
       MessageTimeOutWorker.perform_in(10.minutes, id)
     end
