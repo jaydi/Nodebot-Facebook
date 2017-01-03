@@ -16,7 +16,6 @@
                   amount: <%= @payment.pay_amount %>,
                   buyer_name: "<%= @payment.message.sender.name %>",
                   digital: true,
-                  m_redirect_url: "<%= "https://m.me/#{APP_CONFIG[:fb_page_name]}" %>",
                   app_scheme: "<%= "https://m.me/#{APP_CONFIG[:fb_page_name]}" %>"
                 }, function (rsp) {
                   var msg = "";
