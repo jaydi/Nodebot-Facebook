@@ -19,13 +19,7 @@ class UserSessionsController < ApplicationController
     end
 
     create_session(celeb)
-    if !celeb.info_filled?
-      redirect_to celebs_edit_path
-    elsif !celeb.paired?
-      redirect_to celebs_pair_path
-    else
-      redirect_to messages_path
-    end
+    redirect_to messages_path
   end
 
   def request_new_password
