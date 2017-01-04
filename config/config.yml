@@ -1,11 +1,11 @@
 defaults: &defaults
-  host_url: https://metabot.tk
+  host_url: https://kiki-alpha.video
   encryption_key: JTs6uBd6YPnwoMeqInKTfBfJlZCFE9i8
   redis_url: redis://localhost:6379
   fb_webhook_token: this__is__nodebot__
   fb_messenger_app_id: 1186734761422431
   fb_page_id: 243076222782107
-  fb_page_access_token: EAAQ3VDflrl8BAIoIVqZA9NrKsZAdSbTiAVsRZAoBb9Il5dIOYpgNljClKOGoEQn0B1bNyXMehLe04pq72D9n1leWMh1OF00VntpARuk66zv3aRXT2R1z8nXRrvs2fi88jkw3ZBe3OEZBsv6xlRGaZC8O8LeqOi7jtUCVfVFHvsggZDZD
+  fb_page_access_token: EAAQ3VDflrl8BAEiNUkgXYAgHCykRI1PZCJdW0CbKGYV7lp6OFet8namtxw2NZCB8tAe2YQsXEMfXZC6IcLqxWfXupPIAks7h3NBZCuoeKvhHmszkZBIeBNzycfAZBGvuq8naLjRVvgMZARUYnPUi868qQ6bM287ckRYCAs529YqZCAZDZD
   fb_page_name: 243076222782107
   fb_graph_api_url: https://graph.facebook.com/v2.6
   iamport_api_url: https://api.iamport.kr

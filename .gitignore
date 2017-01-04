@@ -15,7 +15,11 @@
 /log/*
 !/log/.keep
 /tmp
-/shared
+
+# Ignore shared files
+/shared/log/*
+/shared/pids/*
+/shared/sockets/*
 
 # Ignore IntelliJ config files
 /.idea/*

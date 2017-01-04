@@ -5,7 +5,7 @@ default: &default
   collation: utf8_general_ci
   reconnect: true
   pool: 32
-  host: metabot.tk
+  host: kiki-alpha.video
   database: waikiki_development
   username: waikiki
   password: dhkdlzlzlfh!!
