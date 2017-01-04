@@ -2,14 +2,13 @@ class PaymentsController < ApplicationController
   protect_from_forgery with: :null_session, only: [:callback]
 
   def show
-    @id = params[:id]
-    # @payment = Payment.find(params[:id])
-    #
-    # user = @payment.message.sender
-    # unless user.agreements_accepted?
-    #   redirect_to users_agreements_path(user_id: user.id, pending_payment_id: @payment.id, vendor: :kakao)
-    #   return
-    # end
+    @payment = Payment.find(params[:id])
+
+    user = @payment.message.sender
+    unless user.agreements_accepted?
+      redirect_to users_agreements_path(user_id: user.id, pending_payment_id: @payment.id, vendor: :kakao)
+      return
+    end
   end
 
   def callback

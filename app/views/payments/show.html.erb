@@ -3,43 +3,42 @@
 
     <div class="row">
       <div class="col-lg-12 text-center">
-        <script>
-          $(document).ready(function() {
-            IMP.init("<%= APP_CONFIG[:iamport_api_id] %>");
-
-            IMP.request_pay({
-              pay_method: "card",
-              escrow: false,
-              merchant_uid: <%= @id %>,
-              name: "결제테스트",
-              amount: 1000,
-              buyer_name: "TESTUSER",
-              app_scheme: "https://m.me/?",
-              digital: true
-            }, function (rsp) {
-              if (rsp.success) {
-                var msg = '결제가 완료되었습니다.<br>';
-                msg += '고유ID : ' + rsp.imp_uid + '<br>';
-                msg += '상점 거래ID : ' + rsp.merchant_uid + '<br>';
-                msg += '결제 금액 : ' + rsp.paid_amount + '<br>';
-                if (rsp.pay_method === 'card') {
-                  msg += '카드 승인번호 : ' + rsp.apply_num + '<br>';
-                } else if (rsp.pay_method === 'vbank') {
-                  msg += '가상계좌 번호 : ' + rsp.vbank_num + '<br>';
-                  msg += '가상계좌 은행 : ' + rsp.vbank_name + '<br>';
-                  msg += '가상계좌 예금주 : ' + rsp.vbank_holder + '<br>';
-                  msg += '가상계좌 입금기한 : ' + rsp.vbank_date + '<br>';
-                }
-              } else {
-                var msg = '결제에 실패하였습니다.' + '<br>';
-                msg += '에러내용 : ' + rsp.error_msg + '<br>';
-                msg += rsp.error_code + " " + rsp.error_msg;
-              }
-              $('#response-message').html(msg).show();
-            });
-          });
-        </script>
-        <p id="response-message"></p>
+        <% if @payment.pay_request? %>
+            <script>
+              $(document).ready(function() {
+                IMP.init("<%= APP_CONFIG[:iamport_api_id] %>");
+                IMP.request_pay({
+                  pay_method: "card",
+                  escrow: false,
+                  merchant_uid: <%= @payment.id %>,
+                  name: "<%= Rails.env.production? ? "유료메시지_#{@payment.message.receiver.celeb.name}" : "결제테스트" %>",
+                  amount: <%= @payment.pay_amount %>,
+                  buyer_name: "<%= @payment.message.sender.name %>",
+                  app_scheme: "https://m.me/?",
+                  digital: true
+                }, function (rsp) {
+                  if (rsp.success) {
+                    var msg = '결제가 완료되었습니다.<br>';
+                    if (rsp.pay_method === 'card') {
+                      msg += '카드 승인번호 : ' + rsp.apply_num + '<br>';
+                    } else if (rsp.pay_method === 'vbank') {
+                      msg += '가상계좌 번호 : ' + rsp.vbank_num + '<br>';
+                      msg += '가상계좌 은행 : ' + rsp.vbank_name + '<br>';
+                      msg += '가상계좌 예금주 : ' + rsp.vbank_holder + '<br>';
+                      msg += '가상계좌 입금기한 : ' + rsp.vbank_date + '<br>';
+                    }
+                  } else {
+                    var msg = '결제에 실패하였습니다.' + '<br>';
+                    msg += '에러내용 : ' + rsp.error_msg + '<br>';
+                  }
+                  $('#response-message').html(msg).show();
+                });
+              });
+            </script>
+            <p id="response-message"></p>
+        <% else %>
+            <p>진행할 수 없는 결제입니다.</p>
+        <% end %>
       </div>
     </div>
 
