@@ -35,7 +35,7 @@
         <%= form_tag '/celebs', method: :put, id: :edit_celeb_form, multipart: true, :html => {:onsubmit => "return validateProfile();"} do %>
 
             <div class="row control-group">
-              <div class="form-group col-lg-6 col-lg-offset-3 floating-label-form-group controls input-image">
+              <div class="form-group col-xs-10 col-xs-offset-1 col-sm-6 col-sm-offset-3 floating-label-form-group controls input-image">
                 <img id="img-profile" class="img-responsive img-centered img-circle img-profile clickable" onclick="$('#input-profile').trigger('click');" style="background-image: url('<%= @celeb.profile_pic.blank? ? "/images/profile.png" : @celeb.profile_pic %>')"/>
                 <input id="input-profile" name="profile" onchange="showPreview(this)" type="file"/>
 
@@ -44,7 +44,7 @@
             </div>
 
             <div class="row control-group">
-              <div class="form-group col-lg-6 col-lg-offset-3 floating-label-form-group controls">
+              <div class="form-group col-xs-10 col-xs-offset-1 col-sm-6 col-sm-offset-3 floating-label-form-group controls">
                 <label>닉네임</label>
                 <input type="text" class="form-control" placeholder="Nickname" name="name" value="<%= @celeb.name %>" required data-validation-required-message="Please enter your nickname.">
 
@@ -56,7 +56,7 @@
 
             <div id="success"></div>
             <div class="row">
-              <div class="form-group col-lg-6 col-lg-offset-3 text-right">
+              <div class="form-group col-xs-10 col-xs-offset-1 col-sm-6 col-sm-offset-3 text-right">
                 <button type="submit" class="btn btn-success btn-lg">확인</button>
               </div>
             </div>
@@ -64,7 +64,7 @@
         <% end %>
 
         <div class="row">
-          <div class="col-lg-6 col-lg-offset-3 text-right">
+          <div class="col-xs-10 col-xs-offset-1 col-sm-6 col-sm-offset-3 text-right">
             <a href="/celebs/edit_password">비밀번호 변경</a>
           </div>
         </div>

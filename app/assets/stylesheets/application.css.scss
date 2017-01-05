@@ -8,6 +8,12 @@ img.guide {
   margin: 0 10%;
 }
 
+.agreements_frame {
+  height: 200px;
+  overflow: scroll;
+  -webkit-overflow-scrolling:touch;
+}
+
 iframe.agreements {
   width: 100%;
   height: 200px;
