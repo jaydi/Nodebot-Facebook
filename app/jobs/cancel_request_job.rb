@@ -11,6 +11,7 @@ class CancelRequestJob < ActiveJob::Base
         imp_secret: APP_CONFIG[:iamport_api_secret]
       })
       token = JSON.parse(res.body)['response']['access_token']
+
       res = Waikiki::HttpPersistent.post("#{APP_CONFIG[:iamport_api_url]}/payments/cancel", {
         merchant_uid: payment.id,
         reason: '기한 만료'
