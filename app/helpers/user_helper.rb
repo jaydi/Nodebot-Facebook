@@ -71,7 +71,7 @@ module UserHelper
         send_text(msg_str)
 
       when :message_confirm
-        msg_str = "#{current_message.text}\n\n위 내용을 전달할게요."
+        msg_str = "위 내용을 전달할게요."
         send_quick_replies(msg_str, quick_replies: [
           {title: '네', payload: 'complete_message'},
           {title: '다시 쓸래요', payload: 'start_messaging'},
@@ -79,7 +79,7 @@ module UserHelper
         ])
 
       when :message_completed
-        msg_str = "#{current_message.receiver.celeb.name}님은 #{current_message.receiver.celeb.price}원을 결제하면, 10초 내외의 영상답장을 해드리고 있어요."
+        msg_str = "#{current_message.receiver.celeb.name}님은 #{current_message.receiver.celeb.price}원을 결제하면, 영상답장을 해드리고 있어요."
         msg_str += " 24시간 내에 답장을 못 받을 경우, 결제금액은 전액 환불됩니다. 결제하시겠어요?"
         send_quick_replies(msg_str, quick_replies: [
           {title: '좋아요!', payload: 'initiate_payment'},

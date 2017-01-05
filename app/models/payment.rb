@@ -35,7 +35,7 @@ class Payment < ActiveRecord::Base
     end
 
     event :request_cancel do
-      transitions from: :pay_success, to: :cancel_request
+      transitions from: [:pay_success, :cancel_fail], to: :cancel_request
     end
 
     event :fail_cancel do

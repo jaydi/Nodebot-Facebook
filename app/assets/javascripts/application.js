@@ -23,24 +23,8 @@
 //= require_tree .
 
 $(document).ready(function () {
-  toastr.options = {
-    "closeButton": false,
-    "debug": false,
-    "newestOnTop": false,
-    "progressBar": false,
-    "positionClass": "toast-top-center",
-    "preventDuplicates": false,
-    "onclick": null,
-    "showDuration": "300",
-    "hideDuration": "1000",
-    "timeOut": "3000",
-    "extendedTimeOut": "1000",
-    "showEasing": "swing",
-    "hideEasing": "linear",
-    "showMethod": "fadeIn",
-    "hideMethod": "fadeOut"
-  }
   window.setTimeout(listenFBiframe, 500);
+  configToaster();
 });
 
 function listenFBiframe() {
@@ -58,6 +42,26 @@ function listenFBiframe() {
     });
   else
     window.setTimeout(listenFBiframe, 500);
+}
+
+function configToaster() {
+  toastr.options = {
+    "closeButton": false,
+    "debug": false,
+    "newestOnTop": false,
+    "progressBar": false,
+    "positionClass": "toast-top-center",
+    "preventDuplicates": false,
+    "onclick": null,
+    "showDuration": "300",
+    "hideDuration": "1000",
+    "timeOut": "3000",
+    "extendedTimeOut": "1000",
+    "showEasing": "swing",
+    "hideEasing": "linear",
+    "showMethod": "fadeIn",
+    "hideMethod": "fadeOut"
+  }
 }
 
 function isMobile() {
@@ -80,9 +84,9 @@ function getMobileOperatingSystem() {
 
 function openFBM() {
   if (isMobile()) {
+    var os = getMobileOperatingSystem();
     $("#fb-messenger-toss").attr("src", "fb-messenger://user/");
     setTimeout(function () {
-      var os = getMobileOperatingSystem();
       if (os == "Android")
         window.open("market://details?id=com.facebook.orca");
       else if (os == "iOS")

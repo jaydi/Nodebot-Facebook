@@ -16,7 +16,7 @@
 
     <div class="row">
       <div class="col-lg-12 text-center">
-        <p>메시지를 보내고 답장을 받을 수 있습니다.</p>
+        <p>영상으로 답장을 받을 수 있습니다.</p>
       </div>
     </div>
 
@@ -41,50 +41,11 @@
           <div class="modal-body text-center">
             <div>
               대화를 시작합니다.<br/>
-              메시징은 <a href="https://m.me/waikikibot">페이스북 메신저</a>에서 진행됩니다.<br/>
+              메시징은 <a href="javascript:openFBM()">페이스북 메신저</a>에서 진행됩니다.<br/>
               아래 버튼을 클릭한 후, 페이스북 메신저를 확인해주세요.
             </div>
-            <i id="loading-spinner" class="fa fa-circle-o-notch fa-spin"></i>
 
-            <div class="fb-messenger-button">
-              <script>
-                window.fbAsyncInit = function () {
-                  FB.init({
-                    appId: "<%= APP_CONFIG[:fb_messenger_app_id] %>",
-                    xfbml: true,
-                    version: "v2.6"
-                  });
-                };
-
-                (function (d, s, id) {
-                  var js, fjs = d.getElementsByTagName(s)[0];
-                  if (d.getElementById(id)) {
-                    return;
-                  }
-                  js = d.createElement(s);
-                  js.id = id;
-                  js.src = "//connect.facebook.net/en_US/sdk.js";
-                  fjs.parentNode.insertBefore(js, fjs);
-                }(document, 'script', 'facebook-jssdk'));
-              </script>
-              <div class="fb-send-to-messenger"
-                   messenger_app_id="<%= APP_CONFIG[:fb_messenger_app_id] %>"
-                   page_id="<%= APP_CONFIG[:fb_page_id] %>"
-                   data-ref="MSG_<%= @celeb.user.id %>"
-                   color="blue"
-                   size="large"/>
-            </div>
-
-            <div id="guide-fb-messenger" class="fb-messenger-guide text-center">
-              <span><a href="javascript:openFBM()">
-                <button class="btn btn-success btn-lg">페이스북 메신저에서 계속 진행</button>
-              </a></span>
-
-              <div id="guide-fb-messenger-app" class="alert alert-danger">
-                스마트폰을 사용중일 경우, <b>페이스북 메신저 앱을 먼저 설치</b>해주세요. 페이스북 메신저는 모바일웹을 더이상 지원하지 않습니다.
-              </div>
-              <iframe id="fb-messenger-toss" width="1px" height="1px" style="visibility:hidden" data-page="<%= APP_CONFIG[:fb_page_name] %>"></iframe>
-            </div>
+            <%= render '/shared/fb_messenger' %>
           </div>
         </div>
       </div>

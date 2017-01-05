@@ -1,0 +1,40 @@
+<i id="loading-spinner" class="fa fa-circle-o-notch fa-spin"></i>
+<div class="fb-messenger-button">
+  <script>
+    window.fbAsyncInit = function () {
+      FB.init({
+        appId: "<%= APP_CONFIG[:fb_messenger_app_id] %>",
+        xfbml: true,
+        version: "v2.6"
+      });
+    };
+
+    (function (d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) {
+        return;
+      }
+      js = d.createElement(s);
+      js.id = id;
+      js.src = "//connect.facebook.net/en_US/sdk.js";
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+  </script>
+  <div class="fb-send-to-messenger"
+       messenger_app_id="<%= APP_CONFIG[:fb_messenger_app_id] %>"
+       page_id="<%= APP_CONFIG[:fb_page_id] %>"
+       data-ref="MSG_<%= @celeb.user.id %>"
+       color="blue"
+       size="large"/>
+</div>
+<div id="guide-fb-messenger" class="fb-messenger-guide text-center">
+  <span>
+    <a href="javascript:openFBM();<%= "showProceedButton();" if action_name == 'pair' %>">
+      <button class="btn btn-success btn-lg">페이스북 메신저에서 계속 진행</button>
+    </a>
+  </span>
+  <div id="guide-fb-messenger-app" class="alert alert-danger">
+    스마트폰을 사용중일 경우, <b>페이스북 메신저 앱을 먼저 설치</b>해주세요.
+  </div>
+  <iframe id="fb-messenger-toss" width="1px" height="1px" style="visibility:hidden" data-page="<%= APP_CONFIG[:fb_page_name] %>"></iframe>
+</div>

@@ -14,19 +14,14 @@
                   name: "<%= Rails.env.production? ? "유료메시지_#{@payment.message.receiver.celeb.name}" : "결제테스트" %>",
                   amount: <%= @payment.pay_amount %>,
                   buyer_name: "<%= @payment.message.sender.name %>",
-                  app_scheme: "https://m.me/?",
+                  app_scheme: "",
                   digital: true
                 }, function (rsp) {
                   if (rsp.success) {
                     var msg = '결제가 완료되었습니다.<br>';
-                    if (rsp.pay_method === 'card') {
-                      msg += '카드 승인번호 : ' + rsp.apply_num + '<br>';
-                    } else if (rsp.pay_method === 'vbank') {
-                      msg += '가상계좌 번호 : ' + rsp.vbank_num + '<br>';
-                      msg += '가상계좌 은행 : ' + rsp.vbank_name + '<br>';
-                      msg += '가상계좌 예금주 : ' + rsp.vbank_holder + '<br>';
-                      msg += '가상계좌 입금기한 : ' + rsp.vbank_date + '<br>';
-                    }
+                    window.setTimeout(function() {
+                      window.close();
+                    }, 1500);
                   } else {
                     var msg = '결제에 실패하였습니다.' + '<br>';
                     msg += '에러내용 : ' + rsp.error_msg + '<br>';
