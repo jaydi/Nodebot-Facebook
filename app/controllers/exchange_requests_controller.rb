@@ -2,7 +2,7 @@ class ExchangeRequestsController < ApplicationController
   before_action :check_celeb
 
   def index
-    @exchange_requests = ExchangeRequest.issued_by(@celeb.id).all
+    @exchange_requests = ExchangeRequest.issued_by(@celeb.id).order(id: :desc).page(params[:page]).per(10)
     @exchanged_sum = ExchangeRequest.succeeded.issued_by(@celeb.id).select("sum(#{:amount}) as sum").first.sum || 0
   end
 
