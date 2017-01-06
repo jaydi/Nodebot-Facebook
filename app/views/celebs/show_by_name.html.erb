@@ -45,7 +45,7 @@
               아래 버튼을 클릭한 후, 페이스북 메신저를 확인해주세요.
             </div>
 
-            <%= render '/shared/fb_messenger' %>
+            <%= render '/shared/fb_messenger', message_target: "MSG_#{@celeb.user.id}" %>
           </div>
         </div>
       </div>

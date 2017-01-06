@@ -19,7 +19,7 @@
                         아래 버튼을 눌러서 답장할 수 있습니다.<br/>
                         답장 수익금: <%= @message.payment.pay_amount * 7 / 10 %>원
                       </div>
-                      <%= render '/shared/fb_messenger' %>
+                      <%= render '/shared/fb_messenger', message_target: "RPL_#{@message.id}" %>
                   <% else %>
                       <div>
                         결제되지 않은 메시지입니다.<br/>

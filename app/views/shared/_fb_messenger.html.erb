@@ -23,7 +23,7 @@
   <div class="fb-send-to-messenger"
        messenger_app_id="<%= APP_CONFIG[:fb_messenger_app_id] %>"
        page_id="<%= APP_CONFIG[:fb_page_id] %>"
-       data-ref="MSG_<%= @celeb.user.id %>"
+       data-ref="<%= local_assigns[:message_target] %>"
        color="blue"
        size="large"/>
 </div>
