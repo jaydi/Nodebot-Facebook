@@ -1,70 +1,282 @@
+<style>
+  .content-container {
+    width: 45%;
+    float: left;
+    padding: 10px;
+    margin-left: 2.5%;
+    margin-right: 2.5%;
+    margin-top: 20px;
+    box-sizing: border-box;
+    border: 1px solid #eee;
+  }
+
+  @media (max-width: 768px) {
+    .content-container {
+      width: 90%;
+      margin-left: 5%;
+      margin-right: 5%;
+    }
+  }
+
+  .content-head {
+    height: 40px;
+  }
+
+  .content-box {
+    position: relative;
+    width: 100%;
+    padding-top: 100%;
+    pointer-events: none;
+  }
+
+  .content {
+    position: absolute;
+    border: none;
+    margin-top: -100%;
+    width: 100%;
+    height: 100%;
+  }
+
+  .content-foot {
+    height: 60px;
+  }
+
+  .video-box {
+    position: relative;
+    width: 100%;
+    padding-top: 100%;
+  }
+</style>
+<script>
+  var itemIndex = null;
+  var merchantUid = null;
+  var itemName = null;
+  var paidIndices = [];
+
+  function startPayment(index) {
+    if (paidIndices.indexOf(index) != -1) {
+      $('#video-modal-' + index).modal('show');
+    } else {
+      itemIndex = index;
+      merchantUid = index + ":" + new Date().getTime();
+      switch (index) {
+        case 1:
+          itemName = "Pesto Chicken";
+          break;
+        case 2:
+          itemName = "Spinach Shrimp Pasta";
+          break;
+        case 3:
+          itemName = "Beef Bourguignon";
+          break;
+      }
+      $('#agreement-modal').modal('show');
+    }
+  }
+
+  function makePayment() {
+    if ($('#terms').is(':checked') && $('#privacy').is(':checked')) {
+      $('#agreement-modal').modal('hide');
+      IMP.init("<%= APP_CONFIG[:iamport_api_id] %>");
+      IMP.request_pay({
+        pay_method: "card",
+        escrow: false,
+        merchant_uid: merchantUid,
+        name: itemName,
+        amount: 1000,
+        buyer_name: "Temporary User",
+        app_scheme: "",
+        digital: true
+      }, function (rsp) {
+        $('#terms').prop('checked', false);
+        $('#privacy').prop('checked', false);
+        if (rsp.success) {
+          paidIndices.push(itemIndex);
+          $('#button-' + itemIndex).html('레시피 보기');
+          $('#video-modal-' + itemIndex).modal('show');
+        }
+      });
+    }
+  }
+</script>
+
 <body id="page-top" class="index">
 
-<header>
-  <div class="container">
-    <div class="row">
-      <div class="col-lg-12">
-        <div class="intro-text">
-          <span class="name">Start Kiki</span>
-          <hr class="star-light">
-          <span class="skills">BJ와 팬들이 소통하는 새로운 방식</span>
+<section>
+  <div class="row">
+    <div class="col-lg-12 text-center" style="padding-top: 20px;">
+      <h2>쉽게 따라하는 동영상 레시피 쇼핑몰 - 키키</h2>
+      <hr class="star-primary">
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-8 col-md-offset-2">
+
+      <div class="content-container">
+        <div class="content-head">
+          <h3>Pesto Chicken</h3>
+        </div>
+        <div class="content-box">
+          <iframe src="https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Fofficialgoodful%2Fvideos%2F1335204206550042%2F&show_text=0" class="content" scrolling="no" frameborder="0" allowTransparency="true" allowFullScreen="true"></iframe>
+        </div>
+        <div class="content-foot">
+          <p>This Easy Pesto Chicken And Veggie Recipe Is Perfect For Meal Prep</p>
+        </div>
+        <div class="text-right">
+          <p>￦1,000</p>
+          <button id="button-1" class="btn btn-success btn-lg" onclick="startPayment(1);">레시피 구매</button>
+        </div>
+      </div>
+
+      <div class="content-container">
+        <div class="content-head">
+          <h3>Spinach Shrimp Pasta</h3>
+        </div>
+        <div class="content-box">
+          <iframe src="https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Fbuzzfeedtasty%2Fvideos%2F1856219931297314%2F&show_text=0" class="content" scrolling="no" frameborder="0" allowTransparency="true" allowFullScreen="true"></iframe>
+        </div>
+        <div class="content-foot">
+          <p>Creamy One-Pot Spinach Shrimp Pasta</p>
+        </div>
+        <div class="text-right">
+          <p>￦1,000</p>
+          <button id="button-2" class="btn btn-success btn-lg" onclick="startPayment(2);">레시피 구매</button>
+        </div>
+      </div>
+
+      <div class="content-container">
+        <div class="content-head">
+          <h3>Beef Bourguignon</h3>
+        </div>
+        <div class="content-box">
+          <iframe src="https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Ftastemade%2Fvideos%2F1352643754801622%2F&show_text=0" class="content" scrolling="no" frameborder="0" allowTransparency="true" allowFullScreen="true"></iframe>
+        </div>
+        <div class="content-foot">
+          <p>Hearty and decadent, the traditional French recipe is perfect when you want to impress</p>
+        </div>
+        <div class="text-right">
+          <p>￦1,000</p>
+          <button id="button-3" class="btn btn-success btn-lg" onclick="startPayment(3);">레시피 구매</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- Modal -->
+<div class="modal fade" id="agreement-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title" id="myModalLabel">유료 서비스 이용 동의</h4>
+      </div>
+
+      <div class="modal-body">
+        <div class="row control-group">
+          <div class="checkbox col-xs-12 controls">
+            <label>
+              <input type="checkbox" name="terms_accepted" id="terms" required> 이용약관
+            </label>
+
+            <p class="help-block text-danger"></p>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-xs-12 agreements_frame">
+            <iframe class="agreements" src="/terms_of_agreements_user.html"></iframe>
+          </div>
+        </div>
+
+        <div class="row control-group">
+          <div class="checkbox col-xs-12 controls">
+            <label>
+              <input type="checkbox" name="privacy_accepted" id="privacy" required> 개인정보처리방침
+            </label>
+
+            <p class="help-block text-danger"></p>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-xs-12 agreements_frame">
+            <iframe class="agreements" src="/privacy_policy_user.html"></iframe>
+          </div>
+        </div>
+
+        <br>
+
+        <div id="success"></div>
+        <div class="row">
+          <div class="form-group col-xs-12 text-right">
+            <button class="btn btn-success btn-lg" onclick="makePayment();">결제</button>
+          </div>
         </div>
       </div>
     </div>
   </div>
-</header>
+</div>
 
-<section id="portfolio">
-  <div class="container">
-    <div class="row">
-      <div class="col-lg-12 text-center">
-        <h2>HOW</h2>
-        <hr class="star-primary">
+<div class="modal fade" id="video-modal-1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title">Pesto Chicken</h4>
       </div>
-    </div>
-    <div class="row">
-      <div class="col-sm-6 col-sm-offset-3 portfolio-item text-center">
-        <p>KIKI 서비스에 가입하고 메신저 링크 페이지를 발급받으세요</p>
-        <img src="images/guide-1.png" class="img-responsive guide" alt="">
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-sm-6 col-sm-offset-3 portfolio-item text-center">
-        <p>팬들에게 메신저 링크를 홍보하세요</p>
-        <img src="images/guide-2.png" class="img-responsive guide" alt="">
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-sm-6 col-sm-offset-3 portfolio-item text-center">
-        <p>수신한 팬 메시지를 대시보드에서 확인할 수 있습니다</p>
-        <img src="images/guide-3.png" class="img-responsive guide" alt="">
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-sm-6 col-sm-offset-3 portfolio-item text-center">
-        <p>영상으로 답장을 보내면 수익을 얻을 수 있어요!</p>
-        <img src="images/guide-4.png" class="img-responsive guide" alt="">
+
+      <div class="modal-body">
+        <div class="video-box">
+          <iframe src="https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Fofficialgoodful%2Fvideos%2F1335204206550042%2F&show_text=0" class="content" scrolling="no" frameborder="0" allowTransparency="true" allowFullScreen="true"></iframe>
+        </div>
       </div>
     </div>
   </div>
-</section>
+</div>
 
-<section class="success" id="about">
-  <div class="container">
-    <div class="row">
-      <div class="col-lg-12 text-center">
-        <h2>NOW WHAT</h2>
-        <hr class="star-light">
+<div class="modal fade" id="video-modal-2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title">Spinach Shrimp Pasta</h4>
       </div>
-    </div>
-    <div class="row">
-      <div class="col-lg-8 col-lg-offset-2 text-center">
-        <a href="/celebs/new" class="btn btn-lg btn-outline">
-          KIKI 시작하기
-        </a>
+
+      <div class="modal-body">
+        <div class="video-box">
+          <iframe src="https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Fbuzzfeedtasty%2Fvideos%2F1856219931297314%2F&show_text=0" class="content" scrolling="no" frameborder="0" allowTransparency="true" allowFullScreen="true"></iframe>
+        </div>
       </div>
     </div>
   </div>
-</section>
+</div>
+
+<div class="modal fade" id="video-modal-3" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title">Beef Bourguignon</h4>
+      </div>
+
+      <div class="modal-body">
+        <div class="video-box">
+          <iframe src="https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Ftastemade%2Fvideos%2F1352643754801622%2F&show_text=0" class="content" scrolling="no" frameborder="0" allowTransparency="true" allowFullScreen="true"></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 </body>
