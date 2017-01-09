@@ -143,18 +143,20 @@ module UserHelper
     send_text("메신저와 연결되었습니다. 환영해요, #{celeb.name}님! :)")
   end
 
-  def optin_message_error
-    send_text("작성중인 메시지가 있습니다.")
+  def initial_guide_message
+    msg_str = "아래 링크에서 키키봇 튜토리얼을 해보세요!"
+    send_buttons(msg_str, buttons: [
+      {type: "web_url", url: "#{APP_CONFIG[:host_url]}/#{Celeb.first.name}", title: '튜토리얼'}
+    ])
+  end
+
+  def notify_pay_fail(failed_payment)
+    send_text("결제에 실패했습니다.\n에러메시지: #{failed_payment.pg_message}")
     state_enter_message
   end
 
-  def optin_reply_error
-    send_text("작성중인 답장이 있습니다.")
-    state_enter_message
-  end
-
-  def cannot_be_replied_error
-    send_text("답장할 수 없는 메시지입니다.")
+  def notify_cancel(canceled_payment)
+    send_text("#{canceled_payment.message.text}\n\n#{canceled_payment.message.receiver.celeb.name}님이 위 메시지에 대해 답장을 못하셨습니다.. :( #{canceled_payment.pay_amount}원 환불해드렸어요.")
   end
 
   def notify_reply(reply_msg)
@@ -173,15 +175,6 @@ module UserHelper
     ])
   end
 
-  def notify_pay_fail(failed_payment)
-    send_text("결제에 실패했습니다.\n에러메시지: #{failed_payment.pg_message}")
-    state_enter_message
-  end
-
-  def notify_cancel(canceled_payment)
-    send_text("#{canceled_payment.message.text}\n\n#{canceled_payment.message.receiver.celeb.name}님이 위 메시지에 대해 답장을 못하셨습니다.. :( #{canceled_payment.pay_amount}원 환불해드렸어요.")
-  end
-
   def notify_profit(payment)
     send_text("#{payment.celeb_share}원의 수익을 얻으셨습니다. :)")
   end
@@ -192,6 +185,20 @@ module UserHelper
 
   def notify_exchange_failure(exchange_request)
     send_text("#{exchange_request.bank.name}의 #{exchange_request.account_holder}님 계좌로 #{exchange_request.amount}원 환전처리가 실패했습니다. :(\n실패사유: #{exchange_request.failure_reason}")
+  end
+
+  def optin_message_error
+    send_text("작성중인 메시지가 있습니다.")
+    state_enter_message
+  end
+
+  def optin_reply_error
+    send_text("작성중인 답장이 있습니다.")
+    state_enter_message
+  end
+
+  def cannot_be_replied_error
+    send_text("답장할 수 없는 메시지입니다.")
   end
 
   def invalid_command_error

@@ -170,6 +170,8 @@ class User < ActiveRecord::Base
       self.name = text[0..9]
       save!
       command(:set_nickname)
+    elsif waiting? and %w(hi hello hey 안녕 안녕하세요 야 ?).include?(text)
+      initial_guide_message
     else
       state_enter_message
     end
