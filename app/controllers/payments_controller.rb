@@ -11,11 +11,17 @@ class PaymentsController < ApplicationController
   end
 
   def callback
-    payment = Payment.find(params[:merchant_uid])
+    payment = Payment.find(id_from_merchant_uid)
     if payment.pay_request? and params[:status] == "paid"
       payment.succeed_pay!
     end
     render :nothing => true, :status => 200
+  end
+
+  private
+
+  def id_from_merchant_uid
+    params[:merchant_uid].split(':')[0]
   end
 
 end
