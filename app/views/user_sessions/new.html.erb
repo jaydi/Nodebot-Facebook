@@ -2,7 +2,7 @@
   <div class="container">
 
     <div class="row">
-      <div class="col-lg-12 text-center">
+      <div class="col-lg-8 col-lg-offset-2 text-center">
         <h2>로그인</h2>
         <hr class="star-primary">
       </div>
@@ -11,12 +11,12 @@
     <div class="row">
       <div class="col-lg-8 col-lg-offset-2">
 
-        <%= form_tag user_sessions_path, method: :post, id: :new_user_session_form do %>
+        <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
 
             <div class="row control-group">
               <div class="form-group col-xs-12 floating-label-form-group controls">
-                <label>Email</label>
-                <input type="email" class="form-control" placeholder="Email" name="email" required data-validation-required-message="Please enter your email address.">
+                <%= f.label "이메일" %>
+                <%= f.email_field :email, autofocus: true, class: "form-control", placeholder: "이메일", required: true, "data-validation-required-message": "Please enter your email address." %>
 
                 <p class="help-block text-danger"></p>
               </div>
@@ -24,19 +24,31 @@
 
             <div class="row control-group">
               <div class="form-group col-xs-12 floating-label-form-group controls">
-                <label>Password</label>
-                <input type="password" class="form-control" placeholder="Password" name="password" required data-validation-required-message="Please enter your password.">
+                <%= f.label "비밀번호" %>
+                <%= f.password_field :password, autocomplete: "off", class: "form-control", placeholder: "비밀번호", required: true, "data-validation-required-message": "Please enter your password." %>
 
                 <p class="help-block text-danger"></p>
               </div>
             </div>
+
+            <% if devise_mapping.rememberable? -%>
+                <div class="row control-group">
+                  <div class="checkbox col-xs-12 controls">
+                    <label>
+                      <%= f.check_box :remember_me %> Remember me
+                    </label>
+
+                    <p class="help-block text-danger"></p>
+                  </div>
+                </div>
+            <% end -%>
 
             <br>
 
             <div id="success"></div>
             <div class="row">
               <div class="form-group col-xs-12 text-right">
-                <button type="submit" class="btn btn-success btn-lg">로그인</button>
+                <%= f.submit "로그인", class: "btn btn-success btn-lg" %>
               </div>
             </div>
 
@@ -47,7 +59,7 @@
 
     <div class="row">
       <div class="col-lg-8 col-lg-offset-2 text-right">
-        <a href="/user_sessions/request_new_password">비밀번호 찾기</a>
+        <%= render "devise/shared/links" %>
       </div>
     </div>
 

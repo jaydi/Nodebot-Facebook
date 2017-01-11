@@ -8,6 +8,8 @@ class User < ActiveRecord::Base
   include MessengerHelper
   include PaymentHelper
 
+  attr_encrypted :password, :key => APP_CONFIG[:encryption_key]
+
   # has_many :sent_messages
   # has_many :received_messages
   # has_many :sent_payments

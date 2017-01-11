@@ -15,7 +15,7 @@ Rails.application.routes.draw do
 
   resources :exchange_requests, only: [:index, :new, :create]
 
-  devise_for :users, controllers: {registrations: 'users'}
+  devise_for :users, controllers: {registrations: 'users', sessions: 'user_sessions'}
   devise_scope :user do
     get 'users/pair' => 'users#pair'
     get 'users/agreements' => 'users#show_agreements'
