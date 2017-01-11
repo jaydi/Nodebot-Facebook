@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161102064758) do
+ActiveRecord::Schema.define(version: 20170110094920) do
 
   create_table "banks", force: :cascade do |t|
     t.string   "name",       limit: 36
@@ -87,17 +87,50 @@ ActiveRecord::Schema.define(version: 20161102064758) do
   add_index "payments", ["message_id"], name: "index_payments_on_message_id", using: :btree
   add_index "payments", ["status"], name: "index_payments_on_status", using: :btree
 
-  create_table "users", force: :cascade do |t|
-    t.string   "sender_id",           limit: 255,                 null: false
-    t.string   "name",                limit: 255,                 null: false
-    t.integer  "status",              limit: 4,                   null: false
-    t.boolean  "agreements_accepted",             default: false
-    t.datetime "created_at",                                      null: false
-    t.datetime "updated_at",                                      null: false
+  create_table "roles", force: :cascade do |t|
+    t.string   "name",          limit: 255
+    t.integer  "resource_id",   limit: 4
+    t.string   "resource_type", limit: 255
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
+  add_index "roles", ["name", "resource_type", "resource_id"], name: "index_roles_on_name_and_resource_type_and_resource_id", using: :btree
+  add_index "roles", ["name"], name: "index_roles_on_name", using: :btree
+
+  create_table "users", force: :cascade do |t|
+    t.string   "email",                  limit: 255,                 null: false
+    t.string   "encrypted_password",     limit: 255,                 null: false
+    t.string   "encrypted_password_iv",  limit: 255,                 null: false
+    t.string   "name",                   limit: 255
+    t.string   "profile_pic",            limit: 255
+    t.string   "sender_id",              limit: 255
+    t.integer  "status",                 limit: 4,                   null: false
+    t.boolean  "agreements_accepted",                default: false
+    t.datetime "created_at",                                         null: false
+    t.datetime "updated_at",                                         null: false
+    t.string   "reset_password_token",   limit: 255
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.integer  "sign_in_count",          limit: 4,   default: 0,     null: false
+    t.datetime "current_sign_in_at"
+    t.datetime "last_sign_in_at"
+    t.string   "current_sign_in_ip",     limit: 255
+    t.string   "last_sign_in_ip",        limit: 255
+  end
+
+  add_index "users", ["email"], name: "index_users_on_email", using: :btree
+  add_index "users", ["name"], name: "index_users_on_name", using: :btree
+  add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
   add_index "users", ["sender_id"], name: "index_users_on_sender_id", using: :btree
   add_index "users", ["status"], name: "index_users_on_status", using: :btree
+
+  create_table "users_roles", id: false, force: :cascade do |t|
+    t.integer "user_id", limit: 4
+    t.integer "role_id", limit: 4
+  end
+
+  add_index "users_roles", ["user_id", "role_id"], name: "index_users_roles_on_user_id_and_role_id", using: :btree
 
   create_table "web_messages", force: :cascade do |t|
     t.string   "message_id",     limit: 255

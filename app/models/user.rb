@@ -1,8 +1,9 @@
 class User < ActiveRecord::Base
-
-  def my_logger
-    @@my_logger ||= ::Logger.new("#{Rails.root}/log/#{Rails.env}_#{self.class.name.underscore}.log")
-  end
+  rolify
+  # Include default devise modules. Others available are:
+  # :confirmable, :lockable, :timeoutable and :omniauthable
+  devise :database_authenticatable, :registerable,
+         :recoverable, :rememberable, :trackable, :validatable
 
   include AASM
   include UserHelper
@@ -249,6 +250,12 @@ class User < ActiveRecord::Base
   def read_stamp(watermark)
     delivered_messages = Message.received_by(id).delivered.before(Time.at(watermark / 1000))
     delivered_messages.each { |dm| dm.read! }
+  end
+
+  private
+
+  def my_logger
+    @@my_logger ||= ::Logger.new("#{Rails.root}/log/#{Rails.env}_#{self.class.name.underscore}.log")
   end
 
 end
