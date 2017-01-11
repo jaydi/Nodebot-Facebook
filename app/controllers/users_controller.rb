@@ -3,7 +3,8 @@ class UsersController < Devise::RegistrationsController
 
   def show_by_name
     begin
-      @user = User.find_by_name(params[:name])
+      @user = User.where(is_partner: true, name: params[:name]).first
+      raise ActiveRecord::RecordNotFound unless @user
     rescue ActiveRecord::RecordNotFound
       redirect_to root_path
     end
