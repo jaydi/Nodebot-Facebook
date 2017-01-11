@@ -7,6 +7,10 @@ class Message < ActiveRecord::Base
   belongs_to :receiver, class_name: 'User', foreign_key: :receiver_id
   belongs_to :initial_message, class_name: 'Message', foreign_key: :initial_message_id
 
+  scope :made_by, ->(user_id) {
+    where(sender_id: user_id)
+  }
+
   scope :sent_by, ->(user_id) {
     where(sender_id: user_id).where(status: [statuses[:delivered], statuses[:read], statuses[:replied], statuses[:wasted]])
   }

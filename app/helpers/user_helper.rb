@@ -142,7 +142,7 @@ module UserHelper
   end
 
   def optin_partner_message
-    send_text("메신저와 연결되었습니다. 환영해요, #{name}님! :)")
+    send_text("메신저와 연결되었습니다. 환영해요! :)")
   end
 
   def initial_guide_message

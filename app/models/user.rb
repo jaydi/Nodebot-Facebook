@@ -150,7 +150,7 @@ class User < ActiveRecord::Base
   end
 
   def is_newbie?
-    Message.sent_by(self).count == 0
+    Message.fan_message.made_by(id).count == 0
   end
 
   def current_message
