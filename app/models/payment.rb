@@ -51,6 +51,10 @@ class Payment < ActiveRecord::Base
     end
   end
 
+  def merchant_uid
+    "#{id}:#{created_at.strftime('%y%m%d%H%M%S')}"
+  end
+
   def platform_share
     (pay_amount * commission_rate / 100).to_i
   end
