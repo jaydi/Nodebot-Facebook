@@ -204,7 +204,7 @@ module UserHelper
   end
 
   def invalid_command_error
-    send_text("수행할 수 없는 명령입니다.")
+    send_text("오류가 발생했습니다. 관리자에게 연락이 갔으니 잠시 뒤에 다시 시도해주세요. 죄송합니다.")
   end
 
 end

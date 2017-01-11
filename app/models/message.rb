@@ -41,7 +41,7 @@ class Message < ActiveRecord::Base
   aasm column: :status, enum: true do
     state :initiated, initial: true
     state :completed
-    state :delivered, after_enter: [:set_time_out, :after_reply]
+    state :delivered, after_enter: [:after_reply, :set_time_out]
     state :read
     state :replied, after_enter: [:settle_payment]
     state :wasted, after_enter: [:refund_payment]
@@ -107,8 +107,8 @@ class Message < ActiveRecord::Base
   end
 
   def after_reply
-    initial_message.reply! if reply?
     receiver.notify_reply(self) if partner_reply?
+    initial_message.reply! if reply?
   end
 
   def settle_payment
