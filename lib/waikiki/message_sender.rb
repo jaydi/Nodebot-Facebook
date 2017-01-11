@@ -26,10 +26,11 @@ module Waikiki
       def send(user, msg_body)
         unless Rails.env.test?
           res = Waikiki::HttpPersistent.post("#{APP_CONFIG[:fb_graph_api_url]}/me/messages?access_token=#{APP_CONFIG[:fb_page_access_token]}", body(user, msg_body), header)
-          if res.status == 200
-            my_logger.info "sent message to user with sender id: #{user.messenger_id}"
+          json_res = JSON.parse(res.body)
+          if json_res["error"]
+            raise("send message failed with response: #{json_res}")
           else
-            my_logger.error "send message failed with response: #{res.body}"
+            my_logger.info "sent message to user with sender id: #{user.messenger_id}"
           end
         end
       end

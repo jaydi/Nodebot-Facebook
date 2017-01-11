@@ -5,7 +5,7 @@ defaults: &defaults
   fb_webhook_token: this__is__nodebot__
   fb_messenger_app_id: 1186734761422431
   fb_page_id: 243076222782107
-  fb_page_access_token: EAAQ3VDflrl8BAEiNUkgXYAgHCykRI1PZCJdW0CbKGYV7lp6OFet8namtxw2NZCB8tAe2YQsXEMfXZC6IcLqxWfXupPIAks7h3NBZCuoeKvhHmszkZBIeBNzycfAZBGvuq8naLjRVvgMZARUYnPUi868qQ6bM287ckRYCAs529YqZCAZDZD
+  fb_page_access_token: EAAQ3VDflrl8BAI1ymqdkQ0vOf98ZA8boJyxrZBqdXDIJc8B9ZB16LSgpLbtR2a7I2RfcjBueBiNNLDhZB1hQudl25XfjJRkGaYeFvGxNgE0o954HUF4vTkXi6bUmalFRDVc7y5tGHAZBsdj8pEVBJBZAnZAqAmjK4VXifMOY2l4DwZDZD
   fb_page_name: 243076222782107
   fb_graph_api_url: https://graph.facebook.com/v2.6
   iamport_api_url: https://api.iamport.kr
