@@ -15,7 +15,7 @@ class WebMessage < ActiveRecord::Base
   }
 
   def process_message
-    user = current_user
+    user = messenger_user
     case message_type
       when self.class.message_types[:quick_reply]
         user.command(payload)
@@ -35,15 +35,15 @@ class WebMessage < ActiveRecord::Base
 
   private
 
-  def current_user
-    current_user = User.find_by_messenger_id(messenger_id)
-    if current_user.blank?
+  def messenger_user
+    user = User.find_by_messenger_id(messenger_id)
+    if user.blank?
       res = Waikiki::HttpPersistent.get("#{APP_CONFIG[:fb_graph_api_url]}/#{sender_id}?fields=first_name,last_name&access_token=#{APP_CONFIG[:fb_page_access_token]}")
       res_hash = JSON.parse(res.body)
       name = res_hash['last_name'].to_s + res_hash['first_name'].to_s
-      current_user = User.new({messenger_id: messenger_id, name: name}).save(validate: false)
+      user = User.new({messenger_id: messenger_id, name: name}).save(validate: false)
     end
-    current_user
+    user
   end
 
 end
