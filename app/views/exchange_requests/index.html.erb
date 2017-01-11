@@ -3,7 +3,7 @@
 
     <div class="row">
       <div class="col-lg-8 col-lg-offset-2">
-        <h3>수익잔액 <%= currency_format(@celeb.balance) %></h3>
+        <h3>수익잔액 <%= currency_format(@user.balance) %></h3>
 
         <p>
           환전누적 <%= currency_format(@exchanged_sum) %>
@@ -13,7 +13,7 @@
 
     <div class="row">
       <div class="col-lg-8 col-lg-offset-2 text-right">
-        <a href="/celebs/exchange_requests/new">
+        <a href="/exchange_requests/new">
           <button type="submit" class="btn btn-success btn-lg">환전신청</button>
         </a>
       </div>

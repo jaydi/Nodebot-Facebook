@@ -2,6 +2,8 @@ class Payment < ActiveRecord::Base
   include AASM
 
   belongs_to :message
+  belongs_to :sender, class_name: 'User', foreign_key: :sender_id
+  belongs_to :receiver, class_name: 'User', foreign_key: :receiver_id
 
   scope :timed_outs, -> {
     where(status: statuses[:pay_request]).where('created_at < ?', 2.hours.ago)
@@ -59,7 +61,7 @@ class Payment < ActiveRecord::Base
     (pay_amount * commission_rate / 100).to_i
   end
 
-  def celeb_share
+  def partner_share
     pay_amount - platform_share
   end
 
@@ -68,10 +70,8 @@ class Payment < ActiveRecord::Base
   end
 
   def settle
-    celeb = message.receiver.celeb
-    celeb.balance += celeb_share
-    celeb.save!
-    celeb.user.notify_profit(self)
+    receiver.update_attributes({balance: receiver.balance + partner_share})
+    receiver.notify_profit(self)
     # TODO create settlement
   end
 

@@ -3,6 +3,16 @@
 @import "freelancer";
 @import "toastr";
 
+.nav > li {
+  height: 40px;
+}
+
+@media (min-width: 768px) {
+  .nav > li {
+    height: 50px;
+  }
+}
+
 img.guide {
   max-width: 80%;
   margin: 0 10%;

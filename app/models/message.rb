@@ -3,25 +3,25 @@ class Message < ActiveRecord::Base
 
   has_one :payment
 
-  belongs_to :sender, class_name: 'User', foreign_key: :sending_user_id
-  belongs_to :receiver, class_name: 'User', foreign_key: :receiving_user_id
+  belongs_to :sender, class_name: 'User', foreign_key: :sender_id
+  belongs_to :receiver, class_name: 'User', foreign_key: :receiver_id
   belongs_to :initial_message, class_name: 'Message', foreign_key: :initial_message_id
 
   scope :sent_by, ->(user_id) {
-    where(sending_user_id: user_id).where(status: [statuses[:delivered], statuses[:read], statuses[:replied], statuses[:wasted]])
+    where(sender_id: user_id).where(status: [statuses[:delivered], statuses[:read], statuses[:replied], statuses[:wasted]])
   }
 
   scope :received_by, ->(user_id) {
-    where(receiving_user_id: user_id).where(status: [statuses[:delivered], statuses[:read], statuses[:replied], statuses[:wasted]])
+    where(receiver_id: user_id).where(status: [statuses[:delivered], statuses[:read], statuses[:replied], statuses[:wasted]])
   }
 
   scope :in_progress, ->(user_id) {
-    where(sending_user_id: user_id).where(status: [statuses[:initiated], statuses[:completed]])
+    where(sender_id: user_id).where(status: [statuses[:initiated], statuses[:completed]])
   }
 
   enum kind: {
     fan_message: 10,
-    celeb_reply: 20
+    partner_reply: 20
   }
 
   enum status: {
@@ -104,7 +104,7 @@ class Message < ActiveRecord::Base
 
   def after_reply
     initial_message.reply! if reply?
-    receiver.notify_reply(self) if celeb_reply?
+    receiver.notify_reply(self) if partner_reply?
   end
 
   def settle_payment

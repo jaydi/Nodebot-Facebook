@@ -2,17 +2,28 @@ require 'rails_helper'
 
 describe User do
 
-  context 'optin actions' do
-    it 'should be associated with celeb' do
+  context 'base methods' do
+    it 'can discern partners from normal users' do
       user = FactoryGirl.create(:user)
-      celeb = FactoryGirl.create(:celeb_without_pairing)
-      user.optin(:CLB, celeb.id)
-      expect(user.celeb.id).to eq(celeb.id)
+      partner = FactoryGirl.create(:partner)
+      expect(user.is_partner?).to be_falsey
+      expect(partner.is_partner?).to be_truthy
+    end
+  end
+
+  context 'optin actions' do
+    it 'should be associated with partner' do
+      partner = FactoryGirl.create(:partner_without_messenger)
+      user = FactoryGirl.create(:user)
+      user.optin(:PTN, partner.id)
+      expect(partner.reload.messenger_id).to eq(user.messenger_id)
+      expect(partner.reload.is_partner).to be_truthy
+      expect{ User.find(user.id) }.to raise_error(ActiveRecord::RecordNotFound)
     end
     it 'should make message and change status' do
       user = FactoryGirl.create(:user)
-      celeb_user = FactoryGirl.create(:celeb_user)
-      expect { user.optin(:MSG, celeb_user.id) }.to change(Message, :count).by(1)
+      partner = FactoryGirl.create(:partner)
+      expect { user.optin(:MSG, partner.id) }.to change(Message, :count).by(1)
       message = Message.first
       expect(user.status).to eq('message_initiated')
       expect(message.status).to eq('initiated')
@@ -20,13 +31,13 @@ describe User do
     end
     it 'should not make message if already has one' do
       user = FactoryGirl.create(:user)
-      celeb_user = FactoryGirl.create(:celeb_user)
-      user.optin(:MSG, celeb_user.id)
-      expect { user.optin(:MSG, celeb_user.id) }.not_to change(Message, :count)
+      partner = FactoryGirl.create(:partner)
+      user.optin(:MSG, partner.id)
+      expect { user.optin(:MSG, partner.id) }.not_to change(Message, :count)
       expect(user.current_message.id).to eq(Message.first.id)
     end
     it 'should make reply message' do
-      user = FactoryGirl.create(:celeb_user)
+      user = FactoryGirl.create(:partner)
       message = FactoryGirl.create(:message, receiver: user, status: :delivered)
       FactoryGirl.create(:payment, message: message, status: :pay_success)
       expect { user.optin(:RPL, message.id) }.to change(Message, :count).by(1)
@@ -34,7 +45,7 @@ describe User do
       expect(user.current_message.initial_message.id).to eq(message.id)
     end
     it 'should not make reply message if already has one' do
-      user = FactoryGirl.create(:celeb_user)
+      user = FactoryGirl.create(:partner)
       message = FactoryGirl.create(:message, receiver: user, status: :delivered)
       user.optin(:RPL, message.id)
       expect { user.optin(:RPL, message.id) }.not_to change(Message, :count)
@@ -91,7 +102,7 @@ describe User do
         expect(user.status).to eq('payment_initiated')
         expect(user.current_message.payment.id).to eq(Payment.first.id)
         expect(user.current_message.payment.status).to eq('pay_request')
-        expect(user.current_message.payment.pay_amount).to eq(user.current_message.receiver.celeb.price)
+        expect(user.current_message.payment.pay_amount).to eq(user.current_message.receiver.price)
       end
       it 'can go back from payment initiated' do
         user = FactoryGirl.create(:user, status: :payment_initiated)
@@ -122,35 +133,35 @@ describe User do
         expect(user.current_message.initial_message.id).to eq(message.id)
       end
     end
-    context 'celeb side' do
+    context 'partner side' do
       it 'can go to replying' do
-        user = FactoryGirl.create(:celeb_user, status: :reply_initiated)
+        user = FactoryGirl.create(:partner, status: :reply_initiated)
         FactoryGirl.create(:reply_message, sender: user)
         user.start_replying!
         expect(user.status).to eq('replying')
       end
       it 'can go to reply confirm' do
-        user = FactoryGirl.create(:celeb_user, status: :replying)
+        user = FactoryGirl.create(:partner, status: :replying)
         FactoryGirl.create(:reply_message, sender: user)
         user.confirm_reply!
         expect(user.status).to eq('reply_confirm')
       end
       it 'can be finished after reply complete' do
         user = FactoryGirl.create(:user)
-        celeb_user = FactoryGirl.create(:celeb_user, status: :reply_confirm)
-        message = FactoryGirl.create(:message, sender: user, receiver: celeb_user, status: :delivered)
+        partner = FactoryGirl.create(:partner, status: :reply_confirm)
+        message = FactoryGirl.create(:message, sender: user, receiver: partner, status: :delivered)
         payment = FactoryGirl.create(:payment, message: message, status: :pay_success)
-        reply_message = FactoryGirl.create(:reply_message, sender: celeb_user, receiver: user, initial_message: message)
+        reply_message = FactoryGirl.create(:reply_message, sender: partner, receiver: user, initial_message: message)
 
-        celeb_user.complete_reply!
+        partner.complete_reply!
 
-        expect(celeb_user.status).to eq('waiting')
-        expect(celeb_user.current_message).to be_nil
-        expect(celeb_user.celeb.reload.balance).to eq(payment.celeb_share)
+        expect(partner.status).to eq('waiting')
+        expect(partner.current_message).to be_nil
+        expect(partner.reload.balance).to eq(payment.partner_share)
         expect(reply_message.reload.status).to eq('delivered')
       end
       it 'can go back from reply confirm' do
-        user = FactoryGirl.create(:celeb_user, status: :reply_confirm)
+        user = FactoryGirl.create(:partner, status: :reply_confirm)
         message = FactoryGirl.create(:reply_message, sender: user)
         user.cancel_reply!
         expect(user.status).to eq('waiting')
@@ -181,7 +192,7 @@ describe User do
 
   context 'video actions' do
     it 'can set video url' do
-      user = FactoryGirl.create(:celeb_user, status: :replying)
+      user = FactoryGirl.create(:partner, status: :replying)
       message = FactoryGirl.create(:reply_message, sender: user)
       url = 'video url'
       user.video_message(url)

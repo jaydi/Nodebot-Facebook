@@ -63,6 +63,7 @@ group :test do
   gem 'shoulda-matchers', '~> 3.1'
   gem 'factory_girl_rails'
   gem 'webmock'
+  gem 'database_cleaner'
 end
 
 group :development do

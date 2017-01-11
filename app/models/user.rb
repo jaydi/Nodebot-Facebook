@@ -1,16 +1,20 @@
 class User < ActiveRecord::Base
+  # :confirmable, :lockable, :timeoutable, :omniauthable, :validatable
+  devise :database_authenticatable, :registerable, :recoverable, :rememberable, :trackable
   rolify
-  # Include default devise modules. Others available are:
-  # :confirmable, :lockable, :timeoutable and :omniauthable
-  devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :trackable, :validatable
 
   include AASM
   include UserHelper
   include MessengerHelper
   include PaymentHelper
 
-  has_one :celeb
+  attr_encrypted :password, :key => APP_CONFIG[:encryption_key]
+
+  # has_many :sent_messages
+  # has_many :received_messages
+  # has_many :sent_payments
+  # has_many :received_payments
+  has_many :exchange_requests
 
   enum status: {
     waiting: 10,
@@ -123,16 +127,30 @@ class User < ActiveRecord::Base
     end
   end
 
-  def newbie?
+  def user_agreements_accepted?
+    true
+    # TODO
+  end
+
+  def partner_agreements_accepted?
+    true
+    # TODO
+  end
+
+  def profile_completed?
+    name.present? and profile_pic.present?
+  end
+
+  def messenger_paired?
+    messenger_id.present?
+  end
+
+  def is_partner?
+    is_partner
+  end
+
+  def is_newbie?
     Message.sent_by(self).count == 0
-  end
-
-  def celeb?
-    celeb.present?
-  end
-
-  def agreements_accepted?
-    agreements_accepted
   end
 
   def current_message
@@ -168,8 +186,7 @@ class User < ActiveRecord::Base
       msg.save!
       command(:confirm_message)
     elsif nickname_setting?
-      self.name = text[0..9]
-      save!
+      update_attributes(name: text[0..9])
       command(:set_nickname)
     elsif waiting? and %w(hi hello hey 안녕 안녕하세요 야 ?).include?(text)
       initial_guide_message
@@ -189,18 +206,18 @@ class User < ActiveRecord::Base
 
   def optin(target_type, target_id)
     case target_type.to_sym
-      when :CLB
-        self.celeb = Celeb.find(target_id)
-        celeb.initiate!
-        save!
-        optin_celeb_message
+      when :PTN
+        user = User.find(target_id)
+        user.update_attributes({messenger_id: messenger_id, is_partner: true})
+        optin_partner_message
+        self.destroy!
 
       when :MSG
         if current_message.blank?
           end_conversation! unless waiting?
           Message.create({
-                           sending_user_id: id,
-                           receiving_user_id: target_id,
+                           sender_id: id,
+                           receiver_id: target_id,
                            kind: :fan_message
                          })
           command(:initiate_message)
@@ -215,9 +232,9 @@ class User < ActiveRecord::Base
           if initial_msg.repliable?
             Message.create({
                              initial_message_id: initial_msg.id,
-                             sending_user_id: id,
-                             receiving_user_id: initial_msg.sending_user_id,
-                             kind: :celeb_reply
+                             sender_id: id,
+                             receiver_id: initial_msg.sender_id,
+                             kind: :partner_reply
                            })
             command(:initiate_reply)
           else
@@ -236,8 +253,8 @@ class User < ActiveRecord::Base
       initial_msg = Message.find(target_id)
       Message.create({
                        initial_message_id: initial_msg.id,
-                       sending_user_id: id,
-                       receiving_user_id: initial_msg.sending_user_id,
+                       sender_id: initial_msg.receiver_id,
+                       receiver_id: initial_msg.sender_id,
                        kind: :fan_message
                      })
       update_attribute(:status, :message_initiated)
@@ -250,12 +267,6 @@ class User < ActiveRecord::Base
   def read_stamp(watermark)
     delivered_messages = Message.received_by(id).delivered.before(Time.at(watermark / 1000))
     delivered_messages.each { |dm| dm.read! }
-  end
-
-  private
-
-  def my_logger
-    @@my_logger ||= ::Logger.new("#{Rails.root}/log/#{Rails.env}_#{self.class.name.underscore}.log")
   end
 
 end

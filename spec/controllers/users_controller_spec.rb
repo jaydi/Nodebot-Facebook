@@ -1,18 +1,30 @@
 require 'rails_helper'
 
-RSpec.describe UsersController, type: :controller do
-  let(:user) { FactoryGirl.create(:user) }
+RSpec.describe UsersController do
 
-  it 'should show agreements page' do
-    get :show_agreements, {id: user.id}
+  it 'should show edit page' do
+    login
+    get :edit
     expect(response.status).to eq(200)
-    expect(response).to render_template(:show_agreements)
+    expect(response).to render_template(:edit)
   end
 
-  it 'should accept agreements' do
-    payment_id = 1
-    post :accept_agreements, {terms_accepted: true, privacy_accepted: true, id: user.id, pending_payment_id: payment_id}
+  it 'should update user' do
+    login
+    name = "new_name"
+    profile = "new_picture"
+    put :update, {user: {name: name, profile: profile}}
     expect(response.status).to eq(302)
-    expect(response).to redirect_to(payment_path(id: payment_id))
+    expect(response).to redirect_to(messages_path)
+    expect(subject.current_user.name).to eq(name)
+    expect(subject.current_user.profile_pic).to eq(profile)
   end
+
+  it 'should show pair page' do
+    login
+    get :pair
+    expect(response.status).to eq(200)
+    expect(response).to render_template(:pair)
+  end
+
 end

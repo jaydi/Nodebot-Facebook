@@ -1,14 +1,17 @@
 class CreateUsers < ActiveRecord::Migration
   def change
     create_table :users do |t|
-      t.string :email, index: true, null: false
-      t.string :encrypted_password, null: false
-      t.string :encrypted_password_iv, null: false
-      t.string :name, index: true
+      t.string :email, index: true
+      t.string :messenger_id, index: true
+      t.string :encrypted_password
+      t.string :encrypted_password_iv
       t.string :profile_pic
-      t.string :sender_id, index: true
+      t.string :name
+      t.integer :balance, default: 0, null: false
+      t.integer :price, default: 10000, null: false
+      t.decimal :commission_rate, precision: 5, scale: 2, default: 30.00, null: false
+      t.boolean :is_partner, index: true, default: false, null: false
       t.integer :status, index: true, null: false
-      t.boolean :agreements_accepted, default: false
       t.timestamps null: false
     end
   end

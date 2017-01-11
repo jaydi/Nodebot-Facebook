@@ -1,5 +1,6 @@
 class WebMessagesController < ApplicationController
   protect_from_forgery with: :null_session
+  skip_before_action :authenticate_user!
 
   def verify_webhook
     if params['hub.verify_token'] == "#{APP_CONFIG[:fb_webhook_token]}"
@@ -31,7 +32,7 @@ class WebMessagesController < ApplicationController
           msg = WebMessage.new({
                                  message_type: WebMessage.message_types[:text],
                                  message_id: messaging['message']['mid'],
-                                 sender_id: messaging['sender']['id'],
+                                 messenger_id: messaging['sender']['id'],
                                  sequence: messaging['message']['seq'],
                                  text: messaging['message']['text'],
                                  sent_timestamp: messaging['timestamp']
@@ -63,14 +64,14 @@ class WebMessagesController < ApplicationController
         elsif messaging['postback']
           msg = WebMessage.new({
                                  message_type: WebMessage.message_types[:postback],
-                                 sender_id: messaging['sender']['id'],
+                                 messenger_id: messaging['sender']['id'],
                                  payload: messaging['postback']['payload'],
                                  sent_timestamp: messaging['timestamp']
                                })
         elsif messaging['optin']
           msg = WebMessage.new({
                                  message_type: WebMessage.message_types[:optin],
-                                 sender_id: messaging['sender']['id'],
+                                 messenger_id: messaging['sender']['id'],
                                  payload: messaging['optin']['ref'],
                                  sent_timestamp: messaging['timestamp']
                                })
@@ -79,7 +80,7 @@ class WebMessagesController < ApplicationController
         elsif messaging['read']
           msg = WebMessage.new({
                                  message_type: WebMessage.message_types[:read],
-                                 sender_id: messaging['sender']['id'],
+                                 messenger_id: messaging['sender']['id'],
                                  payload: messaging['read']['watermark'],
                                  sent_timestamp: messaging['timestamp']
                                })

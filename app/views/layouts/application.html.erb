@@ -18,11 +18,11 @@
 
   <script>
     $(document).ready(function () {
-      <% if flash[:info_message].present? %>
-      toastr.info('<%= flash[:info_message] %>');
+      <% if flash[:info].present? %>
+      toastr.info('<%= flash[:info] %>');
       <% end %>
-      <% if flash[:error_message].present? %>
-      toastr.error('<%= flash[:error_message] %>');
+      <% if flash[:error].present? %>
+      toastr.error('<%= flash[:error] %>');
       <% end %>
     });
   </script>
@@ -40,7 +40,7 @@
           </button>
       <% end %>
 
-      <a class="navbar-brand" href="<%= (@minimal_layout or @door_layout or @celeb.blank?) ? '/' : '/messages' %>">
+      <a class="navbar-brand" href="<%= (@minimal_layout or @door_layout or current_user.blank?) ? '/' : '/messages' %>">
         KIKI
         <small>BETA</small>
       </a>
@@ -54,13 +54,13 @@
                 <li class="page-scroll">
                   <a href="/messages">BJ 대시보드</a>
                 </li>
-            <% elsif @celeb.blank? %>
+            <% elsif current_user.blank? %>
                 <li>
-                  <a href="/user_sessions/new">로그인</a>
+                  <%= link_to "로그인", new_user_session_path %><br />
                 </li>
 
                 <li>
-                  <a href="/celebs/new">가입</a>
+                  <%= link_to "가입", new_user_registration_path %><br />
                 </li>
             <% else %>
                 <li>
@@ -73,10 +73,10 @@
                   <a href="/celebs/edit">계정관리</a>
                 </li>
                 <li>
-                  <a href="javascript:window.location.href = '/<%= @celeb.name %>'">내 홍보 페이지</a>
+                  <a href="javascript:window.location.href = '/<%= current_user.name %>'">내 홍보 페이지</a>
                 </li>
                 <li>
-                  <a href="/user_sessions/destroy">로그아웃</a>
+                  <%= link_to "로그아웃", destroy_user_session_path, :method => :delete %>
                 </li>
             <% end %>
           </ul>

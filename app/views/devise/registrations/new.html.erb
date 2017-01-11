@@ -1,0 +1,64 @@
+<section id="sign-up" class="first">
+  <div class="container">
+
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 text-center">
+        <h2>가입</h2>
+        <hr class="star-primary">
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2">
+
+        <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+
+            <div class="row control-group">
+              <div class="form-group col-xs-12 floating-label-form-group controls">
+                <%= f.label "이메일" %>
+                <%= f.email_field :email, autofocus: true, class: "form-control", placeholder: "이메일", required: true, "data-validation-required-message": "Please enter your email address." %>
+
+                <p class="help-block text-danger"></p>
+              </div>
+            </div>
+
+            <div class="row control-group">
+              <div class="form-group col-xs-12 floating-label-form-group controls">
+                <%= f.label "비밀번호" %>
+                <%= f.password_field :password, autocomplete: "off", class: "form-control", placeholder: "비밀번호", required: true, "data-validation-required-message": "Please enter your password." %>
+
+                <p class="help-block text-danger"></p>
+              </div>
+            </div>
+
+            <div class="row control-group">
+              <div class="form-group col-xs-12 floating-label-form-group controls">
+                <%= f.label "비밀번호 확인" %>
+                <%= f.password_field :password_confirmation, autocomplete: "off", class: "form-control", placeholder: "비밀번호 확인", required: true, "data-validation-required-message": "Please enter your password again." %>
+
+                <p class="help-block text-danger"></p>
+              </div>
+            </div>
+
+            <br>
+
+            <div id="success"></div>
+            <div class="row">
+              <div class="form-group col-xs-12 text-right">
+                <%= f.submit "확인", class: "btn btn-success btn-lg" %>
+              </div>
+            </div>
+
+        <% end %>
+
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 text-right">
+        <%= render "devise/shared/links" %>
+      </div>
+    </div>
+
+  </div>
+</section>

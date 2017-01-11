@@ -1,7 +1,7 @@
 class ExchangeRequest < ActiveRecord::Base
   include AASM
 
-  belongs_to :celeb
+  belongs_to :user
   belongs_to :bank
 
   attr_encrypted :account_number, :key => APP_CONFIG[:encryption_key]
@@ -10,8 +10,8 @@ class ExchangeRequest < ActiveRecord::Base
   before_create :adjust_balance
   after_create :notify_admin
 
-  scope :issued_by, ->(celeb_id) {
-    where(celeb_id: celeb_id).order(id: :desc)
+  scope :issued_by, ->(user_id) {
+    where(user_id: user_id).order(id: :desc)
   }
 
   enum status: {
@@ -37,31 +37,30 @@ class ExchangeRequest < ActiveRecord::Base
   private
 
   def check_balance
-    if amount > celeb.balance
+    if amount > user.balance
       errors.add("잔액부족", "환전요청금액이 잔액을 초과할 수 없습니다.")
     end
   end
 
   def adjust_balance
     if requested?
-      celeb.balance -= amount
-      celeb.save!
+      user.balance -= amount
+      user.save!
     elsif failed?
-      celeb.balance += amount
-      celeb.save!
+      user.balance += amount
+      user.save!
     end
   end
 
   def notify_admin
-    1+1
     # TODO send email? sms? fb message?
   end
 
   def notify_exchange_result
     if succeeded?
-      celeb.user.notify_exchange_success(self)
+      user.notify_exchange_success(self)
     elsif failed?
-      celeb.user.notify_exchange_failure(self)
+      user.notify_exchange_failure(self)
     end
   end
 

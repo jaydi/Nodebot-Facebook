@@ -1,7 +1,7 @@
 class CreateExchangeRequests < ActiveRecord::Migration
   def change
     create_table :exchange_requests do |t|
-      t.references :celeb, null: false
+      t.references :user, null: false
       t.references :bank, null: false
       t.string :account_holder, null: false
       t.string :encrypted_account_number, null: false
