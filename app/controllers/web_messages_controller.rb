@@ -78,12 +78,7 @@ class WebMessagesController < ApplicationController
         elsif messaging['delivery']
           # TODO
         elsif messaging['read']
-          msg = WebMessage.new({
-                                 message_type: WebMessage.message_types[:read],
-                                 messenger_id: messaging['sender']['id'],
-                                 payload: messaging['read']['watermark'],
-                                 sent_timestamp: messaging['timestamp']
-                               })
+          # TODO
         end
         msgs.push msg unless msg.blank?
       end

@@ -3,8 +3,8 @@ require 'httpclient'
 module Waikiki
   class HttpPersistent
     @@http = HTTPClient.new
-    @@http.connect_timeout = 10
-    @@http.receive_timeout = 10
+    @@http.connect_timeout = 60
+    @@http.receive_timeout = 60
 
     def self.get(url, headers = nil)
       response = nil

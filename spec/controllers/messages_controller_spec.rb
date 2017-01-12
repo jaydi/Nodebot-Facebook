@@ -22,25 +22,29 @@ RSpec.describe MessagesController do
 
   it 'should show index page' do
     login partner
+    FactoryGirl.create(:message, receiver: partner, status: :delivered)
+    FactoryGirl.create(:message, receiver: partner, status: :delivered)
+    # this one shuold not be shown in index
+    FactoryGirl.create(:reply_message, initial_message: FactoryGirl.create(:message, sender: partner, status: :replied), status: :delivered)
     get :index
     expect(response.status).to eq(200)
     expect(response).to render_template(:index)
+    expect(assigns(:messages).count).to eq(2)
   end
 
   it 'should show message' do
     login partner
-    message = FactoryGirl.create(:message, receiver: partner)
+    message = FactoryGirl.create(:message, receiver: partner, status: :delivered)
     get :show, {id: message.id}
     expect(response.status).to eq(200)
     expect(response).to render_template(:show)
   end
 
-  xit 'should not show message of others' do
+  it 'should not show message of others' do
     login partner
     message = FactoryGirl.create(:message, receiver: FactoryGirl.create(:partner))
     get :show, {id: message.id}
-    expect(response.status).to eq(302)
-    expect(response).to redirect_to(messages_path)
+    expect(response.status).to eq(403)
   end
 
 end

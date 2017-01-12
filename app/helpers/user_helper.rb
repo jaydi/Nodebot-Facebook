@@ -141,15 +141,15 @@ module UserHelper
     end
   end
 
-  def optin_partner_message
-    send_text("메신저와 연결되었습니다. 환영해요! :)")
-  end
-
   def initial_guide_message
     msg_str = "아래 링크에서 키키봇 튜토리얼을 해보세요!"
     send_buttons(msg_str, buttons: [
       {type: "web_url", url: "#{APP_CONFIG[:host_url]}/#{User.partners.first.name}", title: '튜토리얼'}
     ])
+  end
+
+  def optin_partner_message
+    send_text("메신저와 연결되었습니다. 환영해요! :)")
   end
 
   def notify_pay_fail(failed_payment)
@@ -166,6 +166,9 @@ module UserHelper
       send_attachment({type: 'video', payload: reply_msg.video_url})
     rescue HTTPClient::TimeoutError
       Rails.logger.error "reply message #{reply_msg.id} raised an error with http-timeout"
+    rescue Waikiki::SendVideoError => e
+      send_text("동영상 오류")
+      raise Waikiki::SendVideoError.new(e.message)
     end
 
     msg_str = "#{reply_msg.sender.name}에게서 답장을 받았어요!"

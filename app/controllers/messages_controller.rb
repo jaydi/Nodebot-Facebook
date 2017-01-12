@@ -1,12 +1,12 @@
 class MessagesController < ApplicationController
+  load_and_authorize_resource
   before_action :check_user
 
   def index
-    @messages = Message.fan_message.received_by(@user.id).order(id: :desc).page(params[:page])
+    @messages = @messages.fan_message.where(receiver_id: @user.id).order(id: :desc).page(params[:page])
   end
 
   def show
-    @message = Message.find(params[:id])
   end
 
 end

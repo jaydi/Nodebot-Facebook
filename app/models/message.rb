@@ -1,22 +1,26 @@
 class Message < ActiveRecord::Base
+  resourcify
+
   include AASM
 
   has_one :payment
-
   belongs_to :sender, class_name: 'User', foreign_key: :sender_id
   belongs_to :receiver, class_name: 'User', foreign_key: :receiver_id
   belongs_to :initial_message, class_name: 'Message', foreign_key: :initial_message_id
+
+  after_create :add_sender_role
+  after_save :adjust_receiver_role
 
   scope :made_by, ->(user_id) {
     where(sender_id: user_id)
   }
 
   scope :sent_by, ->(user_id) {
-    where(sender_id: user_id).where(status: [statuses[:delivered], statuses[:read], statuses[:replied], statuses[:wasted]])
+    where(sender_id: user_id).where(status: [statuses[:delivered], statuses[:replied], statuses[:wasted]])
   }
 
   scope :received_by, ->(user_id) {
-    where(receiver_id: user_id).where(status: [statuses[:delivered], statuses[:read], statuses[:replied], statuses[:wasted]])
+    where(receiver_id: user_id).where(status: [statuses[:delivered], statuses[:replied], statuses[:wasted]])
   }
 
   scope :in_progress, ->(user_id) {
@@ -32,7 +36,6 @@ class Message < ActiveRecord::Base
     initiated: 10,
     completed: 20,
     delivered: 30,
-    read: 40,
     replied: 50,
     wasted: 60,
     cancelled: 70
@@ -42,7 +45,6 @@ class Message < ActiveRecord::Base
     state :initiated, initial: true
     state :completed
     state :delivered, after_enter: [:after_reply, :set_time_out]
-    state :read
     state :replied, after_enter: [:settle_payment]
     state :wasted, after_enter: [:refund_payment]
     state :cancelled
@@ -54,10 +56,6 @@ class Message < ActiveRecord::Base
 
     event :deliver do
       transitions from: :completed, to: :delivered
-    end
-
-    event :read do
-      transitions from: :delivered, to: :read
     end
 
     event :reply do
@@ -74,7 +72,7 @@ class Message < ActiveRecord::Base
   end
 
   def repliable?
-    (delivered? or read?) and payment.present? and payment.pay_success?
+    delivered? and payment.present? and payment.pay_success?
   end
 
   def reply?
@@ -89,26 +87,35 @@ class Message < ActiveRecord::Base
     @reply_message ||= self.class.where(initial_message_id: self.id).last
   end
 
-  def set_time_out
-    if Rails.env.production?
-      MessageTimeOutWorker.perform_in(48.hours, id)
-    else
-      MessageTimeOutWorker.perform_in(15.minutes, id)
-    end
+  def add_sender_role
+    sender.add_role(:sender, self)
   end
 
-  def time_out
-    reply_message
-    if reply_message.blank?
-      waste!
-    elsif reply_message.in_progress?
-      MessageTimeOutWorker.perform_in(10.minutes, id)
-    end
+  def adjust_receiver_role
+    receiver.add_role(:receiver, self) if delivered?
   end
 
   def after_reply
     receiver.notify_reply(self) if partner_reply?
     initial_message.reply! if reply?
+  end
+
+  def set_time_out
+    if fan_message?
+      if Rails.env.production?
+        MessageTimeOutWorker.perform_in(48.hours, id)
+      else
+        MessageTimeOutWorker.perform_in(15.minutes, id)
+      end
+    end
+  end
+
+  def time_out
+    if reply_message.blank?
+      waste!
+    elsif reply_message.in_progress?
+      MessageTimeOutWorker.perform_in(10.minutes, id)
+    end
   end
 
   def settle_payment

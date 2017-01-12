@@ -154,7 +154,8 @@ class User < ActiveRecord::Base
   end
 
   def current_message
-    unless @message.blank?
+    if @message
+      @message.reload
       if @message.initiated? or @message.completed?
         @message
       else
@@ -215,11 +216,12 @@ class User < ActiveRecord::Base
       when :MSG
         if current_message.blank?
           end_conversation! unless waiting?
-          Message.create({
+          message = Message.create({
                            sender_id: id,
                            receiver_id: target_id,
                            kind: :fan_message
                          })
+          add_role(:sender, message)
           command(:initiate_message)
         else
           optin_message_error
@@ -262,11 +264,6 @@ class User < ActiveRecord::Base
     else
       optin_message_error
     end
-  end
-
-  def read_stamp(watermark)
-    delivered_messages = Message.received_by(id).delivered.before(Time.at(watermark / 1000))
-    delivered_messages.each { |dm| dm.read! }
   end
 
 end

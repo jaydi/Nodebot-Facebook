@@ -1,6 +1,7 @@
 config_hash = YAML.load_file("#{Rails.root.to_s}/config/config.yml")[Rails.env]
 APP_CONFIG = config_hash.symbolize_keys
 
+require 'waikiki/errors'
 require 'waikiki/http_persistent'
 require 'waikiki/message_sender'
 

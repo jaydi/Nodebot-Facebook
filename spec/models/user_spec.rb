@@ -160,6 +160,21 @@ describe User do
         expect(partner.reload.balance).to eq(payment.partner_share)
         expect(reply_message.reload.status).to eq('delivered')
       end
+      it 'should not be finished if reply video send fails' do
+        user = FactoryGirl.create(:user)
+        partner = FactoryGirl.create(:partner, status: :reply_confirm)
+        message = FactoryGirl.create(:message, sender: user, receiver: partner, status: :delivered)
+        payment = FactoryGirl.create(:payment, message: message, status: :pay_success)
+        reply_message = FactoryGirl.create(:reply_message, sender: partner, receiver: user, initial_message: message, video_url: 'false_url')
+
+        expect{ partner.complete_reply! }.to raise_error(Waikiki::SendVideoError)
+
+        expect(partner.reload.status).to eq('reply_confirm')
+        expect(partner.reload.current_message.id).to eq(reply_message.id)
+        expect(partner.reload.balance).to eq(0)
+        expect(reply_message.reload.status).to eq('initiated')
+        1
+      end
       it 'can go back from reply confirm' do
         user = FactoryGirl.create(:partner, status: :reply_confirm)
         message = FactoryGirl.create(:reply_message, sender: user)

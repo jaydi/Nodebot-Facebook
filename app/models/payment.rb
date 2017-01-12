@@ -1,13 +1,15 @@
 class Payment < ActiveRecord::Base
+  resourcify
+
   include AASM
 
   belongs_to :message
   belongs_to :sender, class_name: 'User', foreign_key: :sender_id
   belongs_to :receiver, class_name: 'User', foreign_key: :receiver_id
 
-  scope :timed_outs, -> {
-    where(status: statuses[:pay_request]).where('created_at < ?', 2.hours.ago)
-  }
+  # scope :timed_outs, -> {
+  #   where(status: statuses[:pay_request]).where("created_at < ?", 2.hours.ago)
+  # }
 
   enum status: {
     pay_request: 10,

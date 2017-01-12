@@ -28,8 +28,6 @@ class WebMessage < ActiveRecord::Base
       when self.class.message_types[:optin]
         target_type, target_id = payload.split('_')
         user.optin(target_type, target_id)
-      when self.class.message_types[:read]
-        user.read_stamp(payload.to_i)
     end
   end
 
