@@ -20,7 +20,15 @@ RSpec.describe ExchangeRequestsController, type: :controller do
   end
 
   it 'should create new exchange request' do
-    post :create, {bank_id: 1, account_holder: 'will', account_number: 1234, amount: 10_000, password: user.password}
+    post :create, {
+      bank_id: 1,
+      requester: 'will',
+      identity_string: '123-4-1',
+      account_holder: 'will',
+      account_number: 1234,
+      amount: 10_000,
+      password: user.password
+    }
     expect(ExchangeRequest.count).to eq(1)
     expect(response.status).to eq(302)
     expect(response).to redirect_to(exchange_requests_path)

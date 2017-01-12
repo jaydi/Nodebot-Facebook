@@ -11,11 +11,7 @@
     <div class="row">
       <div class="col-lg-6 col-lg-offset-3">
 
-        <%= form_tag '/users/agreements', method: :post, id: :accept_user_agreements_form do %>
-
-            <input type="hidden" name="id" value="<%= @user.id %>" required>
-            <input type="hidden" name="pending_payment_id" value="<%= @pending_payment_id %>" required>
-            <input type="hidden" name="vendor" value="<%= @vendor %>" required>
+        <%= form_tag '/agreements/partner', method: :post, id: :partner_agreements_form do %>
 
             <div class="row control-group">
               <div class="checkbox col-xs-12 controls">
@@ -29,7 +25,7 @@
 
             <div class="row">
               <div class="col-xs-12 agreements_frame">
-                <iframe class="agreements" src="/terms_of_agreements_user.html"></iframe>
+                <iframe class="agreements" src="/terms_of_agreements_partner.html"></iframe>
               </div>
             </div>
 
@@ -45,7 +41,7 @@
 
             <div class="row">
               <div class="col-xs-12 agreements_frame">
-                <iframe class="agreements" src="/privacy_policy_user.html"></iframe>
+                <iframe class="agreements" src="/privacy_policy_partner.html"></iframe>
               </div>
             </div>
 

@@ -105,7 +105,7 @@ class UsersController < Devise::RegistrationsController
   private
 
   def create_params
-    @update_params ||= params.require(:user).permit([:email, :password, :password_confirmation])
+    @create_params ||= params.require(:user).permit([:email, :password, :password_confirmation]).merge({partner_agreements_accepted: true})
   end
 
   def update_params

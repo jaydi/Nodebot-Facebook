@@ -9,7 +9,7 @@ class Message < ActiveRecord::Base
   belongs_to :initial_message, class_name: 'Message', foreign_key: :initial_message_id
 
   after_create :add_sender_role
-  after_save :adjust_receiver_role
+  after_save :add_receiver_role
 
   scope :made_by, ->(user_id) {
     where(sender_id: user_id)
@@ -91,7 +91,7 @@ class Message < ActiveRecord::Base
     sender.add_role(:sender, self)
   end
 
-  def adjust_receiver_role
+  def add_receiver_role
     receiver.add_role(:receiver, self) if delivered?
   end
 
@@ -119,7 +119,7 @@ class Message < ActiveRecord::Base
   end
 
   def settle_payment
-    payment.settle if payment.present? and payment.pay_success?
+    payment.settle! if payment.present? and payment.pay_success?
   end
 
   def refund_payment

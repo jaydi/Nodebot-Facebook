@@ -7,6 +7,9 @@ class Payment < ActiveRecord::Base
   belongs_to :sender, class_name: 'User', foreign_key: :sender_id
   belongs_to :receiver, class_name: 'User', foreign_key: :receiver_id
 
+  after_create :add_sender_role
+  after_save :add_receiver_role
+
   # scope :timed_outs, -> {
   #   where(status: statuses[:pay_request]).where("created_at < ?", 2.hours.ago)
   # }
@@ -18,7 +21,8 @@ class Payment < ActiveRecord::Base
     cancel_request: 40,
     cancel_fail: 50,
     cancel_success: 60,
-    wasted: 70
+    settled: 70,
+    wasted: 80,
   }
 
   aasm column: :status, enum: true do
@@ -28,6 +32,7 @@ class Payment < ActiveRecord::Base
     state :cancel_request, after_enter: :send_cancel_request
     state :cancel_fail, after_enter: :notify_cancel_fail
     state :cancel_success, after_enter: :notify_cancel_success
+    state :settled, after_enter: :process_settlement
     state :wasted
 
     event :fail_pay do
@@ -50,6 +55,10 @@ class Payment < ActiveRecord::Base
       transitions from: :cancel_request, to: :cancel_success
     end
 
+    event :settle do
+      transitions from: [:pay_success, :cancel_success], to: :settled
+    end
+
     event :waste do
       transitions from: :pay_request, to: :wasted
     end
@@ -67,11 +76,19 @@ class Payment < ActiveRecord::Base
     pay_amount - platform_share
   end
 
+  def add_sender_role
+    sender.add_role(:sender, self)
+  end
+
+  def add_receiver_role
+    receiver.add_role(:receiver, self) if settled?
+  end
+
   def send_cancel_request
     CancelRequestJob.perform_later(id)
   end
 
-  def settle
+  def process_settlement
     receiver.update_attributes({balance: receiver.balance + partner_share})
     receiver.notify_profit(self)
     # TODO create settlement

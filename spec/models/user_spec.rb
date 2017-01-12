@@ -2,15 +2,6 @@ require 'rails_helper'
 
 describe User do
 
-  context 'base methods' do
-    it 'can discern partners from normal users' do
-      user = FactoryGirl.create(:user)
-      partner = FactoryGirl.create(:partner)
-      expect(user.is_partner?).to be_falsey
-      expect(partner.is_partner?).to be_truthy
-    end
-  end
-
   context 'optin actions' do
     it 'should be associated with partner' do
       partner = FactoryGirl.create(:partner_without_messenger)

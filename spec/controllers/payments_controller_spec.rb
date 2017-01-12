@@ -15,10 +15,4 @@ RSpec.describe PaymentsController do
     expect(response).to redirect_to(root_path)
   end
 
-  it 'should succeed payment' do
-    post :callback, {merchant_uid: payment.merchant_uid, status: 'paid'}
-    expect(response.status).to eq(200)
-    expect(payment.reload.status).to eq('pay_success')
-  end
-
 end

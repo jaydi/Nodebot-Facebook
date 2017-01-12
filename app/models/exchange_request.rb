@@ -53,7 +53,7 @@ class ExchangeRequest < ActiveRecord::Base
   end
 
   def notify_admin
-    # TODO send email? sms? fb message?
+    Waikiki::MessageSender.send_to_admin("환전요청:#{id}:#{requester}(#{identity_string}-)")
   end
 
   def notify_exchange_result

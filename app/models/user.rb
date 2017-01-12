@@ -146,7 +146,7 @@ class User < ActiveRecord::Base
   end
 
   def is_partner?
-    is_partner
+    partner_agreements_accepted
   end
 
   def is_newbie?

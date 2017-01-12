@@ -31,4 +31,15 @@ describe Message do
     expect(initial_message.status).not_to eq('wasted')
   end
 
+  it 'should change associated values when replied' do
+    partner = FactoryGirl.create(:partner)
+    message = FactoryGirl.create(:message, receiver: partner, status: :delivered)
+    payment = FactoryGirl.create(:payment, message: message, status: :pay_success)
+    reply_message = FactoryGirl.create(:reply_message, initial_message: message, status: :completed)
+    reply_message.deliver!
+    expect(message.reload.status).to eq('replied')
+    expect(payment.reload.status).to eq('settled')
+    expect(partner.reload.balance).to eq(payment.partner_share)
+  end
+
 end

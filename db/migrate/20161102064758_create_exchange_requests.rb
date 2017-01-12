@@ -3,6 +3,8 @@ class CreateExchangeRequests < ActiveRecord::Migration
     create_table :exchange_requests do |t|
       t.references :user, null: false
       t.references :bank, null: false
+      t.string :requester, null: false
+      t.string :identity_string, null: false
       t.string :account_holder, null: false
       t.string :encrypted_account_number, null: false
       t.string :encrypted_account_number_iv, null: false

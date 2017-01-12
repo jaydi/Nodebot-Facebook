@@ -1,6 +1,5 @@
 module Waikiki
   class MessageSender
-    ADMIN_USER_IDS = [1]
 
     class << self
 
@@ -74,8 +73,7 @@ module Waikiki
       end
 
       def send_to_admin(msg)
-        # TODO role admin
-        admin_users = User.where(id: ADMIN_USER_IDS)
+        admin_users = User.with_role(:admin)
         admin_users.each { |au| send_text_message(au, msg) }
       end
 

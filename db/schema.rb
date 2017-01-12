@@ -23,6 +23,8 @@ ActiveRecord::Schema.define(version: 20170110094920) do
   create_table "exchange_requests", force: :cascade do |t|
     t.integer  "user_id",                     limit: 4,   null: false
     t.integer  "bank_id",                     limit: 4,   null: false
+    t.string   "requester",                   limit: 255, null: false
+    t.string   "identity_string",             limit: 255, null: false
     t.string   "account_holder",              limit: 255, null: false
     t.string   "encrypted_account_number",    limit: 255, null: false
     t.string   "encrypted_account_number_iv", limit: 255, null: false
@@ -84,6 +86,7 @@ ActiveRecord::Schema.define(version: 20170110094920) do
     t.string   "email",                  limit: 255
     t.string   "messenger_id",           limit: 255
     t.string   "encrypted_password",     limit: 255
+    t.string   "encrypted_password_iv",  limit: 255
     t.string   "profile_pic",            limit: 255
     t.string   "name",                   limit: 255
     t.integer  "balance",                limit: 4,                           default: 0,     null: false

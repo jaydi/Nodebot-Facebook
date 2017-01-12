@@ -26,7 +26,7 @@ class ExchangeRequestsController < ApplicationController
   private
 
   def exchange_request_params
-    params.permit([:bank_id, :account_holder, :account_number, :amount]).merge({user_id: @user.id})
+    params.permit([:bank_id, :requester, :identity_string, :account_holder, :account_number, :amount]).merge({user_id: @user.id})
   end
 
 end

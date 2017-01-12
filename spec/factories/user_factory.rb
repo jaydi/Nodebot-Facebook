@@ -10,7 +10,6 @@ FactoryGirl.define do
   factory :partner_without_messenger, class: User, parent: :partner_without_profile do
     profile_pic "image_url"
     name "Will"
-    name_url "willey"
   end
   factory :partner, class: User, parent: :partner_without_messenger do
     messenger_id "12345"
