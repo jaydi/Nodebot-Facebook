@@ -118,28 +118,34 @@
     }
   }
 
-  function makePayment() {
+  function selectPayment() {
     if ($('#terms').is(':checked') && $('#privacy').is(':checked')) {
       $('#agreement-modal').modal('hide');
-      IMP.init("<%= APP_CONFIG[:iamport_api_id] %>");
-      IMP.request_pay({
-        pay_method: "card",
-        escrow: false,
-        merchant_uid: merchantUid,
-        name: itemName,
-        amount: 1000,
-        buyer_name: "Guest",
-        buyer_email: "guest@kiki.video"
-      }, function (rsp) {
-        $('#terms').prop('checked', false);
-        $('#privacy').prop('checked', false);
-        if (rsp.success) {
-          addPaidIndex(itemIndex);
-          $('#button-' + itemIndex).html('레시피 보기');
-          $('#video-modal-' + itemIndex).modal('show');
-        }
-      });
+      $('#select-payment-modal').modal('show');
     }
+  }
+
+  function makePayment(paymentMethod) {
+    $('#select-payment-modal').modal('hide');
+    IMP.init("<%= APP_CONFIG[:iamport_api_id] %>");
+    IMP.request_pay({
+      pg: paymentMethod,
+      pay_method: "card",
+      escrow: false,
+      merchant_uid: merchantUid,
+      name: itemName,
+      amount: 1000,
+      buyer_name: "Guest",
+      buyer_email: "guest@kiki.video"
+    }, function (rsp) {
+      $('#terms').prop('checked', false);
+      $('#privacy').prop('checked', false);
+      if (rsp.success) {
+        addPaidIndex(itemIndex);
+        $('#button-' + itemIndex).html('레시피 보기');
+        $('#video-modal-' + itemIndex).modal('show');
+      }
+    });
   }
 </script>
 
@@ -257,7 +263,33 @@
         <div id="success"></div>
         <div class="row">
           <div class="form-group col-xs-12 text-right">
-            <button class="btn btn-success btn-lg" onclick="makePayment();">결제</button>
+            <button class="btn btn-success btn-lg" onclick="selectPayment();">결제</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="select-payment-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title" id="myModalLabel">결제방식 선택</h4>
+      </div>
+
+      <div class="modal-body">
+        <div class="row">
+          <div class="form-group col-xs-12 text-center">
+            <button class="btn btn-success btn-lg" onclick="makePayment('html5_inicis');">신용카드-KG이니시스</button>
+          </div>
+        </div>
+        <div class="row">
+          <div class="form-group col-xs-12 text-center">
+            <button class="btn btn-success btn-lg" onclick="makePayment('kakao');">카카오페이</button>
           </div>
         </div>
       </div>
