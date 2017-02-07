@@ -7,7 +7,7 @@ class Payment < ActiveRecord::Base
   belongs_to :sender, class_name: 'User', foreign_key: :sender_id
   belongs_to :receiver, class_name: 'User', foreign_key: :receiver_id
 
-  after_create :add_sender_role, :reserve_time_out
+  after_create :add_sender_role, :set_time_out
   after_save :add_receiver_role
 
   enum status: {
@@ -80,7 +80,7 @@ class Payment < ActiveRecord::Base
     receiver.add_role(:receiver, self) if settled?
   end
 
-  def reserve_time_out
+  def set_time_out
     if Rails.env.production?
       MessageTimeOutWorker.perform_in(2.hours, id)
     else
