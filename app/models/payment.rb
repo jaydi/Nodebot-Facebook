@@ -82,9 +82,9 @@ class Payment < ActiveRecord::Base
 
   def set_time_out
     if Rails.env.production?
-      MessageTimeOutWorker.perform_in(2.hours, id)
+      PaymentTimeOutWorker.perform_in(2.hours, id)
     else
-      MessageTimeOutWorker.perform_in(5.minutes, id)
+      PaymentTimeOutWorker.perform_in(5.minutes, id)
     end
   end
 
