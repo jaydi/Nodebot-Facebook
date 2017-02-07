@@ -27,6 +27,10 @@ class Message < ActiveRecord::Base
     where(sender_id: user_id).where(status: [statuses[:initiated], statuses[:completed]])
   }
 
+  scope :paid, -> {
+    includes(:payment).where.not(payments: {id: nil})
+  }
+
   enum kind: {
     fan_message: 10,
     partner_reply: 20

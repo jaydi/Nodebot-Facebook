@@ -71,7 +71,16 @@
             <div class="row control-group">
               <div class="form-group col-xs-12 floating-label-form-group controls">
                 <label>계좌번호 ('-' 제외하고 입력)</label>
-                <input type="text" class="form-control" placeholder="계좌번호" name="account_number" onkeypress="return event.charCode >= 48 && event.charCode <= 57" required data-validation-required-message="Please account number.">
+                <input type="text" class="form-control" placeholder="계좌번호" name="account_number" onkeypress="return event.charCode >= 48 && event.charCode <= 57" required data-validation-required-message="Please enter account number.">
+
+                <p class="help-block text-danger"></p>
+              </div>
+            </div>
+
+            <div class="row control-group">
+              <div class="form-group col-xs-12 floating-label-form-group controls">
+                <label>주민등록번호 (원천세 납부용)</label>
+                <input type="text" class="form-control" placeholder="주민등록번호" name="identity_string" onkeypress="return event.charCode >= 48 && event.charCode <= 57" required data-validation-required-message="Please enter identity string.">
 
                 <p class="help-block text-danger"></p>
               </div>

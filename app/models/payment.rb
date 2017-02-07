@@ -7,12 +7,8 @@ class Payment < ActiveRecord::Base
   belongs_to :sender, class_name: 'User', foreign_key: :sender_id
   belongs_to :receiver, class_name: 'User', foreign_key: :receiver_id
 
-  after_create :add_sender_role
+  after_create :add_sender_role, :reserve_time_out
   after_save :add_receiver_role
-
-  # scope :timed_outs, -> {
-  #   where(status: statuses[:pay_request]).where("created_at < ?", 2.hours.ago)
-  # }
 
   enum status: {
     pay_request: 10,
@@ -82,6 +78,18 @@ class Payment < ActiveRecord::Base
 
   def add_receiver_role
     receiver.add_role(:receiver, self) if settled?
+  end
+
+  def reserve_time_out
+    if Rails.env.production?
+      MessageTimeOutWorker.perform_in(2.hours, id)
+    else
+      MessageTimeOutWorker.perform_in(5.minutes, id)
+    end
+  end
+
+  def time_out
+    sender.cancel_payment! if pay_request?
   end
 
   def send_cancel_request

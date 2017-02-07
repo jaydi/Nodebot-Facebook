@@ -6,10 +6,11 @@ class CreateUsers < ActiveRecord::Migration
       t.string :encrypted_password
       t.string :encrypted_password_iv
       t.string :profile_pic
-      t.string :name
+      t.string :name, index: true
       t.integer :balance, default: 0, null: false
       t.integer :price, default: 10000, null: false
       t.decimal :commission_rate, precision: 5, scale: 2, default: 30.00, null: false
+      t.boolean :is_partner, index: true, default: false, null: false
       t.boolean :partner_agreements_accepted, default: false, null: false
       t.boolean :user_agreements_accepted, default: false, null: false
       t.integer :status, index: true, null: false

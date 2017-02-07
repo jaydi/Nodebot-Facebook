@@ -108,7 +108,7 @@ module UserHelper
         send_text(msg_str)
 
       when :payment_cancelled
-        msg_str = "알겠습니다. 메시지는 잘 전달했어요. :)"
+        msg_str = "결제가 취소되었습니다. 메시지는 잘 전달했어요. :)"
         send_text(msg_str)
 
       when :reply_initiated
