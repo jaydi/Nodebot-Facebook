@@ -83,10 +83,7 @@ ActiveRecord::Schema.define(version: 20170110094920) do
   add_index "roles", ["name"], name: "index_roles_on_name", using: :btree
 
   create_table "users", force: :cascade do |t|
-    t.string   "email",                       limit: 255
     t.string   "messenger_id",                limit: 255
-    t.string   "encrypted_password",          limit: 255
-    t.string   "encrypted_password_iv",       limit: 255
     t.string   "profile_pic",                 limit: 255
     t.string   "name",                        limit: 255
     t.integer  "balance",                     limit: 4,                           default: 0,     null: false
@@ -98,6 +95,8 @@ ActiveRecord::Schema.define(version: 20170110094920) do
     t.integer  "status",                      limit: 4,                                           null: false
     t.datetime "created_at",                                                                      null: false
     t.datetime "updated_at",                                                                      null: false
+    t.string   "email",                       limit: 255,                         default: "",    null: false
+    t.string   "encrypted_password",          limit: 255,                         default: "",    null: false
     t.string   "reset_password_token",        limit: 255
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
@@ -108,7 +107,6 @@ ActiveRecord::Schema.define(version: 20170110094920) do
     t.string   "last_sign_in_ip",             limit: 255
   end
 
-  add_index "users", ["email"], name: "index_users_on_email", using: :btree
   add_index "users", ["is_partner"], name: "index_users_on_is_partner", using: :btree
   add_index "users", ["messenger_id"], name: "index_users_on_messenger_id", using: :btree
   add_index "users", ["name"], name: "index_users_on_name", using: :btree

@@ -11,7 +11,7 @@ class ExchangeRequestsController < ApplicationController
   end
 
   def create
-    if params[:password] == @user.password
+    if @user.valid_password?(params[:password])
       exchange_request = ExchangeRequest.new(exchange_request_params)
       if exchange_request.save
         redirect_to exchange_requests_path
