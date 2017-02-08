@@ -8,7 +8,6 @@
               $(document).ready(function() {
                 IMP.init("<%= APP_CONFIG[:iamport_api_id] %>");
                 IMP.request_pay({
-                  pg: "kakao",
                   pay_method: "card",
                   escrow: false,
                   merchant_uid: "<%= @payment.merchant_uid %>",
