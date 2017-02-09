@@ -27,7 +27,9 @@ RSpec.describe AgreementsController, type: :controller do
   end
 
   it 'should proceed to payment page' do
-    post :create_user, {terms_accepted: true, privacy_accepted: true, user_id: 1, pending_payment_id: 1, vendor: 'naver'}
+    user = FactoryGirl.create(:user)
+    post :create_user, {terms_accepted: true, privacy_accepted: true, user_id: user.id, pending_payment_id: 1, vendor: 'naver'}
+    expect(user.reload.user_agreements_accepted).to be_truthy
     expect(response.status).to eq(302)
     expect(response).to redirect_to(payment_path(id: 1, user_id: 1, vendor: 'naver'))
   end

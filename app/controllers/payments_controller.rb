@@ -11,11 +11,14 @@ class PaymentsController < ApplicationController
   def load_and_authorize_payment
     @payment = Payment.find(params[:id])
     user = User.find(params[:user_id])
-    redirect_to root_path unless @payment.sender_id == user.id
-    # unless user.user_agreements_accepted?
-    #   redirect_to users_agreements_path(user_id: user.id, pending_payment_id: @payment.id, vendor: params[:vendor])
-    #   return
-    # end
+    unless @payment.sender_id == user.id
+      redirect_to root_path
+      return
+    end
+    unless user.user_agreements_accepted?
+      redirect_to agreements_user_path(user_id: user.id, pending_payment_id: @payment.id, vendor: params[:vendor])
+      return
+    end
   end
 
 end

@@ -16,6 +16,7 @@ class UsersController < Devise::RegistrationsController
 
   def create
     @user = User.new(create_params)
+    @user.update_attributes({partner_agreements_accepted: true})
 
     unless User.where(email: @user.email).count == 0
       redirect_to new_user_registration_path, flash: {error: "중복된 이메일입니다."}
