@@ -13,7 +13,7 @@
 
         <%= form_tag '/agreements/user', method: :post, id: :user_agreements_form do %>
 
-            <input type="hidden" name="id" value="<%= @user_id %>" required>
+            <input type="hidden" name="user_id" value="<%= @user_id %>" required>
             <input type="hidden" name="pending_payment_id" value="<%= @pending_payment_id %>" required>
             <input type="hidden" name="vendor" value="<%= @vendor %>" required>
 
