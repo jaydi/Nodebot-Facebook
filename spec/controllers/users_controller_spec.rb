@@ -14,7 +14,7 @@ RSpec.describe UsersController do
     name = "new_name"
     profile = "new_picture"
     price = 50_000
-    put :update, {user: {name: name, profile: profile}}
+    put :update, {user: {name: name, profile: profile, price: price}}
     expect(response.status).to eq(302)
     expect(response).to redirect_to(messages_path)
     expect(subject.current_user.name).to eq(name)

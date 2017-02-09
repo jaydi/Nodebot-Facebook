@@ -66,6 +66,10 @@ class UsersController < Devise::RegistrationsController
       end
     end
 
+    if update_params[:price].present? and update_params[:price].to_i >= 1000
+      attrs_to_update[:price] = update_params[:price]
+    end
+
     if @user.update_attributes(attrs_to_update)
       if @user.messenger_paired?
         redirect_to messages_path
@@ -109,7 +113,7 @@ class UsersController < Devise::RegistrationsController
   end
 
   def update_params
-    @update_params ||= params.require(:user).permit([:profile, :name])
+    @update_params ||= params.require(:user).permit([:profile, :name, :price])
   end
 
   def upload_profile(profile_dispatch)
