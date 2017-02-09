@@ -11,7 +11,6 @@ class User < ActiveRecord::Base
   # has_many :sent_messages
   # has_many :received_messages
   # has_many :sent_payments
-  # has_many :received_payments
   has_many :exchange_requests
 
   scope :partners, -> {
@@ -252,6 +251,10 @@ class User < ActiveRecord::Base
     else
       optin_message_error
     end
+  end
+
+  def add_revenue(revenue_amount)
+    update_attributes({balance: balance + revenue_amount})
   end
 
 end

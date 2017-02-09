@@ -141,14 +141,12 @@ describe User do
         user = FactoryGirl.create(:user)
         partner = FactoryGirl.create(:partner, status: :reply_confirm)
         message = FactoryGirl.create(:message, sender: user, receiver: partner, status: :delivered)
-        payment = FactoryGirl.create(:payment, message: message, status: :pay_success)
         reply_message = FactoryGirl.create(:reply_message, sender: partner, receiver: user, initial_message: message)
 
         partner.complete_reply!
 
         expect(partner.status).to eq('waiting')
         expect(partner.current_message).to be_nil
-        expect(partner.reload.balance).to eq(payment.partner_share)
         expect(reply_message.reload.status).to eq('delivered')
       end
       it 'should not be finished if reply video send fails' do

@@ -10,6 +10,10 @@ class Payment < ActiveRecord::Base
   after_create :add_sender_role, :set_time_out
   after_save :add_receiver_role
 
+  scope :received_by, ->(user_id) {
+    where(receiver_id: user_id).where(status: statuses[:settled])
+  }
+
   enum status: {
     pay_request: 10,
     pay_fail: 20,
@@ -97,9 +101,12 @@ class Payment < ActiveRecord::Base
   end
 
   def process_settlement
-    receiver.update_attributes({balance: receiver.balance + partner_share})
+    receiver.add_revenue(partner_share)
     receiver.notify_profit(self)
+
+    #
     # TODO create settlement
+    #
   end
 
   private
