@@ -31,7 +31,8 @@ describe Message do
     expect(initial_message.status).not_to eq('wasted')
   end
 
-  it 'should change associated values when replied' do
+  # TEMP beta service event
+  xit 'should change associated values when replied' do
     partner = FactoryGirl.create(:partner)
     message = FactoryGirl.create(:message, receiver: partner, status: :delivered)
     payment = FactoryGirl.create(:payment, message: message, status: :pay_success)
@@ -40,6 +41,39 @@ describe Message do
     expect(message.reload.status).to eq('replied')
     expect(payment.reload.status).to eq('settled')
     expect(partner.reload.balance).to eq(payment.partner_share)
+  end
+
+  # TEMP beta service event
+  it 'should add reward revenue on first reply action' do
+    partner = FactoryGirl.create(:partner)
+    message = FactoryGirl.create(:message, receiver: partner, status: :delivered)
+    payment = FactoryGirl.create(:payment, message: message, status: :pay_success)
+    reply_message = FactoryGirl.create(:reply_message, initial_message: message, status: :completed)
+    reply_message.deliver!
+    expect(message.reload.status).to eq('replied')
+    expect(payment.reload.status).to eq('settled')
+    expect(partner.reload.balance).to eq(payment.partner_share + 100_000)
+  end
+
+  # TEMP beta service event
+  it 'should not add reward revenue after first reply action' do
+    partner = FactoryGirl.create(:partner)
+
+    message = FactoryGirl.create(:message, receiver: partner, status: :delivered)
+    payment = FactoryGirl.create(:payment, message: message, status: :pay_success)
+    reply_message = FactoryGirl.create(:reply_message, initial_message: message, status: :completed)
+    reply_message.deliver!
+    expect(message.reload.status).to eq('replied')
+    expect(payment.reload.status).to eq('settled')
+    expect(partner.reload.balance).to eq(payment.partner_share + 100_000)
+
+    message = FactoryGirl.create(:message, receiver: partner, status: :delivered)
+    payment = FactoryGirl.create(:payment, message: message, status: :pay_success)
+    reply_message = FactoryGirl.create(:reply_message, initial_message: message, status: :completed)
+    reply_message.deliver!
+    expect(message.reload.status).to eq('replied')
+    expect(payment.reload.status).to eq('settled')
+    expect(partner.reload.balance).to eq(payment.partner_share + 100_000 + payment.partner_share)
   end
 
 end
