@@ -144,7 +144,7 @@ module UserHelper
   def initial_guide_message
     msg_str = "아래 링크에서 키키봇 튜토리얼을 해보세요!"
     send_buttons(msg_str, buttons: [
-      {type: "web_url", url: "#{APP_CONFIG[:host_url]}/#{User.partners.first.name}", title: '튜토리얼'}
+      {type: "web_url", url: "#{APP_CONFIG[:host_url]}/#{User.with_role(:admin).first.name}", title: '튜토리얼'}
     ])
   end
 
