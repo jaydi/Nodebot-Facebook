@@ -14,6 +14,10 @@ class User < ActiveRecord::Base
   # has_many :received_payments
   has_many :exchange_requests
 
+  scope :partners, -> {
+    where(is_partner: true)
+  }
+
   enum status: {
     waiting: 10,
     nickname_setting: 20,
@@ -125,26 +129,12 @@ class User < ActiveRecord::Base
     end
   end
 
-  def user_agreements_accepted?
-    true
-    # TODO
-  end
-
-  def partner_agreements_accepted?
-    true
-    # TODO
-  end
-
   def profile_completed?
     name.present? and profile_pic.present?
   end
 
   def messenger_paired?
     messenger_id.present?
-  end
-
-  def is_partner?
-    partner_agreements_accepted
   end
 
   def is_newbie?
