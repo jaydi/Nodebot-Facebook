@@ -2,6 +2,7 @@ defaults: &defaults
   host_url: https://kiki-alpha.video
   encryption_key: JTs6uBd6YPnwoMeqInKTfBfJlZCFE9i8
   redis_url: redis://localhost:6379
+  sentry_dsn: https://ae7fabd7506549d9bdeb17e795ee8be3:0030f54af1a245fd9a8efcbd60da6651@sentry.io/137688
   fb_webhook_token: this__is__nodebot__
   fb_messenger_app_id: 1186734761422431
   fb_page_id: 243076222782107
@@ -26,6 +27,7 @@ production:
   <<: *defaults
   host_url: https://kiki.video
   redis_url: redis://waikiki-redis.uu99gx.0001.apn2.cache.amazonaws.com:6379
+  sentry_dsn: https://aa23d2cb2e3e462d997fc4374957416f:7151a1e03d084a46b11ada13b2cfd3ec@sentry.io/126065
   fb_messenger_app_id: 1747584958855089
   fb_page_id: 982472715207823
   fb_page_access_token: EAAY1a1Sv97EBAB0ZC5Nxu6uZBl1rZAxTgQHCh22gkQXDGVSMawZB6Xj6sszi8ZBz7UDOB0XaohZCZBonBISwTVNwCf6i8V8cP2Nkn43WGDp7oy5oZBnG1sZAPrN0u6IDJoDO6nu3mP9ixS7mcWFlNd6UJTzpPmvZA43lQZAfy8ZBGldTpwZDZD
