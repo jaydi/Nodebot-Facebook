@@ -113,8 +113,8 @@ class Payment < ActiveRecord::Base
   end
 
   def reward_beta_service_prize
-    # Reward 100,000 on first profitable action
-    receiver.add_revenue(100_000) if self.class.received_by(receiver_id).count == 1
+    # Reward 50,000 on first profitable action
+    receiver.add_revenue(50_000) if self.class.received_by(receiver_id).count == 1
   end
 
   private
