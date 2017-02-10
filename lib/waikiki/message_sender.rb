@@ -25,13 +25,13 @@ module Waikiki
       def send(user, msg_body)
         if Rails.env.test?
           begin
-            raise Waikiki::SendVideoError.new("send video failed with error") if msg_body[:attachment].payload[:url] == "false_url"
+            raise Waikiki::SendMessageError.new("send message failed with error") if msg_body[:attachment].payload[:url] == "false_url"
           rescue NoMethodError
           end
         else
           res = Waikiki::HttpPersistent.post("#{APP_CONFIG[:fb_graph_api_url]}/me/messages?access_token=#{APP_CONFIG[:fb_page_access_token]}", body(user, msg_body), header)
           json_res = JSON.parse(res.body)
-          raise Waikiki::SendVideoError.new("send video failed with error: #{json_res["error"]}") if json_res["error"]
+          raise Waikiki::SendMessageError.new("send message failed with error: #{json_res["error"]}") if json_res["error"]
         end
       end
 

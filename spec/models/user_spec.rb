@@ -153,10 +153,10 @@ describe User do
         user = FactoryGirl.create(:user)
         partner = FactoryGirl.create(:partner, status: :reply_confirm)
         message = FactoryGirl.create(:message, sender: user, receiver: partner, status: :delivered)
-        payment = FactoryGirl.create(:payment, message: message, status: :pay_success)
+        FactoryGirl.create(:payment, message: message, status: :pay_success)
         reply_message = FactoryGirl.create(:reply_message, sender: partner, receiver: user, initial_message: message, video_url: 'false_url')
 
-        expect{ partner.complete_reply! }.to raise_error(Waikiki::SendVideoError)
+        expect{ partner.complete_reply! }.to raise_error(Waikiki::SendMessageError)
 
         expect(partner.reload.status).to eq('reply_confirm')
         expect(partner.reload.current_message.id).to eq(reply_message.id)

@@ -1,4 +1,4 @@
 module Waikiki
-  class SendVideoError < StandardError
+  class SendMessageError < StandardError
   end
 end
