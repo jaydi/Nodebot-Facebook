@@ -110,11 +110,18 @@ class Payment < ActiveRecord::Base
 
     # TEMP beta service event
     reward_beta_service_prize
+    notify_admin
   end
 
+  # TEMP beta service event
   def reward_beta_service_prize
     # Reward 50,000 on first profitable action
     receiver.add_revenue(50_000) if self.class.received_by(receiver_id).count == 1
+  end
+
+  # TEMP beta service
+  def notify_admin
+    Waikiki::MessageSender.send_to_admin("답장완료:#{receiver.name}:#{pay_amount}원")
   end
 
   private
