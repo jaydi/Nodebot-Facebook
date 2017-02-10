@@ -15,8 +15,8 @@ class UsersController < Devise::RegistrationsController
   end
 
   def create
-    @user = User.new(create_params)
-    @user.update_attributes({partner_agreements_accepted: true})
+    @user = User.new(sign_up_params)
+    # @user.partner_agreements_accepted = true
 
     unless User.where(email: @user.email).count == 0
       redirect_to new_user_registration_path, flash: {error: "중복된 이메일입니다."}
@@ -28,7 +28,7 @@ class UsersController < Devise::RegistrationsController
       return
     end
 
-    unless @user.password == create_params[:password_confirmation]
+    unless @user.password == sign_up_params[:password_confirmation]
       redirect_to new_user_registration_path, flash: {error: "비밀번호가 일치하지 않습니다."}
       return
     end
@@ -42,21 +42,21 @@ class UsersController < Devise::RegistrationsController
   def update
     attrs_to_update = {}
 
-    if @user.profile_pic.blank? and update_params[:profile].blank?
+    if @user.profile_pic.blank? and account_update_params[:profile].blank?
       redirect_to edit_user_registration_path, flash: {error: "프로필 이미지를 입력해주세요."}
       return
     end
 
-    if update_params[:profile].present?
-      attrs_to_update[:profile_pic] = upload_profile(update_params[:profile])
+    if account_update_params[:profile].present?
+      attrs_to_update[:profile_pic] = upload_profile(account_update_params[:profile])
     end
 
-    if @user.name.blank? and update_params[:name].blank?
+    if @user.name.blank? and account_update_params[:name].blank?
       redirect_to edit_user_registration_path, flash: {error: "닉네임을 입력해주세요."}
       return
     end
 
-    new_name = update_params[:name].gsub(" ", "")
+    new_name = account_update_params[:name].gsub(" ", "")
 
     if new_name.present? and @user.name != new_name
       if User.find_by_name(new_name).present?
@@ -67,8 +67,8 @@ class UsersController < Devise::RegistrationsController
       end
     end
 
-    if update_params[:price].present? and update_params[:price].to_i >= 1000
-      attrs_to_update[:price] = update_params[:price]
+    if account_update_params[:price].present? and account_update_params[:price].to_i >= 1000
+      attrs_to_update[:price] = account_update_params[:price]
     end
 
     if @user.update_attributes(attrs_to_update)
@@ -109,12 +109,12 @@ class UsersController < Devise::RegistrationsController
 
   private
 
-  def create_params
-    @create_params ||= params.require(:user).permit([:email, :password, :password_confirmation]).merge({partner_agreements_accepted: true})
+  def sign_up_params
+    params.require(:user).permit([:email, :password, :password_confirmation]).merge({partner_agreements_accepted: true})
   end
 
-  def update_params
-    @update_params ||= params.require(:user).permit([:profile, :name, :price])
+  def account_update_params
+    params.require(:user).permit([:profile, :name, :price])
   end
 
   def upload_profile(profile_dispatch)
