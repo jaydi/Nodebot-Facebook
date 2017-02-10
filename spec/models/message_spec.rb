@@ -52,7 +52,7 @@ describe Message do
     reply_message.deliver!
     expect(message.reload.status).to eq('replied')
     expect(payment.reload.status).to eq('settled')
-    expect(partner.reload.balance).to eq(payment.partner_share + 100_000)
+    expect(partner.reload.balance).to eq(payment.partner_share + 50_000)
   end
 
   # TEMP beta service event
@@ -65,7 +65,7 @@ describe Message do
     reply_message.deliver!
     expect(message.reload.status).to eq('replied')
     expect(payment.reload.status).to eq('settled')
-    expect(partner.reload.balance).to eq(payment.partner_share + 100_000)
+    expect(partner.reload.balance).to eq(payment.partner_share + 50_000)
 
     message = FactoryGirl.create(:message, receiver: partner, status: :delivered)
     payment = FactoryGirl.create(:payment, message: message, status: :pay_success)
@@ -73,7 +73,7 @@ describe Message do
     reply_message.deliver!
     expect(message.reload.status).to eq('replied')
     expect(payment.reload.status).to eq('settled')
-    expect(partner.reload.balance).to eq(payment.partner_share + 100_000 + payment.partner_share)
+    expect(partner.reload.balance).to eq(payment.partner_share + 50_000 + payment.partner_share)
   end
 
 end
