@@ -1,4 +1,10 @@
 <script>
+  function copyLink() {
+    $("#marketing-link").select();
+    document.execCommand("copy");
+    toastr.info("주소가 복사되었습니다.");
+  }
+
   function showMessage(id) {
     window.location.href = "/messages/" + id;
   }
@@ -11,9 +17,11 @@
         <div class="row">
           <div class="col-lg-12 text-center well">
             <p>수신한 메시지가 없습니다.</p>
-
             <p>팬들에게 아래 링크를 홍보하고, 첫 메시지를 받아보세요!</p>
-            <a href="javascript:window.location.href = '/<%= @user.name %>'"><%= APP_CONFIG[:host_url].split('//')[1] %>/<%= @user.name %></a>
+            <div class="col-sm-6 col-sm-offset-3 input-group">
+              <textarea id="marketing-link" class="form-control custom-control" rows="1" style="resize:none"><%= APP_CONFIG[:host_url].split('//')[1] %>/<%= @user.name %></textarea>
+              <span class="input-group-addon btn btn-primary" onclick="javascript:copyLink();">링크 복사</span>
+            </div>
           </div>
         </div>
     <% else %>
