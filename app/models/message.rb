@@ -75,7 +75,7 @@ class Message < ActiveRecord::Base
     end
   end
 
-  def repliable?
+  def video_repliable?
     delivered? and payment.present? and payment.pay_success?
   end
 
@@ -107,7 +107,7 @@ class Message < ActiveRecord::Base
   def set_time_out
     if fan_message?
       if Rails.env.production?
-        MessageTimeOutWorker.perform_in(48.hours, id)
+        MessageTimeOutWorker.perform_in(24.hours, id)
       else
         MessageTimeOutWorker.perform_in(15.minutes, id)
       end

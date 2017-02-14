@@ -10,7 +10,11 @@ Rails.application.routes.draw do
   get 'agreements/user' => 'agreements#show_user'
   post 'agreements/user' => 'agreements#create_user'
 
-  resources :messages, only: [:index, :show]
+  resources :messages, only: [:index, :show] do
+    member do
+      post 'reply' => 'messages#reply'
+    end
+  end
 
   resources :payments, only: [:show]
   post 'payments/callback' => 'payment_callbacks#callback'

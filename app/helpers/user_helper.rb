@@ -55,7 +55,7 @@ module UserHelper
           msg_str += " #{current_message.receiver.name}님이 영상답장을 하면, #{name}님에게 바로 전달해드려요."
           send_text(msg_str)
 
-          msg_str = "먼저, BJ와의 메시징에 사용할 닉네임을 설정하시겠어요? 지금 사용하고 계신 이름은 #{name} 입니다."
+          msg_str = "먼저, 메시징에 사용할 닉네임을 설정하시겠어요? 지금 사용하고 계신 이름은 #{name} 입니다."
           send_quick_replies(msg_str, quick_replies: [
             {title: '닉네임 설정', payload: 'start_setting_nickname'},
             {title: '현재 이름 사용', payload: 'start_messaging'}
@@ -81,11 +81,11 @@ module UserHelper
         ])
 
       when :message_completed
-        msg_str = "#{current_message.receiver.name}님은 #{current_message.receiver.price}원을 결제하면, 영상답장을 해드리고 있어요."
+        msg_str = "#{current_message.receiver.name}님은 #{current_message.receiver.price}원을 후원하면, 영상으로 답장을 해드리고 있어요."
         msg_str += " 24시간 내에 답장을 못 받을 경우, 결제금액은 전액 환불됩니다. 결제하시겠어요?"
         send_quick_replies(msg_str, quick_replies: [
           {title: '좋아요!', payload: 'initiate_payment'},
-          {title: '이걸로 됐어요', payload: 'end_conversation'}
+          {title: '이걸로 됐어요', payload: 'reject_payment'}
         ])
 
       when :message_cancelled
@@ -165,13 +165,17 @@ module UserHelper
   end
 
   def notify_reply(reply_msg)
-    begin
-      send_attachment({type: 'video', payload: reply_msg.video_url})
-    rescue HTTPClient::TimeoutError
-      Rails.logger.error "reply message #{reply_msg.id} raised an error with http-timeout"
-    rescue Waikiki::SendMessageError => e
-      send_text("동영상 오류")
-      raise Waikiki::SendMessageError.new(e.message)
+    if reply_msg.video_url.present?
+      begin
+        send_attachment({type: 'video', payload: reply_msg.video_url})
+      rescue HTTPClient::TimeoutError
+        Rails.logger.error "reply message #{reply_msg.id} raised an error with http-timeout"
+      rescue Waikiki::SendMessageError => e
+        send_text("메시지 전송 오류")
+        raise Waikiki::SendMessageError.new(e.message)
+      end
+    else
+      send_text(reply_msg.text)
     end
 
     msg_str = "#{reply_msg.sender.name}에게서 답장을 받았어요!"

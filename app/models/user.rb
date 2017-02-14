@@ -218,7 +218,7 @@ class User < ActiveRecord::Base
         if current_message.blank?
           end_conversation! unless waiting?
           initial_msg = Message.find(target_id)
-          if initial_msg.repliable?
+          if initial_msg.video_repliable?
             Message.create({
                              initial_message_id: initial_msg.id,
                              sender_id: id,

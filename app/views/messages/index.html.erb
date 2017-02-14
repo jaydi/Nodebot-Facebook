@@ -30,7 +30,9 @@
             <div class="list-group">
               <% @messages.each do |m| %>
                   <a href="javascript:showMessage(<%= m.id %>)" class="list-group-item <%= 'disabled' if m.wasted? %>">
-                    <% if m.repliable? %>
+                    <% if m.video_repliable? %>
+                        <span class="message-label label label-pill label-primary">답장가능(후원금)</span>
+                    <% elsif m.delivered? %>
                         <span class="message-label label label-pill label-primary">답장가능</span>
                     <% elsif m.replied? %>
                         <span class="message-label label label-pill label-success">답장완료</span>

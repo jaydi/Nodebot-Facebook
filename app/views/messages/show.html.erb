@@ -14,17 +14,34 @@
 
             <% if @message.delivered? %>
                 <div class="well text-center" style="margin-top: 20px;">
-                  <% if @message.repliable? %>
+                  <% if @message.video_repliable? %>
                       <div>
                         아래 버튼을 눌러서 답장할 수 있습니다.<br/>
-                        답장 수익금: <%= @message.payment.pay_amount * 7 / 10 %>원
+                        답장 수익금: <%= @message.payment.partner_share %>원
                       </div>
                       <%= render '/shared/fb_messenger', message_target: "RPL_#{@message.id}" %>
                   <% else %>
-                      <div>
-                        결제되지 않은 메시지입니다.<br/>
-                        메시지를 볼 수는 있지만, 답장하고 수익금을 얻을 수는 없습니다.
-                      </div>
+                      <%= form_tag "/message/#{@message.id}/reply", method: :post, id: :reply_message_form do %>
+
+                          <div class="row control-group">
+                            <div class="form-group col-xs-12 floating-label-form-group controls">
+                              <label>답장</label>
+                              <input type="text" rows="3" class="form-control" placeholder="답장" name="text" required data-validation-required-message="Please enter reply text.">
+
+                              <p class="help-block text-danger"></p>
+                            </div>
+                          </div>
+
+                          <br>
+
+                          <div id="success"></div>
+                          <div class="row">
+                            <div class="form-group col-xs-12 text-right">
+                              <button type="submit" class="btn btn-success btn-lg">전송</button>
+                            </div>
+                          </div>
+
+                      <% end %>
                   <% end %>
                 </div>
             <% end %>

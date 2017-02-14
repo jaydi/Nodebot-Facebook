@@ -47,4 +47,15 @@ RSpec.describe MessagesController do
     expect(response.status).to eq(403)
   end
 
+  it 'should make reply' do
+    login partner
+    message = FactoryGirl.create(:message, receiver: partner, status: :delivered)
+
+    expect { post :reply, {id: message.id, text: 'reply text'} }.to change(Message, :count).by(1)
+
+    expect(message.reload.replied?).to be_truthy
+    expect(response.status).to eq(302)
+    expect(response).to redirect_to message_path(id: message.id)
+  end
+
 end
