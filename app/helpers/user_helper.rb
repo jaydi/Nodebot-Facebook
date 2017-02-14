@@ -175,7 +175,7 @@ module UserHelper
         raise Waikiki::SendMessageError.new(e.message)
       end
     else
-      send_text(reply_msg.text)
+      send_text("#{reply_msg.sender.name}: #{reply_msg.text}")
     end
 
     msg_str = "#{reply_msg.sender.name}에게서 답장을 받았어요!"

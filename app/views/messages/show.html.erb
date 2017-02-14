@@ -21,12 +21,12 @@
                       </div>
                       <%= render '/shared/fb_messenger', message_target: "RPL_#{@message.id}" %>
                   <% else %>
-                      <%= form_tag "/message/#{@message.id}/reply", method: :post, id: :reply_message_form do %>
+                      <%= form_tag "/messages/#{@message.id}/reply", method: :post, id: :reply_message_form do %>
 
                           <div class="row control-group">
                             <div class="form-group col-xs-12 floating-label-form-group controls">
                               <label>답장</label>
-                              <input type="text" rows="3" class="form-control" placeholder="답장" name="text" required data-validation-required-message="Please enter reply text.">
+                              <input type="text" rows="3" class="form-control" placeholder="답장 내용 입력" name="text" required data-validation-required-message="Please enter reply text.">
 
                               <p class="help-block text-danger"></p>
                             </div>
@@ -51,8 +51,11 @@
           <% if @message.replied? %>
               <div class="list-group-item">
                 <h4 class="list-group-item-heading">나의 답장</h4>
-
-                <embed style="width: 100%" src="<%= @message.reply_message.video_url %>"/>
+                <% if @message.reply_message.video_url.present? %>
+                    <embed style="width: 100%" src="<%= @message.reply_message.video_url %>"/>
+                <% else %>
+                    <p><%= @message.reply_message.text %></p>
+                <% end %>
               </div>
           <% end %>
 
