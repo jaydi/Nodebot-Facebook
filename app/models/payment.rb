@@ -109,7 +109,7 @@ class Payment < ActiveRecord::Base
     #
 
     # TEMP beta service event
-    reward_beta_service_prize
+    # reward_beta_service_prize
     notify_admin
   end
 
