@@ -19,7 +19,7 @@ class UsersController < Devise::RegistrationsController
     # @user.partner_agreements_accepted = true
 
     unless User.where(email: @user.email).count == 0
-      redirect_to new_user_registration_path, flash: {error: "중복된 이메일입니다."}
+      redirect_to new_user_registration_path, flash: {error: "이미 가입한 이메일입니다."}
       return
     end
 
