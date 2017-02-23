@@ -28,7 +28,7 @@ class Message < ActiveRecord::Base
   }
 
   scope :paid, -> {
-    includes(:payment).where.not(payments: {id: nil})
+    includes(:payment).where.not(payments: {id: nil}).where(payments: {status: Payment.statuses[:pay_success]})
   }
 
   enum kind: {

@@ -188,7 +188,7 @@ module UserHelper
   end
 
   def notify_profit(payment)
-    send_text("#{payment.partner_share}원의 수익을 얻으셨습니다. :)")
+    send_text("(#{payment.partner_share}원 적립)")
   end
 
   def notify_exchange_success(exchange_request)
