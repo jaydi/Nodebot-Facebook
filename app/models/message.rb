@@ -27,7 +27,7 @@ class Message < ActiveRecord::Base
     where(sender_id: user_id).where(status: [statuses[:initiated], statuses[:completed]])
   }
 
-  scope :paid, -> {
+  scope :payment_pending, -> {
     includes(:payment).where.not(payments: {id: nil}).where(payments: {status: Payment.statuses[:pay_success]})
   }
 
@@ -91,21 +91,25 @@ class Message < ActiveRecord::Base
     @reply_message ||= self.class.where(initial_message_id: self.id).last
   end
 
+  def paid_message
+    payment.present? and (payment.pay_success? or payment.cancel_success? or payment.settled?)
+  end
+
   def add_sender_role
-    sender.add_role(:sender, self)
+    sender.add_role(:sender, self) if sender
   end
 
   def add_receiver_role
-    receiver.add_role(:receiver, self) if delivered?
+    receiver.add_role(:receiver, self) if receiver and delivered?
   end
 
   def after_reply
-    receiver.notify_reply(self) if partner_reply?
+    receiver.notify_reply(self) if partner_reply? and receiver
     initial_message.reply! if reply?
   end
 
   def set_time_out
-    if fan_message?
+    if fan_message? and payment.andand.pay_success?
       if Rails.env.production?
         MessageTimeOutWorker.perform_in(24.hours, id)
       else
