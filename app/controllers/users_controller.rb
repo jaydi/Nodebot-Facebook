@@ -5,6 +5,7 @@ class UsersController < Devise::RegistrationsController
     begin
       @user = User.where(is_partner: true, name: params[:name]).first
       raise ActiveRecord::RecordNotFound unless @user
+      @messages = Message.fan_message.received_by(@user.id).order(id: :desc).page(params[:page])
     rescue ActiveRecord::RecordNotFound
       redirect_to root_path
     end
@@ -16,7 +17,6 @@ class UsersController < Devise::RegistrationsController
 
   def create
     @user = User.new(sign_up_params)
-    # @user.partner_agreements_accepted = true
 
     unless User.where(email: @user.email).count == 0
       redirect_to new_user_registration_path, flash: {error: "이미 가입한 이메일입니다."}

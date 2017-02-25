@@ -203,9 +203,12 @@ class User < ActiveRecord::Base
       when :MSG
         if current_message.blank?
           end_conversation! unless waiting?
+          receiver = User.find(target_id)
           message = Message.create({
                            sender_id: id,
-                           receiver_id: target_id,
+                           sender_name: name,
+                           receiver_id: receiver.id,
+                           receiver_name: receiver.name,
                            kind: :fan_message
                          })
           add_role(:sender, message)
@@ -219,10 +222,13 @@ class User < ActiveRecord::Base
           end_conversation! unless waiting?
           initial_msg = Message.find(target_id)
           if initial_msg.video_repliable?
+            receiver = User.find(target_id)
             Message.create({
                              initial_message_id: initial_msg.id,
                              sender_id: id,
-                             receiver_id: initial_msg.sender_id,
+                             sender_name: name,
+                             receiver_id: receiver.id,
+                             receiver_name: receiver.name,
                              kind: :partner_reply
                            })
             command(:initiate_reply)
@@ -240,10 +246,13 @@ class User < ActiveRecord::Base
     if current_message.blank?
       end_conversation! unless waiting?
       initial_msg = Message.find(target_id)
+      receiver = User.find(target_id)
       Message.create({
                        initial_message_id: initial_msg.id,
-                       sender_id: initial_msg.receiver_id,
-                       receiver_id: initial_msg.sender_id,
+                       sender_id: id,
+                       sender_name: name,
+                       receiver_id: receiver.id,
+                       receiver_name: receiver.name,
                        kind: :fan_message
                      })
       update_attribute(:status, :message_initiated)

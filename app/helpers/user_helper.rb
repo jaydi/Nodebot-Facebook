@@ -81,8 +81,8 @@ module UserHelper
         ])
 
       when :message_completed
-        msg_str = "#{current_message.receiver.name}님은 #{current_message.receiver.price}원을 후원하면, 영상으로 답장을 해드리고 있어요."
-        msg_str += " 24시간 내에 답장을 못 받을 경우, 결제금액은 전액 환불됩니다. 결제하시겠어요?"
+        msg_str = "#{current_message.receiver.name}님은 #{current_message.receiver.price}원을 후원하면, 영상으로 감사인사와 함께 답장을 드리고 있어요."
+        msg_str += " 24시간 내에 답장을 못 받을 경우, 후원금은 전액 환불됩니다. 후원하시겠어요?"
         send_quick_replies(msg_str, quick_replies: [
           {title: '좋아요!', payload: 'initiate_payment'},
           {title: '이걸로 됐어요', payload: 'reject_payment'}
@@ -97,7 +97,7 @@ module UserHelper
         send_text(msg_str)
 
       when :payment_initiated
-        msg_str = "#{current_message.receiver.price}원을 결제합니다. 아래 링크에서 결제를 진행해주세요."
+        msg_str = "#{current_message.receiver.price}원을 결제합니다. 아래 링크에서 진행해주세요."
         send_buttons(msg_str, buttons: [
           {type: 'web_url', url: pay_url(self, current_message.payment.id, :kakao), title: '카카오페이'},
           {type: 'postback', title: '취소', payload: "cancel_payment"}
@@ -119,11 +119,11 @@ module UserHelper
         ])
 
       when :replying
-        msg_str = "영상메시지를 보내주세요. 적어도 10초 이상의 셀카동영상으로 부탁드려요."
+        msg_str = "영상메시지를 보내주세요."
         send_text(msg_str)
 
       when :reply_confirm
-        msg_str = "이 영상으로 전달할게요."
+        msg_str = "이걸로 전달할게요."
         send_quick_replies(msg_str, quick_replies: [
           {title: '응 이걸로 보내', payload: 'complete_reply'},
           {title: '다시 할래', payload: 'start_replying'},
