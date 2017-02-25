@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170225115652) do
+ActiveRecord::Schema.define(version: 20170110094920) do
 
   create_table "banks", force: :cascade do |t|
     t.string   "name",       limit: 36
@@ -38,16 +38,14 @@ ActiveRecord::Schema.define(version: 20170225115652) do
 
   create_table "messages", force: :cascade do |t|
     t.integer  "initial_message_id", limit: 4
-    t.integer  "sender_id",          limit: 4
-    t.string   "sender_name",        limit: 255,   default: "", null: false
-    t.integer  "receiver_id",        limit: 4
-    t.string   "receiver_name",      limit: 255,   default: "", null: false
+    t.integer  "sender_id",          limit: 4,     null: false
+    t.integer  "receiver_id",        limit: 4,     null: false
     t.text     "text",               limit: 65535
     t.string   "video_url",          limit: 255
-    t.integer  "kind",               limit: 4,                  null: false
-    t.integer  "status",             limit: 4,                  null: false
-    t.datetime "created_at",                                    null: false
-    t.datetime "updated_at",                                    null: false
+    t.integer  "kind",               limit: 4,     null: false
+    t.integer  "status",             limit: 4,     null: false
+    t.datetime "created_at",                       null: false
+    t.datetime "updated_at",                       null: false
   end
 
   add_index "messages", ["initial_message_id"], name: "index_messages_on_initial_message_id", using: :btree

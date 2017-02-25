@@ -58,18 +58,4 @@ RSpec.describe MessagesController do
     expect(response).to redirect_to message_path(id: message.id)
   end
 
-  it 'should make anonymous message' do
-    expect {
-      post :create, {
-        sender_name: "anony",
-        receiver_id: partner.id,
-        receiver_name: partner.name,
-        text: "okie dokie"
-      }
-    }.to change(Message, :count).by(1)
-
-    expect(response.status).to eq(302)
-    expect(response).to redirect_to("/#{partner.name}")
-  end
-
 end
