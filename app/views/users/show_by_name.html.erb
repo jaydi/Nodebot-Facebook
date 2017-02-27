@@ -76,9 +76,10 @@
           <% @messages.each do |m| %>
               <% if m.paid_message? %>
                   <li class="list-group-item">
-                    <hr class="star-primary">
-                    <b><%= m.sender_name %></b>님이 후원메시지를 보냈습니다.<br/>
+                    <p style="color: #18BC9C;">
+                    <span class="glyphicon glyphicon-star"></span> <b><%= m.sender_name %></b>님이 후원메시지를 보냈습니다.<br/>
                     후원내용과 답장영상은 본인만 볼 수 있습니다.
+                    </p>
                   </li>
               <% else %>
                   <li class="list-group-item">

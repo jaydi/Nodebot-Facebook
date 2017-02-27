@@ -40,17 +40,6 @@ RSpec.describe MessagesController do
     expect(response).to render_template(:show)
   end
 
-  it 'should make reply' do
-    login partner
-    message = FactoryGirl.create(:message, receiver: partner, status: :delivered)
-
-    expect { post :reply, {id: message.id, text: 'reply text'} }.to change(Message, :count).by(1)
-
-    expect(message.reload.replied?).to be_truthy
-    expect(response.status).to eq(302)
-    expect(response).to redirect_to message_path(id: message.id)
-  end
-
   it 'should make anonymous message' do
     expect {
       post :create, {
@@ -63,6 +52,20 @@ RSpec.describe MessagesController do
 
     expect(response.status).to eq(302)
     expect(response).to redirect_to("/#{partner.name}")
+  end
+
+  it 'should make reply' do
+    login partner
+    message = FactoryGirl.create(:message, receiver: partner, status: :delivered)
+
+    expect { post :reply, {id: message.id, text: 'reply text'} }.to change(Message, :count).by(1)
+
+    expect(message.reload.replied?).to be_truthy
+    expect(message.reply_message.status).to eq("delivered")
+    expect(partner.status).to eq("waiting")
+    expect(partner.current_message).to be_nil
+    expect(response.status).to eq(302)
+    expect(response).to redirect_to message_path(id: message.id)
   end
 
   it 'should be hidden by receiver' do
