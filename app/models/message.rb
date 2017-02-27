@@ -42,7 +42,8 @@ class Message < ActiveRecord::Base
     delivered: 30,
     replied: 50,
     wasted: 60,
-    cancelled: 70
+    cancelled: 70,
+    hidden: 80
   }
 
   aasm column: :status, enum: true do
@@ -52,7 +53,7 @@ class Message < ActiveRecord::Base
     state :replied, after_enter: [:settle_payment]
     state :wasted, after_enter: [:refund_payment]
     state :cancelled
-    state :withdrawn
+    state :hidden
 
     event :complete do
       transitions from: :initiated, to: :completed
@@ -73,6 +74,10 @@ class Message < ActiveRecord::Base
     event :cancel do
       transitions from: [:initiated, :completed], to: :cancelled
     end
+
+    event :hide do
+      transitions from: [:delivered, :replied, :wasted], to: :hidden
+    end
   end
 
   def video_repliable?
@@ -83,16 +88,16 @@ class Message < ActiveRecord::Base
     initial_message.present?
   end
 
+  def paid_message?
+    payment.present? and (payment.pay_success? or payment.cancel_success? or payment.settled?)
+  end
+
   def in_progress?
     initiated? or completed?
   end
 
   def reply_message
     @reply_message ||= self.class.where(initial_message_id: self.id).last
-  end
-
-  def paid_message
-    payment.present? and (payment.pay_success? or payment.cancel_success? or payment.settled?)
   end
 
   def add_sender_role

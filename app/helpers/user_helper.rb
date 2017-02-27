@@ -45,14 +45,14 @@ module UserHelper
         send_text(msg_str)
 
       when :nickname_set
-        msg_str = "#{name}님! 닉네임이 설정되었습니다. 이제 #{current_message.receiver.name}님과 대화를 시작합니다. :)"
+        msg_str = "#{name}님! 닉네임이 설정되었습니다. 이제 #{current_message.receiver_name}님과 대화를 시작합니다. :)"
         send_text(msg_str)
 
       when :message_initiated
         if is_newbie?
-          msg_str = "안녕하세요, #{name}님. 키키봇입니다. 저를 통해 #{current_message.receiver.name}님과 메시지를 주고받을 수 있어요."
-          msg_str += " 제게 메시지를 보내면, #{current_message.receiver.name}님에게 전달됩니다."
-          msg_str += " #{current_message.receiver.name}님이 영상답장을 하면, #{name}님에게 바로 전달해드려요."
+          msg_str = "안녕하세요, #{name}님. 키키봇입니다. 저를 통해 #{current_message.receiver_name}님과 메시지를 주고받을 수 있어요."
+          msg_str += " 제게 메시지를 보내면, #{current_message.receiver_name}님에게 전달됩니다."
+          msg_str += " #{current_message.receiver_name}님이 영상답장을 하면, #{name}님에게 바로 전달해드려요."
           send_text(msg_str)
 
           msg_str = "먼저, 메시징에 사용할 닉네임을 설정하시겠어요? 지금 사용하고 계신 이름은 #{name} 입니다."
@@ -61,7 +61,7 @@ module UserHelper
             {title: '현재 이름 사용', payload: 'start_messaging'}
           ])
         else
-          msg_str = "안녕하세요, #{name}님. #{current_message.receiver.name}님과 대화를 시작합니다. :)"
+          msg_str = "안녕하세요, #{name}님. #{current_message.receiver_name}님과 대화를 시작합니다. :)"
           send_quick_replies(msg_str, quick_replies: [
             {title: '네', payload: 'start_messaging'},
             {title: '아니오', payload: 'cancel_message'}
@@ -81,7 +81,7 @@ module UserHelper
         ])
 
       when :message_completed
-        msg_str = "#{current_message.receiver.name}님은 #{current_message.receiver.price}원을 후원하면, 영상으로 감사인사와 함께 답장을 드리고 있어요."
+        msg_str = "#{current_message.receiver_name}님은 #{current_message.receiver.price}원을 후원하면, 영상으로 감사인사와 함께 답장을 드리고 있어요."
         msg_str += " 24시간 내에 답장을 못 받을 경우, 후원금은 전액 환불됩니다. 후원하시겠어요?"
         send_quick_replies(msg_str, quick_replies: [
           {title: '좋아요!', payload: 'initiate_payment'},
@@ -112,7 +112,7 @@ module UserHelper
         send_text(msg_str)
 
       when :reply_initiated
-        msg_str = "#{current_message.receiver.name}님에게 답장을 시작합니다."
+        msg_str = "#{current_message.receiver_name}님에게 답장을 시작합니다."
         send_quick_replies(msg_str, quick_replies: [
           {title: '응', payload: 'start_replying'},
           {title: '아니야 됐어', payload: 'cancel_reply'}
@@ -161,7 +161,7 @@ module UserHelper
   end
 
   def notify_cancel(canceled_payment)
-    send_text("#{canceled_payment.message.text}\n\n#{canceled_payment.receiver.name}님이 위 메시지에 대해 답장을 못하셨습니다.. :( #{canceled_payment.pay_amount}원 환불해드렸어요.")
+    send_text("#{canceled_payment.message.text}\n\n#{canceled_payment.receiver_name}님이 위 메시지에 대해 답장을 못하셨습니다.. :( #{canceled_payment.pay_amount}원 환불해드렸어요.")
   end
 
   def notify_reply(reply_msg)
@@ -175,10 +175,10 @@ module UserHelper
         raise Waikiki::SendMessageError.new(e.message)
       end
     else
-      send_text("#{reply_msg.sender.name}: #{reply_msg.text}")
+      send_text("#{reply_msg.sender_name}: #{reply_msg.text}")
     end
 
-    msg_str = "#{reply_msg.sender.name}에게서 답장을 받았어요!"
+    msg_str = "#{reply_msg.sender_name}에게서 답장을 받았어요!"
     send_text(msg_str)
 
     msg_str = "버튼을 눌러서 대화를 이어갈 수 있어요."

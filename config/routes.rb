@@ -10,7 +10,7 @@ Rails.application.routes.draw do
   get 'agreements/user' => 'agreements#show_user'
   post 'agreements/user' => 'agreements#create_user'
 
-  resources :messages, only: [:index, :show, :create] do
+  resources :messages, only: [:index, :show, :create, :destroy] do
     member do
       post 'reply' => 'messages#reply'
     end

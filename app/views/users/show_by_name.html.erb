@@ -74,18 +74,26 @@
       <div class="col-lg-8 col-lg-offset-2">
         <ul class="list-group">
           <% @messages.each do |m| %>
-              <li class="list-group-item">
-                <b><%= m.sender_name %></b>
+              <% if m.paid_message? %>
+                  <li class="list-group-item">
+                    <hr class="star-primary">
+                    <b><%= m.sender_name %></b>님이 후원메시지를 보냈습니다.<br/>
+                    후원내용과 답장영상은 본인만 볼 수 있습니다.
+                  </li>
+              <% else %>
+                  <li class="list-group-item">
+                    <b><%= m.sender_name %></b>
 
-                <p><%= m.text %></p>
-                <% if m.reply_message.present? and (m.reply_message.delivered? or m.reply_message.replied?) %>
-                    <div class="text-right">
-                      <b><%= m.reply_message.sender_name %></b>
+                    <p><%= m.text %></p>
+                    <% if m.reply_message.present? and (m.reply_message.delivered? or m.reply_message.replied?) %>
+                        <div class="text-right">
+                          <b><%= m.reply_message.sender_name %></b>
 
-                      <p class="list-group-item-text"><%= m.reply_message.text %></p>
-                    </div>
-                <% end %>
-              </li>
+                          <p class="list-group-item-text"><%= m.reply_message.text %></p>
+                        </div>
+                    <% end %>
+                  </li>
+              <% end %>
           <% end %>
         </ul>
         <%= paginate @messages %>

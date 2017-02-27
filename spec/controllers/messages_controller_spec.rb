@@ -40,13 +40,6 @@ RSpec.describe MessagesController do
     expect(response).to render_template(:show)
   end
 
-  it 'should not show message of others' do
-    login partner
-    message = FactoryGirl.create(:message, receiver: FactoryGirl.create(:partner))
-    get :show, {id: message.id}
-    expect(response.status).to eq(403)
-  end
-
   it 'should make reply' do
     login partner
     message = FactoryGirl.create(:message, receiver: partner, status: :delivered)
@@ -70,6 +63,18 @@ RSpec.describe MessagesController do
 
     expect(response.status).to eq(302)
     expect(response).to redirect_to("/#{partner.name}")
+  end
+
+  it 'should be hidden by receiver' do
+    login partner
+    message = FactoryGirl.create(:message, receiver: partner, status: :delivered)
+
+    delete :destroy, {id: message.id}
+    expect(message.reload.status).to eq("hidden")
+    expect(response).to redirect_to messages_path
+
+    get :index
+    expect(assigns(:messages).count).to eq(0)
   end
 
 end

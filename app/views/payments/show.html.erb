@@ -12,9 +12,9 @@
                   pay_method: "card",
                   escrow: false,
                   merchant_uid: "<%= @payment.merchant_uid %>",
-                  name: "<%= Rails.env.production? ? "#{@payment.message.receiver.name}" : "결제테스트" %>",
+                  name: "<%= Rails.env.production? ? "#{@payment.message.receiver_name}" : "결제테스트" %>",
                   amount: <%= @payment.pay_amount %>,
-                  buyer_name: "<%= @payment.message.sender.name %>",
+                  buyer_name: "<%= @payment.message.sender_name %>",
                   app_scheme: "",
                   digital: true
                 }, function (rsp) {

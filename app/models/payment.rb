@@ -121,7 +121,7 @@ class Payment < ActiveRecord::Base
   #
   # # TEMP beta service
   # def notify_admin
-  #   Waikiki::MessageSender.send_to_admin("답장완료:#{receiver.name}:#{pay_amount}원")
+  #   Waikiki::MessageSender.send_to_admin("답장완료:#{receiver_name}:#{pay_amount}원")
   # end
 
   private

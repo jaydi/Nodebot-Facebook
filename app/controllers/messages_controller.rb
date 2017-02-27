@@ -13,9 +13,9 @@ class MessagesController < ApplicationController
   def create
     message = Message.new(message_params)
     if message.save
-      redirect_to "/#{message.receiver.name}"
+      redirect_to "/#{message.receiver_name}"
     else
-      redirect_to "/#{message.receiver.name}", flash: {error: message.errors}
+      redirect_to "/#{message.receiver_name}", flash: {error: message.errors}
     end
   end
 
@@ -34,6 +34,11 @@ class MessagesController < ApplicationController
       reply_message.deliver!
     end
     redirect_to message_path(id: @message.id)
+  end
+
+  def destroy
+    @message.hide!
+    redirect_to messages_path
   end
 
   private
