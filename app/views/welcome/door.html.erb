@@ -1,39 +1,70 @@
-<section id="sign-up" class="first">
-  <div class="container" style="height: 300px;">
+<body id="page-top" class="index">
 
+<header>
+  <div class="container">
     <div class="row">
-      <div class="col-lg-12 text-center">
-
-        <% time_uid = Time.now.strftime('%y%m%d%H%M%S') %>
-
-        <script>
-          $(document).ready(function () {
-            IMP.init("<%= APP_CONFIG[:iamport_api_id] %>");
-            IMP.request_pay({
-              pg: "kakao",
-              pay_method: "card",
-              escrow: false,
-              merchant_uid: "<%= time_uid %>",
-              name: "담요",
-              amount: 5000,
-              buyer_name: "석촌",
-              app_scheme: "",
-              digital: true
-            }, function (rsp) {
-              if (rsp.success) {
-                var msg = '결제가 완료되었습니다.<br>' + "<%= time_uid %>";
-              } else {
-                var msg = '결제에 실패하였습니다.' + '<br>';
-                msg += '에러내용 : ' + rsp.error_msg + '<br>';
-              }
-              $('#response-message').html(msg).show();
-            });
-          });
-        </script>
-        <p id="response-message"></p>
-
+      <div class="col-lg-12">
+        <div class="intro-text">
+          <span class="name">Start Kiki</span>
+          <hr class="star-light">
+          <span class="skills">인플루언서와 팔로워들이 소통하는 새로운 방식</span>
+        </div>
       </div>
     </div>
+  </div>
+</header>
 
+<section id="portfolio">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12 text-center">
+        <h2>HOW</h2>
+        <hr class="star-primary">
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-6 col-sm-offset-3 portfolio-item text-center">
+        <p>가입하고 메신저 링크를 발급받으세요</p>
+        <img src="images/guide-1.png" class="img-responsive guide" alt="">
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-6 col-sm-offset-3 portfolio-item text-center">
+        <p>팔로워들에게 메신저 링크를 홍보하세요</p>
+        <img src="images/guide-2.png" class="img-responsive guide" alt="">
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-6 col-sm-offset-3 portfolio-item text-center">
+        <p>팔로워들에게서 온 메시지를 대시보드에서 확인할 수 있습니다</p>
+        <img src="images/guide-3.png" class="img-responsive guide" alt="">
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-6 col-sm-offset-3 portfolio-item text-center">
+        <p>후원금을 보낸 열혈 팔로워들에겐 영상으로 답장을 보내주세요!</p>
+        <img src="images/guide-4.png" class="img-responsive guide" alt="">
+      </div>
+    </div>
   </div>
 </section>
+
+<section class="success" id="about">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12 text-center">
+        <h2>NOW WHAT</h2>
+        <hr class="star-light">
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 text-center">
+        <a href="/users/sign_up" class="btn btn-lg btn-outline">
+          KIKI 시작하기
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+</body>
